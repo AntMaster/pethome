@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script type="text/javascript" src="./jquery-3.3.1.min.js"></script>
+</head>
+<body>
+<div id="aaa">sss</div>
+<script>
+
+    $.ajax({
+        url: "/pethome/publish/index/list/dynamic",
+        dataType: 'json',
+        method: 'GET',
+        data: {
+            publishType: 1
+            // page: 0,
+            // size: 10
+        },
+        success: function (data) {
+            $("#aaa").text(data)
+        }
+    })
+        .done(function (data) {
+            $("#aaa").text(data)
+    })
+
+</script>
+bc
+</body>
+</html>

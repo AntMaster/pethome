@@ -1,0 +1,349 @@
+package com.shumahe.pethome.Service.Impl;
+
+import com.shumahe.pethome.Domain.PetPublish;
+import com.shumahe.pethome.Domain.PublishTalk;
+import com.shumahe.pethome.Domain.UserBasic;
+import com.shumahe.pethome.Domain.UserTalk;
+import com.shumahe.pethome.Enums.ResultEnum;
+import com.shumahe.pethome.Exception.PetHomeException;
+import com.shumahe.pethome.Form.ReplyPrivateForm;
+import com.shumahe.pethome.Form.ReplyPublishForm;
+import com.shumahe.pethome.Repository.PetPublishRepository;
+import com.shumahe.pethome.Repository.PublishTalkRepository;
+import com.shumahe.pethome.Repository.UserBasicRepository;
+import com.shumahe.pethome.Repository.UserTalkRepository;
+import com.shumahe.pethome.Service.MessageService;
+import org.springframework.beans.BeanUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.jpa.domain.Specification;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
+import java.util.*;
+import java.util.stream.Collectors;
+
+
+@Service
+public class MessageServiceImpl implements MessageService {
+
+    @Autowired
+    UserTalkRepository userTalkRepository;
+
+    @Autowired
+    UserBasicRepository userBasicRepository;
+
+    @Autowired
+    PetPublishRepository petPublishRepository;
+
+
+    @Autowired
+    PublishTalkRepository publishTalkRepository;
+
+    /**
+     * 查询 我的私信
+     *
+     * @param openId
+     * @param pageRequest
+     * @return
+     */
+    @Override
+    public List<List<LinkedHashMap<String, String>>> findMyPrivateTalk(String openId, PageRequest pageRequest) {
+
+        /**
+         * 私信列表
+         */
+        List<UserTalk> talkMessages = userTalkRepository.findPrivateMyTalk(openId, openId);
+
+
+        if (talkMessages.size() == 0) {
+            throw new PetHomeException(ResultEnum.RESULT_EMPTY.getCode(), "私信消息为空");
+        }
+
+        /**
+         * 我的所有私信过的人（key = 用户OpenID ，value =用户发布ID）
+         */
+        LinkedHashMap<String, Integer> userMap = new LinkedHashMap<>();
+        talkMessages.stream().forEach(user -> {
+
+            if (!user.getUserIdFrom().equals(openId)) {
+
+                userMap.put(user.getUserIdFrom(), user.getPublishId());
+
+            }
+
+        });
+
+        List<String> userOpenIds = new ArrayList<>();
+        List<Integer> publishIds = new ArrayList<>();
+        userMap.forEach((userId, publishId) -> {
+            userOpenIds.add(userId);
+            publishIds.add(publishId);
+        });
+
+        /**
+         * 将字段提取出来 放入另一个集合 用于查询扩展信息
+         */
+        List<UserBasic> userBasics = userBasicRepository.findByOpenIdIn(userOpenIds);
+
+        List<PetPublish> _tempPublishes = petPublishRepository.findByIdIn(publishIds);
+        /**
+         * 调整PetPublish顺序 按userMap顺序
+         */
+        List<PetPublish> publishes = new ArrayList<>();
+        userMap.forEach((k, v) -> {
+            _tempPublishes.forEach(publish -> {
+                if (v == publish.getId()) {
+                    publishes.add(publish);
+                }
+            });
+        });
+
+
+        UserBasic myself = userBasicRepository.findByOpenId(openId);
+
+
+        /**
+         * 组装私信信息
+         * 宠物信息     ： 昵称 头像 发布类型 丢失日期
+         * 人员信息    ： 我的昵称 对方昵称   对方头像
+         *
+         */
+        /**
+         *  私信分组
+         */
+        List<List<UserTalk>> msgGroup = new ArrayList<>();
+
+        publishes.forEach(publish -> {
+
+            List<UserTalk> _tempTalk = new ArrayList<>();
+
+            //对每个对话进行分组
+            talkMessages.forEach(msg -> {
+
+                if (publish.getId() == msg.getPublishId()) {
+
+                    _tempTalk.add(msg);
+                }
+
+            });
+            msgGroup.add(_tempTalk);
+
+        });
+
+
+        /**
+         * 对分组后的私信进行数据填充
+         */
+        List<List<LinkedHashMap<String, String>>> msgResult = new ArrayList<>();
+
+        msgGroup.forEach(msgs -> {
+
+            List<LinkedHashMap<String, String>> _tempMsgGroup = new ArrayList<>();
+
+            msgs.forEach(msg -> {
+
+                LinkedHashMap<String, String> msgMap = new LinkedHashMap<>();
+                userBasics.forEach(user -> {
+
+                    if (msg.getUserIdFrom().equals(user.getOpenId())) {
+                        msgMap.put("userFrom", user.getNickName());
+                        msgMap.put("userIdFrom", user.getOpenId());
+                        msgMap.put("userImgFrom", user.getHeadImgUrl());
+                    }
+
+                });
+
+
+                publishes.forEach(publish -> {
+
+                    if (msg.getPublishId() == publish.getId()) {
+
+                        msgMap.put("petImg", publish.getPetImage());
+                        msgMap.put("petName", publish.getPetName());
+                        msgMap.put("petLostTime", publish.getLostTime().toString());
+                        msgMap.put("publishType", String.valueOf(publish.getPublishType()));
+                    }
+                });
+
+                msgMap.put("myName", myself.getNickName());
+                msgMap.put("msgDetail", msg.getContent());
+                msgMap.put("talkTime", msg.getTalkTime().toString());
+
+                _tempMsgGroup.add(msgMap);
+            });
+
+            msgResult.add(_tempMsgGroup);
+        });
+
+
+        return msgResult;
+    }
+
+    /**
+     * 回复私信
+     *
+     * @param replyPrivateFrom
+     */
+
+    @Override
+    @Transactional
+    public UserTalk replyPrivate(ReplyPrivateForm replyPrivateFrom) {
+
+        UserTalk userTalk = new UserTalk();
+        BeanUtils.copyProperties(replyPrivateFrom, userTalk);
+
+        UserTalk save = userTalkRepository.save(userTalk);
+
+        /**
+         * 当前私信来往记录
+         */
+        List<UserTalk> currentTalkList = userTalkRepository.findByPublishIdIn(save.getPublishId());
+        currentTalkList.forEach(talk -> talk.setLastModify(save.getTalkTime()));
+
+        userTalkRepository.save(currentTalkList);
+
+        return save;
+
+    }
+
+
+    /**
+     * 查询 我的留言互动
+     *
+     * @param openId
+     * @param pageRequest
+     * @return
+     */
+    @Override
+    public List<List<Map<String, String>>> findMyPublicTalk(String openId, PageRequest pageRequest) {
+
+
+        // 与我有关的主题  (我发布的 || 我的回复别人的 || 别人回复我的)
+        List<PublishTalk> publishRelativeToMe = publishTalkRepository.findByReplierFromOrReplierAcceptOrPublisherId(openId, openId, openId);
+        if (publishRelativeToMe.isEmpty()) {
+            throw new PetHomeException(ResultEnum.RESULT_EMPTY.getCode(), "留言互动消息为空");
+        }
+
+
+        /**
+         * step 1 与我有关的全部消息
+         */
+        List<Integer> publishIds = publishRelativeToMe.stream().map(e -> e.getPublishId()).distinct().collect(Collectors.toList());
+        List<PublishTalk> talkMessages = publishTalkRepository.findMyPublicTalk(publishIds);
+        if (talkMessages.size() == 0) {
+            throw new PetHomeException(ResultEnum.RESULT_EMPTY.getCode(), "留言互动消息为空");
+        }
+
+        /**
+         * step 2 发布信息
+         */
+        List<PetPublish> pets = petPublishRepository.findByIdIn(publishIds);
+
+        /**
+         * step 3 互动人员信息
+         */
+        List<String> userIds = publishRelativeToMe.stream()
+                .filter(e -> !e.getReplierFrom().equals(openId))
+                .map(e -> e.getReplierFrom())
+                .collect(Collectors.toList())
+                .stream()
+                .distinct()
+                .collect(Collectors.toList());
+
+        List<UserBasic> users = userBasicRepository.findByOpenIdIn(userIds);
+
+
+        UserBasic myself = userBasicRepository.findByOpenId(openId);
+
+
+        /**
+         * step 4 扩充我的消息
+         * 宠物信息     ： 昵称 头像 发布类型 丢失日期
+         * 人员信息    ： 我的昵称 对方昵称   对方头像
+         */
+
+        List<Map<String, String>> msgList = new ArrayList<>();
+
+        talkMessages.stream().forEach(msg -> {
+
+            Map<String, String> msgMap = new HashMap<>();
+            pets.forEach(pet -> {
+
+                if (msg.getPublishId().equals(pet.getId())) {
+                    msgMap.put("petImg", pet.getPetImage());
+                    msgMap.put("petName", pet.getPetName());
+                    msgMap.put("petLostTime", pet.getLostTime().toString());
+                    msgMap.put("publishType", String.valueOf(pet.getPublishType()));
+                }
+            });
+
+            users.forEach(user -> {
+                if (msg.getReplierFrom().equals(user.getOpenId())) {
+                    msgMap.put("userFrom", user.getNickName());
+                    msgMap.put("userIdFrom", user.getOpenId());
+                    msgMap.put("userImgFrom", user.getHeadImgUrl());
+                }
+            });
+
+            msgMap.put("myName", myself.getNickName());
+            msgMap.put("msgDetail", msg.getContent());
+            msgMap.put("talkTime", msg.getReplyDate().toString());
+            msgMap.put("publishId", String.valueOf(msg.getPublishId()));
+            msgList.add(msgMap);
+
+        });
+
+
+        List<List<Map<String, String>>> msgListGroup = new ArrayList<>();
+
+        //e = 2 1 3
+        msgList.stream().map(e -> e.get("publishId")).distinct().forEach(e -> {
+
+            List<Map<String, String>> _tempList = new ArrayList<>();
+            msgList.forEach(msg -> {
+                if (msg.get("publishId").equals(e)) {
+                    _tempList.add(msg);
+                }
+            });
+            msgListGroup.add(_tempList);
+
+        });
+
+        return msgListGroup;
+    }
+
+
+    /**
+     * 回复互动
+     *
+     * @param replyPublishForm
+     */
+    @Override
+    @Transactional
+    public PublishTalk replyPublic(ReplyPublishForm replyPublishForm) {
+
+        PublishTalk publishTalk = new PublishTalk();
+        BeanUtils.copyProperties(replyPublishForm, publishTalk);
+
+        PublishTalk save = publishTalkRepository.save(publishTalk);
+
+        /**
+         * 当前回复来往记录
+         */
+        List<PublishTalk> currentTalkList = publishTalkRepository.findByPublishIdIn(save.getPublishId());
+        currentTalkList.forEach(talk -> talk.setLastModify(save.getReplyDate()));
+
+        publishTalkRepository.save(currentTalkList);
+
+        return save;
+    }
+
+
+}
+

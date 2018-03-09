@@ -1,0 +1,61 @@
+package com.shumahe.pethome.Service;
+
+import com.shumahe.pethome.Domain.UserDynamic;
+import org.springframework.stereotype.Service;
+
+import java.util.List;
+import java.util.Map;
+
+
+public interface DynamicService {
+
+
+    /**
+     * 我的关注;关注我的
+     * @param openId
+     * @param type
+     * @return
+     */
+    List<Map<String,String>> findMyLike(String openId , int type);
+
+
+    /**
+     * 我的转发;转发我的
+     * @param openId
+     * @param type
+     * @return
+     */
+    List<Map<String,String>> findMyShare(String openId , int type);
+
+    /**
+     * 分享操作(主页)
+     *
+     *  PS:基于微信
+     */
+
+
+
+    /**
+     * 关注列表(主页)
+     */
+
+
+    /**
+     * 关注列表(我的)
+     */
+
+
+    /**
+     * 被关注列表(我的)
+     */
+
+    /**
+     * 分享列表(我的)
+     */
+
+
+    /**
+     * 被分享列表(我的)
+     */
+
+}
