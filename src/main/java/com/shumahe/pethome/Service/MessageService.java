@@ -1,5 +1,6 @@
 package com.shumahe.pethome.Service;
 
+import com.shumahe.pethome.DTO.PrivateMsgDTO;
 import com.shumahe.pethome.DTO.PublicMsgDTO;
 import com.shumahe.pethome.DTO.PublishDTO;
 import com.shumahe.pethome.Domain.PetPublish;
@@ -52,7 +53,7 @@ public interface MessageService {
      * @param pet
      * @return
      */
-    List<List<PublicMsgDTO>> petPrivateTalks(PetPublish pet,String openId);
+    List<List<PrivateMsgDTO>> petPrivateTalks(PetPublish pet, String openId);
 
 
     /**

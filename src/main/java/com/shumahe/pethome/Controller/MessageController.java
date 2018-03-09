@@ -1,6 +1,7 @@
 package com.shumahe.pethome.Controller;
 
 
+import com.shumahe.pethome.DTO.PrivateMsgDTO;
 import com.shumahe.pethome.DTO.PublicMsgDTO;
 import com.shumahe.pethome.DTO.PublishDTO;
 import com.shumahe.pethome.Domain.PetPublish;
@@ -138,7 +139,7 @@ public class MessageController {
 
         PetPublish pet = petPublishRepository.findById(publishId);
 
-        List<List<PublicMsgDTO>> petPrivateTalks = messageService.petPrivateTalks(pet,openId);
+        List<List<PrivateMsgDTO>> petPrivateTalks = messageService.petPrivateTalks(pet,openId);
 
         return ResultVOUtil.success(petPrivateTalks);
     }

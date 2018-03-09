@@ -45,19 +45,25 @@ public class PrivateMsgDTO {
     /**
      * 接收人昵称
      */
-    private String  userIdAcceptName;
+    private String  userAcceptName;
 
 
     /**
      * 接收人头像
      */
-    private String      userAcceptPhoto;
+    private String userAcceptPhoto;
 
 
     /**
      * 互动内容
      */
     private String content;
+
+
+    /**
+     * 最后一次交流时间
+     */
+    private Date lastModify;
 
 
     /**

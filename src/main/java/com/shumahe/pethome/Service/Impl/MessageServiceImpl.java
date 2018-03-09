@@ -354,12 +354,12 @@ public class MessageServiceImpl implements MessageService {
     }
 
     /**
-     * 查询发布的互动详情
+     * 查询发布的私信详情
      * @param pet
      * @return
      */
     @Override
-    public List<List<PublicMsgDTO>> petPrivateTalks(PetPublish pet,String openId) {
+    public List<List<PrivateMsgDTO>> petPrivateTalks(PetPublish pet,String openId) {
 
             /**
              * step 1  某个发布全部互动消息
@@ -414,25 +414,25 @@ public class MessageServiceImpl implements MessageService {
                     }
 
                     if (!StringUtils.isEmpty(talk.getUserIdAccept()) && talk.getUserIdAccept().trim().equals(user.getOpenId().trim())) {
-                        msgDTO.setUserIdAcceptName(user.getNickName());
-                        msgDTO.setUserIdAuser.getHeadImgUrl());1233
+                        msgDTO.setUserAcceptName(user.getNickName());
+                        msgDTO.setUserAcceptPhoto(user.getHeadImgUrl());
                     }
                 });
                 publicMsgDTOS.add(msgDTO);
             });
 
 
-            List<List<PublicMsgDTO>> petTalks = new ArrayList<>();
+            List<List<PrivateMsgDTO>> petTalks = new ArrayList<>();
             /**
              * step 4 VO按评论分组（one comment ---> some talk）
              */
 
-            publicMsgDTOS.stream().map(e -> e.getTalkId()).distinct().forEach(e -> {
+            publicMsgDTOS.stream().map(e -> e.getLastModify().toString()).distinct().forEach(e -> {
 
-                List<PublicMsgDTO> sameTalkId = new ArrayList<>();
+                List<PrivateMsgDTO> sameTalkId = new ArrayList<>();
 
                 publicMsgDTOS.forEach(talk -> {
-                    if (e.equals(talk.getTalkId())) {
+                    if (e.equals(talk.getLastModify().toString())) {
 
                         sameTalkId.add(talk);
                     }
