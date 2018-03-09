@@ -413,7 +413,7 @@ public class MessageServiceImpl implements MessageService {
 
                     if (!StringUtils.isEmpty(talk.getUserIdAccept()) && talk.getUserIdAccept().trim().equals(user.getOpenId().trim())) {
                         msgDTO.setUserIdAcceptName(user.getNickName());
-                        msgDTO.setUserIdAuser.getHeadImgUrl());
+                        msgDTO.setUserIdAuser.getHeadImgUrl());1233
                     }
                 });
                 publicMsgDTOS.add(msgDTO);
