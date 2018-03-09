@@ -51,7 +51,7 @@ public class PrivateMsgDTO {
     /**
      * 接收人头像
      */
-    private String userAcceptPhoto;
+    private String  userAcceptPhoto;
 
 
     /**
