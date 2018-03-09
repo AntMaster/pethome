@@ -20,7 +20,10 @@ import javax.servlet.http.HttpServletRequest;
 @Slf4j
 public class AuthAspect {
 
-
+    /**
+     *
+     *
+     */
     @Pointcut("execution(public * com.shumahe.pethome.Controller.PublishController.*(..))")
     public void     validateAutoInfo() {
 
