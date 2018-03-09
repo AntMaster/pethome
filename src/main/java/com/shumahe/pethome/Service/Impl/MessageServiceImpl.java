@@ -37,6 +37,7 @@ import java.util.stream.Collectors;
 public class MessageServiceImpl implements MessageService {
 
 
+
     @Autowired
     UserTalkRepository userTalkRepository;
 
