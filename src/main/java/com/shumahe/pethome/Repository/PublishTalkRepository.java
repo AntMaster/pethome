@@ -18,6 +18,14 @@ public interface PublishTalkRepository extends JpaRepository<PublishTalk, Intege
 
 
     /**
+     *  评论排序
+     *
+     *  1 针对多个主题之间先后顺序排序 		最后回复时间（LastModify desc）倒序
+     *  2 针对一个主题的多个评论间先后顺序排序	评论（talkId  ASC）顺序
+     *  3 针对一个评论间多个互动间先后顺序排序	互动（replyDate ASC）顺序
+     */
+
+    /**
      * 查询我互动过的主题
      *
      * @param replierFrom
@@ -29,24 +37,23 @@ public interface PublishTalkRepository extends JpaRepository<PublishTalk, Intege
 
 
     /**
-     * 查询我的全部互动详情
      *
+     * 查询多个发布的所有互动信息
      * @param publishIds
      * @return
      */
-    @Query(value = "SELECT * FROM PublishTalk WHERE PublishID IN ?1 AND ShowState = 1 ORDER BY LASTModify DESC,ReplyDate", nativeQuery = true)
-    List<PublishTalk> findMyPublicTalk(List<Integer> publishIds);
-
+    @Query(value = "SELECT * FROM PublishTalk WHERE PublishID IN ?1 AND ShowState = 1 ORDER BY LASTModify DESC,talkId ASC,ReplyDate ASC", nativeQuery = true)
+    List<PublishTalk> findManyPublishTalk(List<Integer> publishIds);
 
 
     /**
-     * 跟我互动过的人
-     * @param publishIds
-     * @param openId
+     * 查询某个发布的所有互动信息
+     *
+     * @param publishId
      * @return
      */
-    @Query(value = "SELECT DISTINCT ReplierFrom FROM PublishTalk WHERE PublishID IN (?1) AND ReplierFrom <> ?2 AND ShowState = 1 GROUP BY ReplierFrom,PublishID;", nativeQuery = true)
-    List<PublishTalk> findMyPublicTalker(List<Integer> publishIds,String openId);
+    @Query(value = "SELECT * FROM PublishTalk WHERE PublishID = ?1 AND ShowState = 1 ORDER BY LASTModify DESC,talkId ASC,ReplyDate ASC", nativeQuery = true)
+    List<PublishTalk> findOnePublicTalk(Integer publishId);
 
 
 
@@ -56,9 +63,36 @@ public interface PublishTalkRepository extends JpaRepository<PublishTalk, Intege
      * @param publishId
      * @return
      */
-    @Query(value = "SELECT PublishID,COUNT(PublishID) AS CommentCount FROM PublishTalk " +
-            "WHERE ReplierFrom IS NOT NULL AND ReplierArrive IS NULL AND PublishID IN (?1) GROUP BY PublishID ORDER BY PublishID DESC", nativeQuery = true)
+    @Query(value = "SELECT PublishID,COUNT(PublishID) AS CommentCount FROM PublishTalk WHERE PublishID IN (?1) AND ShowState = 1 GROUP BY PublishID ", nativeQuery = true)
     List<Object[]> findPublishCommentCount(List<Integer> publishId);
+
+
+    /**
+     * 查询当前互动所有来往记录
+     *
+     * @param publishId
+     * @return
+     */
+    List<PublishTalk> findByPublishIdIn(int publishId);
+
+
+    /**
+     * 查询一个发布的留言互动
+     *
+     * @return
+     */
+    List<PublishTalk> findByPublishIdOrderByLastModifyDescReplyDate(int publishId);
+
+
+    /**
+     * 查询评论条数
+     *
+     * @param publishId
+     * @return
+     */
+    @Query(value = "select count(id) from PublishTalk  where publishId = ? AND  showstate = 1", nativeQuery = true)
+    int findPublicMsgCount(Integer publishId);
+
 
 
     /**
@@ -68,26 +102,24 @@ public interface PublishTalkRepository extends JpaRepository<PublishTalk, Intege
      * @param openIdAccept
      * @return
      */
-    @Query(value = "SELECT * FROM UserTalk WHERE PublishID IN (?) AND ShowState = 1 AND  ReadState = 0 ORDER BY LASTModify DESC,TalkTime", nativeQuery = true)
+/*
+    @Query(value = "SELECT * FROM xxx WHERE PublishID IN (?) AND ShowState = 1 AND  ReadState = 0 ORDER BY LASTModify DESC,TalkTime", nativeQuery = true)
     List<UserTalk> findMyNotViewTalk(String openIdFrom, String openIdAccept);
 
-
-
-    /**
-     * 查询当前互动所有来往记录
-     * @param publishId
-     * @return
-     */
-    List<PublishTalk> findByPublishIdIn(int publishId);
-
-
+*/
 
     /**
-     * 通过发布ID查询评论
+     * 跟我互动过的人
      *
+     * @param publishIds
+     * @param openId
      * @return
      */
-    List<PublishTalk> findByPublishIdOrderByPublishId(int publishId);
+/*
+    @Query(value = "SELECT DISTINCT ReplierFrom FROM PublishTalk WHERE PublishID IN (?1) AND ReplierFrom <> ?2 AND ShowState = 1 GROUP BY ReplierFrom,PublishID;", nativeQuery = true)
+    List<PublishTalk> findMyPublicTalker(List<Integer> publishIds, String openId);
+*/
+
 
     /**
      * 通过发布ID查询评论条数
@@ -110,7 +142,6 @@ public interface PublishTalkRepository extends JpaRepository<PublishTalk, Intege
     String a = "SELECT PublishID,COUNT(PublishID) AS CommentCount FROM PublishTalk " +
             "WHERE ReplierFrom IS NOT NULL AND ReplierArrive IS NULL AND PublishID IN (?1) GROUP BY PublishID ORDER BY PublishID DESC";
 */
-
 
 
 }

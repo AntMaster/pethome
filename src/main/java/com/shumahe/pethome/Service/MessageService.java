@@ -1,5 +1,8 @@
 package com.shumahe.pethome.Service;
 
+import com.shumahe.pethome.DTO.PublicMsgDTO;
+import com.shumahe.pethome.DTO.PublishDTO;
+import com.shumahe.pethome.Domain.PetPublish;
 import com.shumahe.pethome.Domain.PublishTalk;
 import com.shumahe.pethome.Domain.UserTalk;
 import com.shumahe.pethome.Form.ReplyPrivateForm;
@@ -42,6 +45,25 @@ public interface MessageService {
      * @param replyPublishForm
      */
     PublishTalk replyPublic(ReplyPublishForm replyPublishForm);
+
+
+    /**
+     * 查询发布的互动详情
+     * @param pet
+     * @return
+     */
+    List<List<PublicMsgDTO>> petPrivateTalks(PetPublish pet,String openId);
+
+
+    /**
+     * 查询发布的互动详情
+     * @param pet
+     * @return
+     */
+    List<List<PublicMsgDTO>> findPetPublicTalks(PetPublish pet);
+
+
+
 
     /**
      * 评论(发布详情)

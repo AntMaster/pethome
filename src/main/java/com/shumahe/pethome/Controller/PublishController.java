@@ -40,7 +40,7 @@ public class PublishController {
      */
 
     /**
-     * 首页列表 （动态 + 寻主 + 寻宠）
+     * 首页模块 ------> 动态 + 寻主 + 寻宠 三个列表
      *
      * @param publishType
      * @param page
@@ -62,7 +62,7 @@ public class PublishController {
     }
 
     /**
-     * 寻宠发布
+     * 发布模块 ------> 寻宠发布
      *
      * @param petForm
      * @param bindingResult
@@ -88,7 +88,7 @@ public class PublishController {
     }
 
     /**
-     * 寻主发布
+     * 发布模块 ------> 寻主发布
      *
      * @param masterForm
      * @param bindingResult
@@ -115,7 +115,7 @@ public class PublishController {
 
 
     /**
-     * 发布列表(我的)
+     * 我的模块 ------> 发布列表
      * PS:按时间查个人
      */
     @GetMapping("/user/publishlist")
@@ -130,7 +130,7 @@ public class PublishController {
 
 
     /**
-     * 待处理列表(我的)
+     * 我的模块 ------> 待处理列表
      * PS:按时间查个人
      */
     @GetMapping("/user/notFoundList")
@@ -147,29 +147,30 @@ public class PublishController {
 
 
     /**
-     * 查看发布详情信息（）
+     * 首页模块 ------> 查看发布详情
      *
      * @param publishId
      * @return
      */
     @GetMapping("/detail")
-    public ResultVO<PublishVO> publishDetail(@RequestParam("publishId") Integer publishId) {
+    public ResultVO petDetail(@RequestParam("publishId") Integer publishId, @RequestParam("openId") String openId) {
 
-        return null;
+        if (publishId == 0) {
+            throw new PetHomeException(ResultEnum.PARAM_ERROR);
+        }
+
+        PublishDTO petDetail = publishService.findPetDetail(publishId, openId);
+        return ResultVOUtil.success(petDetail);
     }
 
 
     /**
-     * 发布详情(详情) PS:详细描述,同时浏览次数+1
+     * 寻宠详情(详情) PS:详细描述,同时浏览次数+1
      */
-
 
     /**
      * 基于条件(含模糊条件)搜索发布列表  (搜索)
      */
-
-
-
 
 
 /***************************************************************/

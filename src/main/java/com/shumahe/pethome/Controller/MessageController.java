@@ -1,6 +1,9 @@
 package com.shumahe.pethome.Controller;
 
 
+import com.shumahe.pethome.DTO.PublicMsgDTO;
+import com.shumahe.pethome.DTO.PublishDTO;
+import com.shumahe.pethome.Domain.PetPublish;
 import com.shumahe.pethome.Domain.PublishTalk;
 import com.shumahe.pethome.Domain.UserTalk;
 import com.shumahe.pethome.Enums.ResultEnum;
@@ -8,6 +11,7 @@ import com.shumahe.pethome.Exception.PetHomeException;
 
 import com.shumahe.pethome.Form.ReplyPrivateForm;
 import com.shumahe.pethome.Form.ReplyPublishForm;
+import com.shumahe.pethome.Repository.PetPublishRepository;
 import com.shumahe.pethome.Service.MessageService;
 import com.shumahe.pethome.Util.ResultVOUtil;
 import com.shumahe.pethome.VO.ResultVO;
@@ -35,6 +39,10 @@ public class MessageController {
     @Autowired
     MessageService messageService;
 
+
+    @Autowired
+    PetPublishRepository petPublishRepository;
+
     /**
      * 我的私信列表
      *
@@ -47,7 +55,6 @@ public class MessageController {
     public ResultVO findMyPrivateTalk(@RequestParam("openId") String openId,
                                       @RequestParam(value = "page", defaultValue = "0") Integer page,
                                       @RequestParam(value = "size", defaultValue = "200") Integer size) {
-
 
         PageRequest pageRequest = new PageRequest(page, size);
         List<List<LinkedHashMap<String, String>>> myPrivateTalk = messageService.findMyPrivateTalk(openId, pageRequest);
@@ -114,9 +121,48 @@ public class MessageController {
         return ResultVOUtil.success(save);
     }
 
+
     /**
-     * 回复(发布详情)
+     * 查看私信详情
+     *
+     * @param publishId
+     * @param openId
+     * @return
      */
+    @GetMapping("/private/detail")
+    public ResultVO petPrivateTalkDetail(@RequestParam("publishId") Integer publishId, @RequestParam("openId") String openId) {
+
+        if (publishId == 0) {
+            throw new PetHomeException(ResultEnum.PARAM_ERROR);
+        }
+
+        PetPublish pet = petPublishRepository.findById(publishId);
+
+        List<List<PublicMsgDTO>> petPrivateTalks = messageService.petPrivateTalks(pet,openId);
+
+        return ResultVOUtil.success(petPrivateTalks);
+    }
+
+
+    /**
+     * 查看互动详情
+     *
+     * @param publishId
+     * @param openId
+     * @return
+     */
+    @GetMapping("/public/detail")
+    public ResultVO petPublicTalkDetail(@RequestParam("publishId") Integer publishId, @RequestParam("openId") String openId) {
+
+        if (publishId == 0) {
+            throw new PetHomeException(ResultEnum.PARAM_ERROR);
+        }
+
+        PetPublish pet = petPublishRepository.findById(publishId);
+        List<List<PublicMsgDTO>> petPublicTalks = messageService.findPetPublicTalks(pet);
+
+        return ResultVOUtil.success(petPublicTalks);
+    }
 
 
     /**

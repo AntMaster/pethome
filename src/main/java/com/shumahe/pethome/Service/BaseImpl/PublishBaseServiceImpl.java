@@ -1,15 +1,15 @@
 package com.shumahe.pethome.Service.BaseImpl;
 
 import com.shumahe.pethome.Convert.Publish2PublishDTOConvert;
-import com.shumahe.pethome.DTO.CommentDTO;
+import com.shumahe.pethome.DTO.PublicMsgDTO;
 import com.shumahe.pethome.DTO.PublishDTO;
 import com.shumahe.pethome.DTO.UserDTO;
 import com.shumahe.pethome.Domain.PetPublish;
 import com.shumahe.pethome.Domain.UserBasic;
+import com.shumahe.pethome.Enums.SearchEnum;
 import com.shumahe.pethome.Repository.PublishTalkRepository;
 import com.shumahe.pethome.Repository.UserBasicRepository;
 import com.shumahe.pethome.Service.BaseService.PublishBaseService;
-import com.shumahe.pethome.Util.CollectionUtil;
 import com.shumahe.pethome.VO.PublishTalkingVO;
 import com.shumahe.pethome.VO.PublishVO;
 import com.shumahe.pethome.VO.UserBasicVO;
@@ -19,13 +19,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
-
-@Service
 @Slf4j
+@Service
 public class PublishBaseServiceImpl implements PublishBaseService {
 
     @Autowired
@@ -79,7 +79,6 @@ public class PublishBaseServiceImpl implements PublishBaseService {
             talkingVOS.forEach(talkingVO -> {
                 if (talkingVO.getPublishId() == publishVO.getId()) {
                     publishVO.setCommentVO(talkingVO);//将评论数存入发布VO中
-                    //talkingVOS.remove(talkingVO);
                 }
             });
 
@@ -109,56 +108,47 @@ public class PublishBaseServiceImpl implements PublishBaseService {
     public List<PublishDTO> findPetExtends(List<PetPublish> publishes) {
 
 
-        /*List<Integer> publishIds = new ArrayList<>();
-        List<String> userIds = new ArrayList<>();
-
-        publishes.stream().forEach(publish -> {
-            publishIds.add(publish.getId());
-            userIds.add(publish.getPublisherId());
-        });*/
-
-
         List<Integer> publishIds = publishes.stream().map(e -> e.getId()).collect(Collectors.toList());
-        List<String> userIds = publishes.stream().map(e -> e.getPublisherId()).collect(Collectors.toList());
+        List<String> userIds = publishes.stream().map(e -> e.getPublisherId()).distinct().collect(Collectors.toList());
 
         /**
          * step 1  发布ID查询评论数量
          */
         List<Object[]> commentCount = publishTalkRepository.findPublishCommentCount(publishIds);
 
-        List<CommentDTO> commentDTOS = new ArrayList<>();//DTO转换
+        //Map<publishId,msgCount>
+        List<Map<Integer, Integer>> msgCount = new ArrayList<>();
+
         commentCount.stream().forEach((Object[] count) -> {
 
-            CommentDTO commentDTO = new CommentDTO((Integer) count[0], (Integer) count[1]);
-            commentDTOS.add(commentDTO);
+            Map<Integer, Integer> _tempMsg = new HashMap<>();
+            _tempMsg.put((Integer) count[0], (Integer) count[1]);
+            msgCount.add(_tempMsg);
+
         });
 
 
         /**
          *  step 2 发布人ID查询发布人基本信息
          */
-        List<String> finalUserIds = CollectionUtil.removeRepeatStringItem(userIds);//userIds去重
-        List<UserBasic> userBasics = userBasicRepository.findByOpenIdIn(finalUserIds);
+        List<UserBasic> userBasics = userBasicRepository.findByOpenIdIn(userIds);
 
 
         /**
-         *  step 3  合成发布信息+发布评论信息 +  发布人基本信息
+         *  step 3  合成发布信息 + 发布评论信息 +  发布人基本信息
          */
-        List<PublishDTO> publishDTOS = Publish2PublishDTOConvert.convert(publishes);//DTO转换
+        List<PublishDTO> publishDTOS = Publish2PublishDTOConvert.convert(publishes);
 
         publishDTOS.stream().forEach(publishDTO -> {
 
-            commentDTOS.stream().forEach(commentDTO -> {
-
-                if (publishDTO.getId() == commentDTO.getPublishId()) {
-
-                    publishDTO.setCommentDTO(commentDTO);
+            msgCount.stream().forEach(msg -> msg.forEach((k, v) -> {
+                if (publishDTO.getId() == k) {
+                    publishDTO.setPublicMsgCount(v);
                     return;
                 }
-            });
+            }));
 
             userBasics.stream().forEach(userBasic -> {
-
                 if (publishDTO.getPublisherId().equals(userBasic.getOpenId())) {
                     UserDTO _userDTO = new UserDTO(userBasic.getOpenId(), userBasic.getNickName(), userBasic.getHeadImgUrl());
                     publishDTO.setUserDTO(_userDTO);
@@ -166,17 +156,10 @@ public class PublishBaseServiceImpl implements PublishBaseService {
                 }
 
             });
-
-            //若没有评论,初始化值
-            if (publishDTO.getCommentDTO() == null) {
-
-                CommentDTO _temp = new CommentDTO(publishDTO.getId(), 0);
-                publishDTO.setCommentDTO(_temp);
-
-            }
-
         });
 
         return publishDTOS;
     }
+
+
 }

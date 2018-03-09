@@ -1,20 +1,20 @@
 package com.shumahe.pethome.Service.Impl;
 
 
+import com.shumahe.pethome.DTO.PublicMsgDTO;
 import com.shumahe.pethome.DTO.PublishDTO;
 import com.shumahe.pethome.Domain.PetPublish;
 import com.shumahe.pethome.Domain.PetVariety;
+import com.shumahe.pethome.Domain.PublishTalk;
 import com.shumahe.pethome.Domain.UserBasic;
 import com.shumahe.pethome.Enums.*;
 import com.shumahe.pethome.Exception.PetHomeException;
 import com.shumahe.pethome.Form.PetSearchForm;
 import com.shumahe.pethome.Form.PublishMasterForm;
 import com.shumahe.pethome.Form.PublishPetForm;
-import com.shumahe.pethome.Repository.PetPublishRepository;
-import com.shumahe.pethome.Repository.PetVarietyRepository;
-import com.shumahe.pethome.Repository.PublishTalkRepository;
-import com.shumahe.pethome.Repository.UserBasicRepository;
+import com.shumahe.pethome.Repository.*;
 import com.shumahe.pethome.Service.BaseService.PublishBaseService;
+import com.shumahe.pethome.Service.MessageService;
 import com.shumahe.pethome.Service.PublishService;
 import com.shumahe.pethome.Util.ResultVOUtil;
 import com.shumahe.pethome.VO.PublishVO;
@@ -43,14 +43,24 @@ public class PublishServiceImpl implements PublishService {
     @Autowired
     private PetPublishRepository petPublishRepository;
 
+
     @Autowired
-    private UserBasicRepository userBasicRepository;
+    private UserTalkRepository userTalkRepository;
+
+
+    @Autowired
+    PetVarietyRepository petVarietyRepository;
+
+    @Autowired
+    UserBasicRepository userBasicRepository;
+
 
     @Autowired
     PublishBaseService publishBaseService;
 
+
     @Autowired
-    PetVarietyRepository petVarietyRepository;
+    MessageService messageService;
 
     /**
      * 主页列表(动态+寻主+寻宠)
@@ -186,6 +196,66 @@ public class PublishServiceImpl implements PublishService {
          * BaseService查发布关联信息
          */
         return publishBaseService.findPetExtends(notFounds);
+    }
+
+    /**
+     * 宠物详情(发布+互动)
+     *
+     * @param publishId
+     * @param openId
+     * @return
+     */
+    @Override
+    public PublishDTO findPetDetail(Integer publishId, String openId) {
+
+
+        PublishDTO publishDTO = new PublishDTO();
+
+        /**
+         * 宠物信息
+         */
+        PetPublish pet = petPublishRepository.findById(publishId);
+        if (pet.getId() == null) {
+            throw new PetHomeException(ResultEnum.RESULT_EMPTY);
+        }
+
+        /**
+         * 互动信息
+         */
+        List<List<PublicMsgDTO>> msgDTOS = messageService.findPetPublicTalks(pet);
+
+
+        /**
+         * 发布者信息
+         */
+        UserBasic myself = userBasicRepository.findByOpenId(pet.getPublisherId());
+
+
+        /**
+         * 互动条数
+         */
+        if (openId.equals(pet.getPublisherId())) {
+            publishDTO.setPublicMsgCount(userTalkRepository.findPrivateMsgCount(publishId));
+        }
+
+
+        BeanUtils.copyProperties(pet, publishDTO);
+
+        publishDTO.setPublicTalkDTO(msgDTOS);
+        publishDTO.setPublisherName(myself.getNickName());
+        publishDTO.setPublisherPhoto(myself.getHeadImgUrl());
+
+        return publishDTO;
+
+        /**
+         * 宠物互动信息
+         */
+        //List<PublishTalk> msgs = publishTalkRepository.findByPublishIdOrderByLastModifyDescReplyDate(publishId);
+
+        /**
+         * 宠物信息中互动过的人
+         */
+        //List<String> users = msgs.stream().filter(e -> !openId.equals(e.getReplierFrom())).map(e -> e.getReplierFrom()).distinct().collect(Collectors.toList());
     }
 
 

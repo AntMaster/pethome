@@ -1,5 +1,8 @@
 package com.shumahe.pethome.Service.Impl;
 
+import com.shumahe.pethome.DTO.PrivateMsgDTO;
+import com.shumahe.pethome.DTO.PublicMsgDTO;
+import com.shumahe.pethome.DTO.PublishDTO;
 import com.shumahe.pethome.Domain.PetPublish;
 import com.shumahe.pethome.Domain.PublishTalk;
 import com.shumahe.pethome.Domain.UserBasic;
@@ -19,6 +22,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.StringUtils;
 
 
 import javax.persistence.criteria.CriteriaBuilder;
@@ -224,41 +228,44 @@ public class MessageServiceImpl implements MessageService {
     public List<List<Map<String, String>>> findMyPublicTalk(String openId, PageRequest pageRequest) {
 
 
-        // 与我有关的主题  (我发布的 || 我的回复别人的 || 别人回复我的)
-        List<PublishTalk> publishRelativeToMe = publishTalkRepository.findByReplierFromOrReplierAcceptOrPublisherId(openId, openId, openId);
-        if (publishRelativeToMe.isEmpty()) {
+        // 与我有关的交流  (我发布的 || 我的回复别人的 || 别人回复我的)
+        List<PublishTalk> talks = publishTalkRepository.findByReplierFromOrReplierAcceptOrPublisherId(openId, openId, openId);
+        if (talks.isEmpty()) {
             throw new PetHomeException(ResultEnum.RESULT_EMPTY.getCode(), "留言互动消息为空");
         }
+        // 与我有关的交流的主题
+        List<Integer> publishIds = talks.stream().map(e -> e.getPublishId()).distinct().collect(Collectors.toList());
+
+        /**
+         * step 1 我互动过的发布
+         */
+        List<PetPublish> pets = petPublishRepository.findByIdIn(publishIds);
 
 
         /**
-         * step 1 与我有关的全部消息
+         * step 2 我互动过的发布 所有互动消息
          */
-        List<Integer> publishIds = publishRelativeToMe.stream().map(e -> e.getPublishId()).distinct().collect(Collectors.toList());
-        List<PublishTalk> talkMessages = publishTalkRepository.findMyPublicTalk(publishIds);
+        List<PublishTalk> talkMessages = publishTalkRepository.findManyPublishTalk(publishIds);
         if (talkMessages.size() == 0) {
             throw new PetHomeException(ResultEnum.RESULT_EMPTY.getCode(), "留言互动消息为空");
         }
 
-        /**
-         * step 2 发布信息
-         */
-        List<PetPublish> pets = petPublishRepository.findByIdIn(publishIds);
 
         /**
-         * step 3 互动人员信息
+         * step 3 与我互动过的人员
          */
-        List<String> userIds = publishRelativeToMe.stream()
+        List<String> userIds = talks.stream()
                 .filter(e -> !e.getReplierFrom().equals(openId))
                 .map(e -> e.getReplierFrom())
                 .collect(Collectors.toList())
                 .stream()
                 .distinct()
                 .collect(Collectors.toList());
-
         List<UserBasic> users = userBasicRepository.findByOpenIdIn(userIds);
 
-
+        /**
+         * step 4 自己的信息
+         */
         UserBasic myself = userBasicRepository.findByOpenId(openId);
 
 
@@ -344,6 +351,178 @@ public class MessageServiceImpl implements MessageService {
         return save;
     }
 
+    /**
+     * 查询发布的互动详情
+     * @param pet
+     * @return
+     */
+    @Override
+    public List<List<PublicMsgDTO>> petPrivateTalks(PetPublish pet,String openId) {
+
+            /**
+             * step 1  某个发布全部互动消息
+             */
+            List<UserTalk> talks ;
+            if (pet.getPublisherId().equals(openId)){//发布人是本人
+                talks = userTalkRepository.findByPublishIdAndPublisherIdOrderByLastModify(pet.getId(),pet.getPublisherId());
+            }else {
+
+                talks = userTalkRepository.findByPublishIdAndPublisherIdAndUserIdFromOrderByLastModify(pet.getId(),pet.getPublisherId(),openId);
+
+            }
+
+            if (talks.isEmpty()) {
+                throw new PetHomeException(ResultEnum.RESULT_EMPTY.getCode(), "留言互动消息为空");
+            }
+
+
+            /**
+             * step 2 与我互动过的用户
+             */
+            List<String> tempUserIds = new ArrayList<>();
+            talks.stream().forEach(e -> {
+                tempUserIds.add(e.getUserIdFrom());
+                if (!StringUtils.isEmpty(e.getUserIdAccept())) {
+                    tempUserIds.add(e.getUserIdAccept());
+                }
+            });
+
+            List<String> userIds = tempUserIds.stream().distinct().collect(Collectors.toList());
+
+            List<UserBasic> users = userBasicRepository.findByOpenIdIn(userIds);
+
+
+            /**
+             * step 3 互动信息VO
+             */
+            List<PrivateMsgDTO> publicMsgDTOS = new ArrayList<>();
+
+            talks.stream().forEach(talk -> {
+
+                PrivateMsgDTO msgDTO = new PrivateMsgDTO();
+                BeanUtils.copyProperties(talk, msgDTO);
+
+
+                users.forEach(user -> {
+
+                    if (talk.getUserIdFrom().trim().equals(user.getOpenId().trim())) {
+
+                        msgDTO.setUserIdFromName(user.getNickName());
+                        msgDTO.setUserIdFromPhoto(user.getHeadImgUrl());
+                    }
+
+                    if (!StringUtils.isEmpty(talk.getUserIdAccept()) && talk.getUserIdAccept().trim().equals(user.getOpenId().trim())) {
+                        msgDTO.setUserIdAcceptName(user.getNickName());
+                        msgDTO.setUserIdAuser.getHeadImgUrl());
+                    }
+                });
+                publicMsgDTOS.add(msgDTO);
+            });
+
+
+            List<List<PublicMsgDTO>> petTalks = new ArrayList<>();
+            /**
+             * step 4 VO按评论分组（one comment ---> some talk）
+             */
+
+            publicMsgDTOS.stream().map(e -> e.getTalkId()).distinct().forEach(e -> {
+
+                List<PublicMsgDTO> sameTalkId = new ArrayList<>();
+
+                publicMsgDTOS.forEach(talk -> {
+                    if (e.equals(talk.getTalkId())) {
+
+                        sameTalkId.add(talk);
+                    }
+                });
+                petTalks.add(sameTalkId);
+            });
+
+            return petTalks;
+
+    }
+
+
+    /**
+     * 查询发布的评论详情
+     *
+     * @param pet
+     * @return
+     */
+    @Override
+    public List<List<PublicMsgDTO>> findPetPublicTalks(PetPublish pet) {
+
+
+        /**
+         * step 1  某个发布全部互动消息
+         */
+        List<PublishTalk> talks = publishTalkRepository.findOnePublicTalk(pet.getId());
+        if (talks.isEmpty()) {
+            throw new PetHomeException(ResultEnum.RESULT_EMPTY.getCode(), "留言互动消息为空");
+        }
+
+        /**
+         * step 2 与我互动过的用户
+         */
+        List<String> tempUserIds = new ArrayList<>();
+        talks.stream().forEach(e -> {
+            tempUserIds.add(e.getReplierFrom());
+            if (!StringUtils.isEmpty(e.getReplierAccept())) {
+                tempUserIds.add(e.getReplierAccept());
+            }
+        });
+        List<String> userIds = tempUserIds.stream().distinct().collect(Collectors.toList());
+
+        List<UserBasic> users = userBasicRepository.findByOpenIdIn(userIds);
+
+
+        /**
+         * step 3 互动信息VO
+         */
+        List<PublicMsgDTO> publicMsgDTOS = new ArrayList<>();
+
+        talks.stream().forEach(talk -> {
+
+            PublicMsgDTO msgDTO = new PublicMsgDTO();
+            BeanUtils.copyProperties(talk, msgDTO);
+
+            users.forEach(user -> {
+
+                if (talk.getReplierFrom().trim().equals(user.getOpenId().trim())) {
+
+                    msgDTO.setReplierFromName(user.getNickName());
+                    msgDTO.setReplierFromPhoto(user.getHeadImgUrl());
+                }
+
+                if (!StringUtils.isEmpty(talk.getReplierAccept()) && talk.getReplierAccept().trim().equals(user.getOpenId().trim())) {
+                    msgDTO.setReplierAcceptName(user.getNickName());
+                    msgDTO.setReplierAcceptPhoto(user.getHeadImgUrl());
+                }
+            });
+            publicMsgDTOS.add(msgDTO);
+        });
+
+
+        List<List<PublicMsgDTO>> petTalks = new ArrayList<>();
+        /**
+         * step 4 VO按评论分组（one comment ---> some talk）
+         */
+
+        publicMsgDTOS.stream().map(e -> e.getTalkId()).distinct().forEach(e -> {
+
+            List<PublicMsgDTO> sameTalkId = new ArrayList<>();
+
+            publicMsgDTOS.forEach(talk -> {
+                if (e.equals(talk.getTalkId())) {
+
+                    sameTalkId.add(talk);
+                }
+            });
+            petTalks.add(sameTalkId);
+        });
+
+        return petTalks;
+    }
 
 }
 

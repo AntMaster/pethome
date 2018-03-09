@@ -1,19 +1,15 @@
 package com.shumahe.pethome.DTO;
 
+
 import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import com.shumahe.pethome.Domain.UserBasic;
-import com.shumahe.pethome.Domain.UserDynamic;
-import com.shumahe.pethome.Util.serializer.Date2LongSerializer;
+
 import lombok.Data;
 
 
 import java.util.Date;
+import java.util.List;
 
 
-
-
-//@JsonSerialize(include = JsonSerialize.Inclusion.NON_NULL)
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @Data
 public class PublishDTO {
@@ -22,13 +18,19 @@ public class PublishDTO {
 
     private String publisherId;
 
+    //发布人昵称
+    private String publisherName;
+
+    //发布人头像
+    private String publisherPhoto;
+
     private Integer classifyId;
 
     private String petName;
 
     private String petImage;
 
-    @JsonSerialize(using = Date2LongSerializer.class)
+
     private Date lostTime;
 
     private String lostLocation;
@@ -41,10 +43,21 @@ public class PublishDTO {
 
     private String ownerContact;
 
-    private UserBasic member;
+    private String petDescription;
 
-    private CommentDTO commentDTO;
+    //私信条数
+    private Integer privateMsgCount = 0;
 
+    //互动条数
+    private Integer publicMsgCount = 0;
+
+    //私信信息
+    private List<PrivateMsgDTO> privateTalkDTO;
+
+    //互动信息
+    private List<List<PublicMsgDTO>> publicTalkDTO;
+
+    //以后要去掉
     private UserDTO userDTO;
 
 }

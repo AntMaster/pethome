@@ -70,7 +70,7 @@ public class MemberServiceImpl implements MemberService {
 
 
         //私信条数
-        List<UserTalk> myNotViewTalks = userTalkRepository.findMyNotViewTalk(openId, openId);
+        //List<UserTalk> myNotViewTalks = userTalkRepository.findMyNotViewTalk(openId, openId);
 
 
         //转发条数

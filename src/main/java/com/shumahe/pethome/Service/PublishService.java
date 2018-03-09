@@ -55,9 +55,16 @@ public interface PublishService {
     List<PublishDTO> findNotFound(String openId ,PageRequest pageRequest);
 
 
+    /**
+     * 宠物详情(发布+互动)
+     * @param publishId
+     * @param openId
+     * @return
+     */
+    PublishDTO findPetDetail( Integer publishId, String openId);
 
 
-/*
+    /*
     *//**
      * 已完成发布列表(我的)
      * PS:按时间查个人已完成

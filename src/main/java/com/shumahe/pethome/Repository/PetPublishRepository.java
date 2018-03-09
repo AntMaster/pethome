@@ -61,27 +61,13 @@ public interface PetPublishRepository extends JpaRepository<PetPublish, Integer>
     List<PetPublish> findByPublisherIdAndFindStateOrderByCreateTimeDesc(String openId, int petFindState, PageRequest pageRequest);
 
 
-
     /**
-     * 查询模糊查询 （宠物名称 like 宠物描述 like 丢失地点 like 发布人  in 发布类型  in 宠物性别 in 宠物分类 in  宠物品种 in  丢失状态 in）
-     * @param petName
-     * @param petDescription
-     * @param lostLocation
-     * @param publisher
-     * @param publishType
-     * @param petSex
-     * @param petClassify
-     * @param petVariety
-     * @param lostState
-     * @param Pageable
-     * @return List
+     * 查询一个发布
+     * @param id
+     * @return
      */
-    List<PetPublish> findByPetNameContainsOrPetDescriptionContainsOrLostLocationContainsOrPublisherIdInOrPublishTypeInOrPetSexInOrClassifyIdInOrVarietyIdInOrFindStateInOrderByCreateTimeDesc(String petName,String petDescription, String lostLocation ,List<String> publisher,List<Integer> publishType,List<Integer> petSex,List<Integer> petClassify,List<Integer> petVariety,List<Integer> lostState ,Pageable Pageable);
+    PetPublish findById(Integer id);
 
-
-    /**
-     *
-     */
 
 
 

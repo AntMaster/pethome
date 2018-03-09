@@ -109,9 +109,7 @@ public class PetPublishRepositoryTest {
         List<Integer> findState = Arrays.asList(1, 2);
 
 
-        List<PetPublish> a = petPublishRepository.findByPetNameContainsOrPetDescriptionContainsOrLostLocationContainsOrPublisherIdInOrPublishTypeInOrPetSexInOrClassifyIdInOrVarietyIdInOrFindStateInOrderByCreateTimeDesc
-                (petName, petDescription, lostLocation, publisher, publishType, petSex, petClassify, petVariety, findState, pageRequest);
-        System.out.println(a);
+
 
 
     }

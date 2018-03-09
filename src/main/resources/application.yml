@@ -23,6 +23,8 @@ spring:
     password: petin520
   jpa:
     show-sql: true
+  jackson:
+    default-property-inclusion: non_null
   http:
     multipart:
       enabled: true

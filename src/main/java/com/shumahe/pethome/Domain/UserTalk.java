@@ -49,10 +49,17 @@ public class UserTalk {
 
 
     /**
-     * 私信主题ID
+     * 主题ID
      */
     @Column(name = "publishid")
     private Integer publishId;
+
+
+    /**
+     * 主题发布人ID
+     */
+    @Column(name = "publisherid")
+    private Integer publisherId;
 
 
     /**
