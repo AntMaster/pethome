@@ -26,7 +26,7 @@ public class FileController {
             String destFileName=req.getServletContext().getRealPath("")+"uploaded"+File.separator+fileName;
 
             File destFile = new File(destFileName);
-            destFile.getParentFile().mkdirs();
+            destFile.getParentFile().mkdirs()   ;
             file.transferTo(destFile);
 
             m.addAttribute("fileName",fileName);
