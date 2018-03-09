@@ -45,7 +45,7 @@ public class PrivateMsgDTO {
     /**
      * 接收人昵称
      */
-    private String userIdAcceptName;
+    private String  userIdAcceptName;
 
 
     /**
