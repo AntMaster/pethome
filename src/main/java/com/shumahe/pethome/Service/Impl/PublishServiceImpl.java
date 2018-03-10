@@ -247,48 +247,8 @@ public class PublishServiceImpl implements PublishService {
 
         return publishDTO;
 
-        /**
-         * 宠物互动信息
-         */
-        //List<PublishTalk> msgs = publishTalkRepository.findByPublishIdOrderByLastModifyDescReplyDate(publishId);
-
-        /**
-         * 宠物信息中互动过的人
-         */
-        //List<String> users = msgs.stream().filter(e -> !openId.equals(e.getReplierFrom())).map(e -> e.getReplierFrom()).distinct().collect(Collectors.toList());
     }
 
 
-
-
-
-    /*@Override
-    public List<PublishVO> findMyFinished() {
-        return null;
-    }
-
-
-    @Override
-    public List<PublishVO> findPetAll() {
-        return null;
-    }
-
-    @Override
-
-    public List<PublishVO> findMasterAll() {
-        return null;
-    }
-
-    @Override
-    public PublishVO detail() {
-        return null;
-    }
-
-    @Override
-    public PublishVO saerch() {
-        return null;
-    }
-
-    */
 
 }

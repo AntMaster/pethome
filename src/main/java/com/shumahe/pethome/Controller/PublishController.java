@@ -5,10 +5,8 @@ import com.shumahe.pethome.DTO.PublishDTO;
 import com.shumahe.pethome.Domain.PetPublish;
 import com.shumahe.pethome.Enums.ResultEnum;
 import com.shumahe.pethome.Exception.PetHomeException;
-import com.shumahe.pethome.Form.PetSearchForm;
 import com.shumahe.pethome.Form.PublishMasterForm;
 import com.shumahe.pethome.Form.PublishPetForm;
-import com.shumahe.pethome.Repository.PetPublishRepository;
 import com.shumahe.pethome.Service.PublishService;
 import com.shumahe.pethome.Util.ResultVOUtil;
 import com.shumahe.pethome.VO.PublishVO;
@@ -36,10 +34,6 @@ public class PublishController {
 
 
     /**
-     * PS:按时间查所有
-     */
-
-    /**
      * 首页模块 ------> 动态 + 寻主 + 寻宠 三个列表
      *
      * @param publishType
@@ -48,7 +42,7 @@ public class PublishController {
      * @return
      */
 
-    @GetMapping("/index/list")
+    @GetMapping("/index")
     public ResultVO<List<PublishVO>> publishList(@RequestParam("publishType") Integer publishType,
                                                  @RequestParam(value = "page", defaultValue = "0") Integer page,
                                                  @RequestParam(value = "size", defaultValue = "10") Integer size) {
@@ -68,7 +62,7 @@ public class PublishController {
      * @param bindingResult
      * @return
      */
-    @PostMapping("/pet/create")
+    @PutMapping("/pet/create")
     public ResultVO<Map<String, String>> create(@Valid PublishPetForm petForm, BindingResult bindingResult) {
 
         //验证表单数据是否正确
@@ -168,17 +162,6 @@ public class PublishController {
      * 寻宠详情(详情) PS:详细描述,同时浏览次数+1
      */
 
-    /**
-     * 基于条件(含模糊条件)搜索发布列表  (搜索)
-     */
-
-
-/***************************************************************/
-
-
-    /**
-     *个人中心 PS:个人信息+我的任务+我的消息
-     */
 
 
 }

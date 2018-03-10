@@ -5,9 +5,7 @@ import com.shumahe.pethome.DTO.PrivateMsgDTO;
 import com.shumahe.pethome.DTO.PublicMsgDTO;
 import com.shumahe.pethome.DTO.PublishDTO;
 import com.shumahe.pethome.Domain.PetPublish;
-import com.shumahe.pethome.Domain.PublishTalk;
-import com.shumahe.pethome.Domain.UserTalk;
-import com.shumahe.pethome.Enums.InitValueEnum;
+
 import com.shumahe.pethome.Enums.ResultEnum;
 import com.shumahe.pethome.Exception.PetHomeException;
 
@@ -27,7 +25,6 @@ import org.springframework.web.bind.annotation.*;
 
 
 import javax.validation.Valid;
-import java.util.Arrays;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
