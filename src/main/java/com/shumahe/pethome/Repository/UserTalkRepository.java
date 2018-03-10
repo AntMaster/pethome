@@ -31,7 +31,7 @@ public interface UserTalkRepository extends JpaRepository<UserTalk, Integer> {
      * @param publishId
      * @return
      */
-    @Query(value = "select * from usertalk where lastmodify in (select lastmodify from usertalk where publishid = ?1 and  useridfrom = ?2 AND useridaccept = ?3 ); ", nativeQuery = true)
+    @Query(value = "select * from usertalk where lastmodify in (select lastmodify from usertalk where publishid = ?1 and  useridfrom = ?2 AND useridaccept = ?3 ) order by talktime;  ", nativeQuery = true)
     List<UserTalk> findRecord(int publishId, String userIdFrom, String userIdAccept);
 
 

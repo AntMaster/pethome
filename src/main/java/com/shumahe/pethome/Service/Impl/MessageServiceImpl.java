@@ -211,12 +211,13 @@ public class MessageServiceImpl implements MessageService {
             talks = userTalkRepository.findRecord(save.getPublishId(), save.getUserIdAccept(), save.getUserIdFrom());
 
         } else {//发送者不是主题发布人
-            talks = userTalkRepository.findRecord(save.getPublishId(), save.getUserIdFrom(), save.getUserIdFrom());
+            talks = userTalkRepository.findRecord(save.getPublishId(), save.getUserIdFrom(), save.getUserIdAccept());
         }
 
 
         talks.forEach(talk -> talk.setLastModify(save.getTalkTime()));
-
+        save.setLastModify(save.getTalkTime());
+        talks.add(save);
         userTalkRepository.save(talks);
 
 
