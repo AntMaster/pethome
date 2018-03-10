@@ -19,37 +19,36 @@ public interface MessageService {
 
     /**
      * 查询 我的私信
+     *
      * @param openId
      * @param pageRequest
      * @return
      */
-    List<List<LinkedHashMap<String, String>>> findMyPrivateTalk(String openId , PageRequest pageRequest);
-
-    /**
-     * 回复私信
-     * @param replyPrivateForm
-     */
-    PrivateMsgDTO replyPrivate(ReplyPrivateForm replyPrivateForm,PetPublish pet);
+    List<List<LinkedHashMap<String, String>>> findMyPrivateTalk(String openId, PageRequest pageRequest);
 
 
     /**
      * 查询 我的互动
+     *
      * @param openId
      * @param pageRequest
      * @return
      */
-    List<List<Map<String, String>>> findMyPublicTalk(String openId , PageRequest pageRequest);
+    List<List<Map<String, String>>> findMyPublicTalk(String openId, PageRequest pageRequest);
 
 
     /**
-     * 回复互动
-     * @param replyPublishForm
+     * 查询 主题互动
+     *
+     * @param pet
+     * @return
      */
-    PublicMsgDTO replyPublic(ReplyPublishForm replyPublishForm,PetPublish pet);
+    List<List<PublicMsgDTO>> petPublicTalks(PetPublish pet);
 
 
     /**
-     * 查询发布的互动详情
+     * 查询  主题私信
+     *
      * @param pet
      * @return
      */
@@ -57,35 +56,19 @@ public interface MessageService {
 
 
     /**
-     * 查询发布的互动详情
-     * @param pet
-     * @return
+     * 回复私信
+     *
+     * @param replyPrivateForm
      */
-    List<List<PublicMsgDTO>> findPetPublicTalks(PetPublish pet);
-
-
+    PrivateMsgDTO replyPrivate(ReplyPrivateForm replyPrivateForm, PetPublish pet);
 
 
     /**
-     * 评论(发布详情)
+     * 回复互动
+     *
+     * @param replyPublishForm
      */
-
-    /**
-     * 回复(发布详情)
-     */
-
-    /**
-     * 互动(评论和回复)列表 (我的)
-     */
-
-    /**
-     * 私信(个人)入口在哪?
-     */
-
-    /**
-     * 私信列表(个人)
-     */
-
+    PublicMsgDTO replyPublic(ReplyPublishForm replyPublishForm, PetPublish pet);
 
 
 }

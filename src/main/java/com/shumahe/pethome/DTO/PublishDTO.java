@@ -52,7 +52,7 @@ public class PublishDTO {
     private Integer publicMsgCount = 0;
 
     //私信信息
-    private List<PrivateMsgDTO> privateTalkDTO;
+    private List<List<PrivateMsgDTO>> privateTalkDTO;
 
     //互动信息
     private List<List<PublicMsgDTO>> publicTalkDTO;

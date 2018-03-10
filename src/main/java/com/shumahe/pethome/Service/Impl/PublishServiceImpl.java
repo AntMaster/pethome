@@ -222,7 +222,7 @@ public class PublishServiceImpl implements PublishService {
         /**
          * 互动信息
          */
-        List<List<PublicMsgDTO>> msgDTOS = messageService.findPetPublicTalks(pet);
+        List<List<PublicMsgDTO>> msgDTOS = messageService.petPublicTalks(pet);
 
 
         /**

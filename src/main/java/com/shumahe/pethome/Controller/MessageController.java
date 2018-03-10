@@ -91,21 +91,21 @@ public class MessageController {
 
 
     /**
-     * 查看互动详情   √
+     *  主题  互动详情   √
      *
      * @param publishId
      * @param openId
      * @return
      */
     @GetMapping("/public/detail")
-    public ResultVO petPublicTalkDetail(@RequestParam("publishId") Integer publishId, @RequestParam("openId") String openId) {
+    public ResultVO petPublicTalk(@RequestParam("publishId") Integer publishId, @RequestParam("openId") String openId) {
 
         if (publishId == 0) {
             throw new PetHomeException(ResultEnum.PARAM_ERROR);
         }
 
         PetPublish pet = petPublishRepository.findById(publishId);
-        List<List<PublicMsgDTO>> petPublicTalks = messageService.findPetPublicTalks(pet);
+        List<List<PublicMsgDTO>> petPublicTalks = messageService.petPublicTalks(pet);
 
         long talkCount = petPublicTalks.stream().mapToInt(num -> num.size()).summaryStatistics().getSum();
 
@@ -116,6 +116,31 @@ public class MessageController {
         return ResultVOUtil.success(publishDTO);
     }
 
+    /**
+     *  主题  私信详情   √
+     *
+     * @param publishId
+     * @param openId
+     * @return
+     */
+    @GetMapping("/private/detail")
+    public ResultVO petPrivateTalk(@RequestParam("publishId") Integer publishId, @RequestParam("openId") String openId) {
+
+        if (publishId == 0) {
+            throw new PetHomeException(ResultEnum.PARAM_ERROR);
+        }
+
+        PetPublish pet = petPublishRepository.findById(publishId);
+        List<List<PrivateMsgDTO>> petPrivateTalks = messageService.petPrivateTalks(pet,openId);
+
+        long talkCount = petPrivateTalks.stream().mapToInt(num -> num.size()).summaryStatistics().getSum();
+
+
+        PublishDTO publishDTO = new PublishDTO();
+        publishDTO.setPublicMsgCount((int) talkCount);
+        publishDTO.setPrivateTalkDTO(petPrivateTalks);
+        return ResultVOUtil.success(publishDTO);
+    }
     /**
      * 回复互动 √
      *

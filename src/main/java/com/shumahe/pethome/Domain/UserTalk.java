@@ -20,6 +20,28 @@ public class UserTalk {
     private Integer id;
 
     /**
+     * 主题ID
+     */
+    @Column(name = "publishid")
+    private Integer publishId;
+
+
+    /**
+     * 主题发布人ID
+     */
+    @Column(name = "publisherid")
+    private String publisherId;
+
+
+
+    /**
+     * 互动ID
+     */
+    @Column(name = "talkid")
+    private Integer talkId;
+
+
+    /**
      * 私信发起者
      */
     @Column(name = "useridfrom")
@@ -47,19 +69,6 @@ public class UserTalk {
     @Column(name = "talktime")
     private Date talkTime;
 
-
-    /**
-     * 主题ID
-     */
-    @Column(name = "publishid")
-    private Integer publishId;
-
-
-    /**
-     * 主题发布人ID
-     */
-    @Column(name = "publisherid")
-    private String publisherId;
 
 
     /**
