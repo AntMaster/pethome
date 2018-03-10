@@ -31,7 +31,8 @@ public interface UserTalkRepository extends JpaRepository<UserTalk, Integer> {
      * @param publishId
      * @return
      */
-    List<UserTalk> findByPublishIdIn(int publishId);
+    @Query(value = "select * from usertalk where lastmodify in (select lastmodify from usertalk where publishid = ?1 and  useridfrom = ?2 AND useridaccept = ?3 ); ", nativeQuery = true)
+    List<UserTalk> findRecord(int publishId, String userIdFrom, String userIdAccept);
 
 
     /**
@@ -40,35 +41,29 @@ public interface UserTalkRepository extends JpaRepository<UserTalk, Integer> {
      * @param publishId
      * @return
      */
-    @Query(value = "select count(id) from UserTalk  where publishId = ? AND  showstate = 1",nativeQuery = true)
+    @Query(value = "select count(id) from UserTalk  where publishId = ? AND  showstate = 1", nativeQuery = true)
     int findPrivateMsgCount(Integer publishId);
-
 
 
     /**
      * 发布者查询所有私信消息
+     *
      * @param publishId
      * @param publisherId
      * @return
      */
-    List<UserTalk> findByPublishIdAndPublisherIdOrderByLastModify(Integer publishId ,String publisherId);
+    List<UserTalk> findByPublishIdAndPublisherIdOrderByLastModify(Integer publishId, String publisherId);
 
     /**
      * 查询当前用户是否私信过该主题
+     *
      * @param publishId
      * @param publisherId
      * @return
      */
-    List<UserTalk> findByPublishIdAndPublisherIdAndUserIdFromOrderByLastModify(Integer publishId ,String publisherId,String openId);
 
-
-
-
-
-
-
-
-
+    @Query(value = "select * from usertalk where publishId = ?1 and publisherId = ?2 and (userIdFrom = ?3 or userIdAccept = ?4) ", nativeQuery = true)
+    List<UserTalk> findByPublishIdAndPublisherIdAndUserIdFromOrUserIdAcceptOrderByLastModify(Integer publishId, String publisherId, String fromId, String acceptId);
 
 
     /**

@@ -29,7 +29,7 @@ public interface MessageService {
      * 回复私信
      * @param replyPrivateForm
      */
-    UserTalk replyPrivate(ReplyPrivateForm replyPrivateForm);
+    PrivateMsgDTO replyPrivate(ReplyPrivateForm replyPrivateForm,PetPublish pet);
 
 
     /**
@@ -45,7 +45,7 @@ public interface MessageService {
      * 回复互动
      * @param replyPublishForm
      */
-    PublishTalk replyPublic(ReplyPublishForm replyPublishForm);
+    PublicMsgDTO replyPublic(ReplyPublishForm replyPublishForm,PetPublish pet);
 
 
     /**

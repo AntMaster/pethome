@@ -2,7 +2,7 @@ package com.shumahe.pethome.Service.Impl;
 
 import com.shumahe.pethome.DTO.PrivateMsgDTO;
 import com.shumahe.pethome.DTO.PublicMsgDTO;
-import com.shumahe.pethome.DTO.PublishDTO;
+
 import com.shumahe.pethome.Domain.PetPublish;
 import com.shumahe.pethome.Domain.PublishTalk;
 import com.shumahe.pethome.Domain.UserBasic;
@@ -19,23 +19,17 @@ import com.shumahe.pethome.Service.MessageService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
 
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Predicate;
-import javax.persistence.criteria.Root;
 import java.util.*;
 import java.util.stream.Collectors;
 
 
 @Service
 public class MessageServiceImpl implements MessageService {
-
 
 
     @Autowired
@@ -199,22 +193,58 @@ public class MessageServiceImpl implements MessageService {
 
     @Override
     @Transactional
-    public UserTalk replyPrivate(ReplyPrivateForm replyPrivateFrom) {
+    public PrivateMsgDTO replyPrivate(ReplyPrivateForm replyPrivateFrom, PetPublish pet) {
 
         UserTalk userTalk = new UserTalk();
         BeanUtils.copyProperties(replyPrivateFrom, userTalk);
+        userTalk.setPublishId(pet.getId());
+        userTalk.setPublisherId(pet.getPublisherId());
 
         UserTalk save = userTalkRepository.save(userTalk);
 
         /**
-         * 当前私信来往记录
+         * 发送者着与接收者的私信来往记录
          */
-        List<UserTalk> currentTalkList = userTalkRepository.findByPublishIdIn(save.getPublishId());
-        currentTalkList.forEach(talk -> talk.setLastModify(save.getTalkTime()));
+        List<UserTalk> talks;
+        if (save.getUserIdFrom().trim().equals(save.getPublisherId().trim())) {//发送者是主题发布人
 
-        userTalkRepository.save(currentTalkList);
+            talks = userTalkRepository.findRecord(save.getPublishId(), save.getUserIdAccept(), save.getUserIdFrom());
 
-        return save;
+        } else {//发送者不是主题发布人
+            talks = userTalkRepository.findRecord(save.getPublishId(), save.getUserIdFrom(), save.getUserIdFrom());
+        }
+
+
+        talks.forEach(talk -> talk.setLastModify(save.getTalkTime()));
+
+        userTalkRepository.save(talks);
+
+
+        /**
+         * 拿到发送者和接收者的头像和昵称
+         */
+        List<String> userIds = Arrays.asList(replyPrivateFrom.getUserIdFrom(), replyPrivateFrom.getUserIdAccept());
+        List<UserBasic> users = userBasicRepository.findByOpenIdIn(userIds);
+
+
+        PrivateMsgDTO msgDTO = new PrivateMsgDTO();
+        BeanUtils.copyProperties(save, msgDTO);
+
+        users.forEach(user -> {
+
+            if ((user.getOpenId().trim()).equals(msgDTO.getUserIdFrom().trim())) {
+                msgDTO.setUserIdFromName(user.getNickName());
+                msgDTO.setUserIdFromPhoto(user.getHeadImgUrl());
+            }
+
+            if (user.getOpenId().trim().equals(msgDTO.getUserIdAccept().trim())) {
+                msgDTO.setUserAcceptName(user.getNickName());
+                msgDTO.setUserAcceptPhoto(user.getHeadImgUrl());
+            }
+        });
+
+
+        return msgDTO;
 
     }
 
@@ -324,6 +354,7 @@ public class MessageServiceImpl implements MessageService {
 
         });
 
+
         return msgListGroup;
     }
 
@@ -335,112 +366,156 @@ public class MessageServiceImpl implements MessageService {
      */
     @Override
     @Transactional
-    public PublishTalk replyPublic(ReplyPublishForm replyPublishForm) {
+    public PublicMsgDTO replyPublic(ReplyPublishForm replyPublishForm, PetPublish pet) {
+
 
         PublishTalk publishTalk = new PublishTalk();
+        publishTalk.setPublishId(pet.getId());
+        publishTalk.setPublisherId(pet.getPublisherId());
+
         BeanUtils.copyProperties(replyPublishForm, publishTalk);
+
+        /**
+         *  为评论
+         */
+        if (StringUtils.isEmpty(publishTalk.getTalkId())) {
+
+            List<PublishTalk> talks = publishTalkRepository.findOnePublicTalk(pet.getId());
+            int maxTalkId = talks.stream().mapToInt(e -> e.getTalkId()).summaryStatistics().getMax();
+            publishTalk.setTalkId(maxTalkId + 1);
+
+        }
+
 
         PublishTalk save = publishTalkRepository.save(publishTalk);
 
         /**
-         * 当前回复来往记录
+         * 更新该主题最后回复时间
          */
-        List<PublishTalk> currentTalkList = publishTalkRepository.findByPublishIdIn(save.getPublishId());
+        List<PublishTalk> currentTalkList = publishTalkRepository.findByPublishId(save.getPublishId());
         currentTalkList.forEach(talk -> talk.setLastModify(save.getReplyDate()));
-
         publishTalkRepository.save(currentTalkList);
 
-        return save;
+
+        /**
+         * 拿到回复人和评论人的头像和昵称
+         */
+
+        List<String> userIds = Arrays.asList(replyPublishForm.getReplierFrom(), replyPublishForm.getReplierAccept());
+        userIds = userIds.stream().filter(e -> !(e == null)).collect(Collectors.toList());
+
+        List<UserBasic> users = userBasicRepository.findByOpenIdIn(userIds);
+
+
+        PublicMsgDTO msgDTO = new PublicMsgDTO();
+        BeanUtils.copyProperties(save, msgDTO);
+
+        users.forEach(user -> {
+
+            if ((user.getOpenId().trim()).equals(msgDTO.getReplierFrom().trim())) {
+                msgDTO.setReplierFromName(user.getNickName());
+                msgDTO.setReplierFromPhoto(user.getHeadImgUrl());
+            }
+
+            if (!StringUtils.isEmpty(msgDTO.getReplierAccept()) && (user.getOpenId().trim()).equals(msgDTO.getReplierAccept().trim())) {
+                msgDTO.setReplierAcceptName(user.getNickName());
+                msgDTO.setReplierAcceptName(user.getHeadImgUrl());
+            }
+        });
+
+
+        return msgDTO;
     }
 
     /**
      * 查询发布的私信详情
+     *
      * @param pet
      * @return
      */
     @Override
-    public List<List<PrivateMsgDTO>> petPrivateTalks(PetPublish pet,String openId) {
+    public List<List<PrivateMsgDTO>> petPrivateTalks(PetPublish pet, String openId) {
 
-            /**
-             * step 1  某个发布全部互动消息
-             */
-            List<UserTalk> talks ;
-            if (pet.getPublisherId().equals(openId)){//发布人是本人
-                talks = userTalkRepository.findByPublishIdAndPublisherIdOrderByLastModify(pet.getId(),pet.getPublisherId());
-            }else {
+        /**
+         * step 1  某个发布全部互动消息
+         */
+        List<UserTalk> talks;
+        if (pet.getPublisherId().equals(openId)) {//发布人是本人
+            talks = userTalkRepository.findByPublishIdAndPublisherIdOrderByLastModify(pet.getId(), pet.getPublisherId());
+        } else {
 
-                talks = userTalkRepository.findByPublishIdAndPublisherIdAndUserIdFromOrderByLastModify(pet.getId(),pet.getPublisherId(),openId);
+            talks = userTalkRepository.findByPublishIdAndPublisherIdAndUserIdFromOrUserIdAcceptOrderByLastModify(pet.getId(), pet.getPublisherId(), openId, openId);
 
+        }
+
+        if (talks.isEmpty()) {
+            throw new PetHomeException(ResultEnum.RESULT_EMPTY.getCode(), "留言互动消息为空");
+        }
+
+
+        /**
+         * step 2 与我互动过的用户
+         */
+        List<String> tempUserIds = new ArrayList<>();
+        talks.stream().forEach(e -> {
+            tempUserIds.add(e.getUserIdFrom());
+            if (!StringUtils.isEmpty(e.getUserIdAccept())) {
+                tempUserIds.add(e.getUserIdAccept());
             }
+        });
 
-            if (talks.isEmpty()) {
-                throw new PetHomeException(ResultEnum.RESULT_EMPTY.getCode(), "留言互动消息为空");
-            }
+        List<String> userIds = tempUserIds.stream().distinct().collect(Collectors.toList());
+
+        List<UserBasic> users = userBasicRepository.findByOpenIdIn(userIds);
 
 
-            /**
-             * step 2 与我互动过的用户
-             */
-            List<String> tempUserIds = new ArrayList<>();
-            talks.stream().forEach(e -> {
-                tempUserIds.add(e.getUserIdFrom());
-                if (!StringUtils.isEmpty(e.getUserIdAccept())) {
-                    tempUserIds.add(e.getUserIdAccept());
+        /**
+         * step 3 互动信息VO
+         */
+        List<PrivateMsgDTO> publicMsgDTOS = new ArrayList<>();
+
+        talks.stream().forEach(talk -> {
+
+            PrivateMsgDTO msgDTO = new PrivateMsgDTO();
+            BeanUtils.copyProperties(talk, msgDTO);
+
+
+            users.forEach(user -> {
+
+                if (talk.getUserIdFrom().trim().equals(user.getOpenId().trim())) {
+
+                    msgDTO.setUserIdFromName(user.getNickName());
+                    msgDTO.setUserIdFromPhoto(user.getHeadImgUrl());
+                }
+
+                if (!StringUtils.isEmpty(talk.getUserIdAccept()) && talk.getUserIdAccept().trim().equals(user.getOpenId().trim())) {
+                    msgDTO.setUserAcceptName(user.getNickName());
+                    msgDTO.setUserAcceptPhoto(user.getHeadImgUrl());
                 }
             });
-
-            List<String> userIds = tempUserIds.stream().distinct().collect(Collectors.toList());
-
-            List<UserBasic> users = userBasicRepository.findByOpenIdIn(userIds);
+            publicMsgDTOS.add(msgDTO);
+        });
 
 
-            /**
-             * step 3 互动信息VO
-             */
-            List<PrivateMsgDTO> publicMsgDTOS = new ArrayList<>();
+        List<List<PrivateMsgDTO>> petTalks = new ArrayList<>();
+        /**
+         * step 4 VO按评论分组（one comment ---> some talk）
+         */
 
-            talks.stream().forEach(talk -> {
+        publicMsgDTOS.stream().map(e -> e.getLastModify().toString()).distinct().forEach(e -> {
 
-                PrivateMsgDTO msgDTO = new PrivateMsgDTO();
-                BeanUtils.copyProperties(talk, msgDTO);
+            List<PrivateMsgDTO> sameTalkId = new ArrayList<>();
 
+            publicMsgDTOS.forEach(talk -> {
+                if (e.equals(talk.getLastModify().toString())) {
 
-                users.forEach(user -> {
-
-                    if (talk.getUserIdFrom().trim().equals(user.getOpenId().trim())) {
-
-                        msgDTO.setUserIdFromName(user.getNickName());
-                        msgDTO.setUserIdFromPhoto(user.getHeadImgUrl());
-                    }
-
-                    if (!StringUtils.isEmpty(talk.getUserIdAccept()) && talk.getUserIdAccept().trim().equals(user.getOpenId().trim())) {
-                        msgDTO.setUserAcceptName(user.getNickName());
-                        msgDTO.setUserAcceptPhoto(user.getHeadImgUrl());
-                    }
-                });
-                publicMsgDTOS.add(msgDTO);
+                    sameTalkId.add(talk);
+                }
             });
+            petTalks.add(sameTalkId);
+        });
 
-
-            List<List<PrivateMsgDTO>> petTalks = new ArrayList<>();
-            /**
-             * step 4 VO按评论分组（one comment ---> some talk）
-             */
-
-            publicMsgDTOS.stream().map(e -> e.getLastModify().toString()).distinct().forEach(e -> {
-
-                List<PrivateMsgDTO> sameTalkId = new ArrayList<>();
-
-                publicMsgDTOS.forEach(talk -> {
-                    if (e.equals(talk.getLastModify().toString())) {
-
-                        sameTalkId.add(talk);
-                    }
-                });
-                petTalks.add(sameTalkId);
-            });
-
-            return petTalks;
+        return petTalks;
 
     }
 

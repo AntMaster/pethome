@@ -47,7 +47,7 @@ public interface PublishTalkRepository extends JpaRepository<PublishTalk, Intege
 
 
     /**
-     * 查询某个发布的所有互动信息
+     * 查询一个主题的所有互动信息
      *
      * @param publishId
      * @return
@@ -56,9 +56,8 @@ public interface PublishTalkRepository extends JpaRepository<PublishTalk, Intege
     List<PublishTalk> findOnePublicTalk(Integer publishId);
 
 
-
     /**
-     * 根据发布ID查询评论数量
+     * 查询多个主题的互动数量
      *
      * @param publishId
      * @return
@@ -68,13 +67,26 @@ public interface PublishTalkRepository extends JpaRepository<PublishTalk, Intege
 
 
     /**
+     * 查询一个主题的互动详情
+     *
+     * @param publishId
+     * @return
+     */
+    List<PublishTalk> findByPublishId(int publishId);
+
+
+
+
+
+
+
+    /**
      * 查询当前互动所有来往记录
      *
      * @param publishId
      * @return
      */
     List<PublishTalk> findByPublishIdIn(int publishId);
-
 
     /**
      * 查询一个发布的留言互动

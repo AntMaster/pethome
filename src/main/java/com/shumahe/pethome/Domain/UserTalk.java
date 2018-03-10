@@ -59,7 +59,7 @@ public class UserTalk {
      * 主题发布人ID
      */
     @Column(name = "publisherid")
-    private Integer publisherId;
+    private String publisherId;
 
 
     /**

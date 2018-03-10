@@ -21,9 +21,4 @@ public class ReplyPrivateForm {
     private String content;
 
 
-    @NotNull(message = "私信主题主键必填")
-    private int publishId;
-
-
-
 }
