@@ -2,7 +2,6 @@ package com.shumahe.pethome.Service.BaseService;
 
 
 import com.shumahe.pethome.Domain.UserDynamic;
-import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Map;

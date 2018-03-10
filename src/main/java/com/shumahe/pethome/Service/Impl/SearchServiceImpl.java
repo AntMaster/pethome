@@ -284,13 +284,6 @@ public class SearchServiceImpl implements SearchService {
         /***********************************************search result  by  choose state  use sorted parameters *********************************************************************************/
 
 
-        /**
-         * search result  （old）
-         *//*
-
-        List<PetPublish> searchList = petPublishRepository.findByPetNameContainsOrPetDescriptionContainsOrLostLocationContainsOrPublisherIdInOrPublishTypeInOrPetSexInOrClassifyIdInOrVarietyIdInOrFindStateInOrderByCreateTimeDesc
-                (petName, petDescription, lostLocation, publisher, publishType, petSex, petClassify, petVariety, lostState, pageRequest);
-        */
 
         /**
          * 改进查询

@@ -69,16 +69,6 @@ public interface PetPublishRepository extends JpaRepository<PetPublish, Integer>
     PetPublish findById(Integer id);
 
 
-
-
-
-
-
-
-
-
-
-
     /**
      * 根据用户openid和处理状态查询发布(不带分页)
      * @param openId
@@ -91,44 +81,3 @@ public interface PetPublishRepository extends JpaRepository<PetPublish, Integer>
 }
 
 
-/*
- */
-/**
- * 根据发布类型查询发布信息（分类）
- *
- * @param publishState
- * @param pageable
- * @return 根据发布类型查询发布信息
- * @param publishState
- * @return 通过创建时间查询所有发布
- * @return 根据发布类型查询发布信息
- * @param publishState
- * @return 通过创建时间查询所有发布
- * @return
- *//*
-
-    Page<PetPublish> findByPublishStateOrderById(int publishState, Pageable pageable);
-
-
-    */
-/**
- * 根据发布类型查询发布信息
- *
- * @param publishState
- * @return
- *//*
-
-    List<PetPublish> findByPublishStateOrderById(int publishState);
-
-
-    */
-/**
- * 通过创建时间查询所有发布
- *
- * @return
- *//*
-
-
-
-}
-*/

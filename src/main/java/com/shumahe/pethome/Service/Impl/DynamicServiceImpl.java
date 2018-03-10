@@ -1,7 +1,5 @@
 package com.shumahe.pethome.Service.Impl;
 
-import com.shumahe.pethome.Domain.PetPublish;
-import com.shumahe.pethome.Domain.UserBasic;
 import com.shumahe.pethome.Domain.UserDynamic;
 import com.shumahe.pethome.Enums.DynamicTypeEnum;
 import com.shumahe.pethome.Enums.ResultEnum;
@@ -11,15 +9,12 @@ import com.shumahe.pethome.Repository.UserBasicRepository;
 import com.shumahe.pethome.Repository.UserDynamicRepository;
 import com.shumahe.pethome.Service.BaseService.DynamicBaseService;
 import com.shumahe.pethome.Service.DynamicService;
-import com.shumahe.pethome.Util.CollectionUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 @Service
 public class DynamicServiceImpl implements DynamicService {

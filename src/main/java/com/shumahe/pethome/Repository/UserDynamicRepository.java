@@ -9,7 +9,7 @@ import java.util.List;
 public interface UserDynamicRepository extends JpaRepository<UserDynamic,Integer>{
 
     /**
-     *  根据我的openId,互动类型 查询我的关注
+     *  我的关注
      * @param openId
      * @param dynamicType
      * @return
@@ -18,7 +18,7 @@ public interface UserDynamicRepository extends JpaRepository<UserDynamic,Integer
 
 
     /**
-     * 根据我的openId,互动类型 查询关注我的
+     * 关注我的
      * @param openId
      * @param dynamicType
      * @return

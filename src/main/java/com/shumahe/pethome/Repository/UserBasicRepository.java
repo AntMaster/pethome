@@ -10,14 +10,14 @@ public interface UserBasicRepository extends JpaRepository<UserBasic,Integer> {
 
 
     /**
-     * 查询用户信息
-     * @param oppenId
+     * 多个用户信息
+     * @param openId
      * @return
      */
-    List<UserBasic> findByOpenIdIn(List<String> oppenId);
+    List<UserBasic> findByOpenIdIn(List<String> openId);
 
     /**
-     * 查询用户信息
+     * 一个用户信息
      * @param openId
      * @return
      */
@@ -33,11 +33,8 @@ public interface UserBasicRepository extends JpaRepository<UserBasic,Integer> {
 
 
 
-
-
-
     List<UserBasic> findByAppIdAndOpenId(String appId,String openId);
 
 
-    //List<UserBasic> findByOpenIdIn();
+
 }
