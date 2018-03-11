@@ -1,7 +1,10 @@
 package com.shumahe.pethome.Controller;
 
+import com.shumahe.pethome.Enums.ResultEnum;
+import com.shumahe.pethome.Exception.PetHomeException;
+import com.shumahe.pethome.Util.FileUtil;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.ui.Model;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -10,35 +13,66 @@ import java.io.*;
 
 @RestController
 @Slf4j
+@RequestMapping("/upload")
 public class FileController {
 
 
-    @RequestMapping("/uploadPage")
-    public String uploadPage() {
-        return "uploadPage";
-    }
+    //request.getRealPath() 过时
+    /*request.getSession().getServletContext().getRealPath("/")
+      在Servlet 里用this.getServletContext().getRealPath("/");获得绝对路径。
+        struts里用this.getServlet().getServletContext().getRealPath("/")获得绝对路径。
+    */
+//C:\Users\zhangkaikai\AppData\Local\Temp\tomcat-docbase.2888174334023273962.8080\
+// C:\Users\zhangkaikai\AppData\Local\Temp\tomcat-docbase.6824274477539226052.8080\
+    //
+    /**
+     * 发布上传图片
+     * @param file
+     * @param request
+     * @return
+     */
 
-    @RequestMapping(value = "/upload", method = RequestMethod.POST)
-    public String upload(HttpServletRequest req, @RequestParam("file") MultipartFile file, Model m) {
+    @Value("${picturePath}")
+    private  String picturePath;
+
+    @RequestMapping(value = "/publish", method = RequestMethod.POST)
+    public String upload(@RequestParam("file") MultipartFile file, HttpServletRequest request) {
+
+
+        String fileName = (System.currentTimeMillis() + file.getOriginalFilename()).replaceAll(";", "");
+
+        String filePath = request.getSession().getServletContext().getRealPath("")  + "WEB-INF" + File.separator + "classes" + File.separator;
         try {
-            String fileName = System.currentTimeMillis()+file.getOriginalFilename();
-            String destFileName=req.getServletContext().getRealPath("")+"uploaded"+File.separator+fileName;
-
-            File destFile = new File(destFileName);
-            destFile.getParentFile().mkdirs()   ;
-            file.transferTo(destFile);
-
-            m.addAttribute("fileName",fileName);
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-            return "上传失败," + e.getMessage();
-        } catch (IOException e) {
-            e.printStackTrace();
-            return "上传失败," + e.getMessage();
+            FileUtil.uploadFile(file.getBytes(), filePath, fileName);
+        } catch (Exception e) {
+            throw new PetHomeException(ResultEnum.FAILURE.getCode(), "文件上传失败");
         }
 
-        return "showImg";
+        return "/upload/publish/" + fileName;
     }
+
+/*
+
+    @RequestMapping(value = "/publish", method = RequestMethod.POST)
+    public String upload(@RequestParam("file") MultipartFile file, HttpServletRequest request) {
+
+
+        String fileName = (System.currentTimeMillis() + file.getOriginalFilename()).replaceAll(";", "");
+
+        String filePath = request.getSession().getServletContext().getRealPath("")  + "upload" + File.separator + "publish" + File.separator;
+        try {
+            FileUtil.uploadFile(file.getBytes(), filePath, fileName);
+        } catch (Exception e) {
+            throw new PetHomeException(ResultEnum.FAILURE.getCode(), "文件上传失败");
+        }
+
+        return "/upload/publish/" + fileName;
+    }
+
+*/
+
+
+
     @PostMapping("/publish/save")
     public String savePetImg(@RequestParam("file") MultipartFile file) {
 
