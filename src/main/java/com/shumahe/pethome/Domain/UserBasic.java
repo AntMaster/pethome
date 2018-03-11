@@ -29,5 +29,8 @@ public class UserBasic {
     private String appId;
 
 
+    @Column(name = "approve")
+    private Integer approve;
+
 
 }

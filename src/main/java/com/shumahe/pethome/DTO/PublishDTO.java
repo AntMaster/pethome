@@ -30,7 +30,6 @@ public class PublishDTO {
 
     private String petImage;
 
-
     private Date lostTime;
 
     private String lostLocation;
@@ -56,8 +55,5 @@ public class PublishDTO {
 
     //互动信息
     private List<List<PublicMsgDTO>> publicTalkDTO;
-
-    //以后要去掉
-    private UserDTO userDTO;
 
 }

@@ -3,6 +3,7 @@ package com.shumahe.pethome.Repository;
 import com.shumahe.pethome.Domain.UserBasic;
 import org.springframework.data.domain.Page;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 
 import java.util.List;
 
@@ -32,7 +33,12 @@ public interface UserBasicRepository extends JpaRepository<UserBasic,Integer> {
     List<UserBasic> findByNickNameContains(String nickname);
 
 
-
+    /**
+     *  微信授权
+     * @param appId
+     * @param openId
+     * @return
+     */
     List<UserBasic> findByAppIdAndOpenId(String appId,String openId);
 
 

@@ -2,6 +2,8 @@ package com.shumahe.pethome.DTO;
 
 import lombok.Data;
 
+import java.util.List;
+
 @Data
 public class UserDTO {
 
@@ -9,13 +11,38 @@ public class UserDTO {
 
     private String nickName;
 
-    private String headImageUrl;
+    private String headImgUrl;
 
-    public UserDTO(String openId, String nickName, String headImageUrl) {
+    private Integer approve;
+
+    private List<String> tagsName;
+
+    private Integer publishCount;
+
+
+    private Integer unFinishCount;
+
+    private Integer privateMsgCount;
+
+
+    private Integer publicMsgCount;
+
+
+    private Integer likeCount;
+
+
+    private Integer shareCount;
+
+
+    public UserDTO() {
+
+    }
+
+    public UserDTO(String openId, String nickName, String headImgUrl) {
 
         this.openId = openId;
         this.nickName = nickName;
-        this.headImageUrl = headImageUrl;
+        this.headImgUrl = headImgUrl;
     }
 
 }

@@ -71,4 +71,17 @@ public interface PublishService {
     PublishDTO findPetDetail(Integer publishId, String openId);
 
 
+
+    /**
+     * 已找到
+     *
+     * @param publishId
+     * @param openId
+     * @return
+     */
+    PetPublish petFound(Integer publishId, String openId);
+
+
+
+
 }

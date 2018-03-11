@@ -1,5 +1,7 @@
 package com.shumahe.pethome.Service;
 
+import com.shumahe.pethome.DTO.UserDTO;
+
 public interface MemberService {
 
     /**
@@ -17,6 +19,6 @@ public interface MemberService {
     /**
      *检查用户是否认证
      */
-    void findMyInfo(String openId);
+    UserDTO findMyInfo(String openId);
 
 }

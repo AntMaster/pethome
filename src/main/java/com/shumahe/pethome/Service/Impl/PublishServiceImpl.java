@@ -16,7 +16,6 @@ import com.shumahe.pethome.Service.BaseService.PublishBaseService;
 import com.shumahe.pethome.Service.MessageService;
 import com.shumahe.pethome.Service.PublishService;
 import com.shumahe.pethome.Util.ResultVOUtil;
-import com.shumahe.pethome.VO.PublishVO;
 import com.shumahe.pethome.VO.ResultVO;
 import javafx.util.converter.DateStringConverter;
 import lombok.extern.slf4j.Slf4j;
@@ -68,12 +67,8 @@ public class PublishServiceImpl implements PublishService {
      * @return
      */
     @Override
-    public ResultVO<List<PublishVO>> findAll(Integer publishType, PageRequest pageable) {
+    public ResultVO findAll(Integer publishType, PageRequest pageable) {
 
-        List<PublishVO> publishVOS = new ArrayList<>();
-
-        List<Integer> idList = new ArrayList<>();//发布IDs
-        List<String> userIdList = new ArrayList<>();//发布人IDs
 
         Page<PetPublish> result;
         if (publishType == 0) {
@@ -85,29 +80,16 @@ public class PublishServiceImpl implements PublishService {
             result = petPublishRepository.findByPublishTypeOrderByCreateTimeDesc(publishType, pageable);
         }
 
-        if (result.getContent().size() == 0) {
-
+        List<PetPublish> publishList = result.getContent();
+        if (publishList == null) {
             throw new PetHomeException(ResultEnum.RESULT_EMPTY);
         }
 
-        List<PetPublish> publishList = result.getContent();
-
-        for (PetPublish publish : publishList) {
-            //发布Id
-            idList.add(publish.getId());
-            //发布人Id
-            userIdList.add(publish.getPublisherId());
-
-            PublishVO publishVO = new PublishVO();
-            BeanUtils.copyProperties(publish, publishVO);
-            publishVOS.add(publishVO);
-        }
 
         /**
          * BaseService查关联信息
          */
-        List<PublishVO> list = publishBaseService.findPublishDetail(publishVOS, idList, userIdList);
-
+        List<PublishDTO> list = publishBaseService.findPetExtends(publishList);
         return ResultVOUtil.success(list);
 
     }
@@ -216,6 +198,8 @@ public class PublishServiceImpl implements PublishService {
         if (pet.getId() == null) {
             throw new PetHomeException(ResultEnum.RESULT_EMPTY);
         }
+        pet.setViewCount(pet.getViewCount() + 1);
+        petPublishRepository.save(pet);
 
         /**
          * 互动信息
@@ -247,6 +231,24 @@ public class PublishServiceImpl implements PublishService {
 
     }
 
+    /**
+     * 已找到
+     *
+     * @param publishId
+     * @param openId
+     * @return
+     */
+    @Override
+    public PetPublish petFound(Integer publishId, String openId) {
+
+        PetPublish pet = petPublishRepository.findByIdAndPublisherId(publishId, openId);
+        if (pet == null) {
+            throw new PetHomeException(ResultEnum.RESULT_EMPTY.getCode(), "未查询到该发布");
+        }
+        pet.setFindState(PetFindStateEnum.FOUND.getCode());
+        PetPublish save = petPublishRepository.save(pet);
+        return save;
+    }
 
 
 }

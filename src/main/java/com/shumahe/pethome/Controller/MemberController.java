@@ -1,6 +1,8 @@
 package com.shumahe.pethome.Controller;
 
+import com.shumahe.pethome.DTO.UserDTO;
 import com.shumahe.pethome.Service.MemberService;
+import com.shumahe.pethome.Util.ResultVOUtil;
 import com.shumahe.pethome.VO.ResultVO;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,10 +41,9 @@ public class MemberController {
      */
     @GetMapping("mine")
     public ResultVO findMyInfo(@RequestParam("openId") String openId) {
-
-
-        memberService.findMyInfo(openId);
-        return null;
+        
+        UserDTO userDTO = memberService.findMyInfo(openId);
+        return ResultVOUtil.success(userDTO);
     }
 
 

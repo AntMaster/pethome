@@ -43,12 +43,26 @@ public interface UserTalkRepository extends JpaRepository<UserTalk, Integer> {
 
 
     /**
-     * 一个主题 私信条数
+     * 一个主题 私信条数(未读 &&  已读)
      *
      * @param publishId
      * @return
      */
     @Query(value = "select count(id) from UserTalk  where publishId = ?1 AND  showstate = 1", nativeQuery = true)
     int findPrivateMsgCount(Integer publishId);
+
+
+    /**
+     * 我的 未读/已读私信
+     * @param openId
+     * @param readState
+     * @return
+     */
+    @Query(value = "select count(id) from UserTalk  where publishId = ?1 AND  showstate = ?2", nativeQuery = true)
+    int notReadTalksCount(String openId,Integer readState);
+
+
+
+
 
 }

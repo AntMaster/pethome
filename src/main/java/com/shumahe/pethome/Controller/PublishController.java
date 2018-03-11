@@ -7,6 +7,7 @@ import com.shumahe.pethome.Enums.ResultEnum;
 import com.shumahe.pethome.Exception.PetHomeException;
 import com.shumahe.pethome.Form.PublishMasterForm;
 import com.shumahe.pethome.Form.PublishPetForm;
+import com.shumahe.pethome.Repository.PetPublishRepository;
 import com.shumahe.pethome.Service.PublishService;
 import com.shumahe.pethome.Util.ResultVOUtil;
 import com.shumahe.pethome.VO.PublishVO;
@@ -43,13 +44,9 @@ public class PublishController {
      */
 
     @GetMapping("/index")
-    public ResultVO<List<PublishVO>> publishList(@RequestParam("publishType") Integer publishType,
+    public ResultVO<List<PublishVO>> publishList(@RequestParam(value = "publishType", defaultValue = "0") Integer publishType,
                                                  @RequestParam(value = "page", defaultValue = "0") Integer page,
                                                  @RequestParam(value = "size", defaultValue = "10") Integer size) {
-
-        if (StringUtils.isEmpty(publishType)) {
-            throw new PetHomeException(ResultEnum.PARAM_ERROR);
-        }
 
         PageRequest request = new PageRequest(page, size);
         return publishService.findAll(publishType, request);
@@ -141,7 +138,7 @@ public class PublishController {
 
 
     /**
-     * 首页模块 ------> 查看发布详情
+     * 详情模块 ------> 详情
      *
      * @param publishId
      * @return
@@ -159,9 +156,17 @@ public class PublishController {
 
 
     /**
-     * 寻宠详情(详情) PS:详细描述,同时浏览次数+1
+     * 详情模块 ------> 已找到
+     *
+     * @param publishId
+     * @param openId
+     * @return
      */
+    @PostMapping("pet/found")
+    public ResultVO petFound(Integer publishId, String openId) {
 
-
+        PetPublish petPublish = publishService.petFound(publishId, openId);
+        return ResultVOUtil.success(petPublish);
+    }
 
 }
