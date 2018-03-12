@@ -19,8 +19,10 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 
@@ -138,10 +140,11 @@ public class PetServiceImpl implements PetService {
             throw new PetHomeException(ResultEnum.RESULT_EMPTY);
         }
 
-     /*   int[] albumIds = albums.stream().mapToInt(e -> e.getId()).toArray();
-        List<UserPetPhoto> photos = userPetPhotoRepository.findByAlbumIdInAndShowOrderByCreateTime(albumIds, ShowStateEnum.SHOW.getCode());
+        //相册数量
+        int[] albumIds = albums.stream().mapToInt(e -> e.getId()).toArray();
+        List<UserPetPhoto> photos = userPetPhotoRepository.findByAlbumIdInAndShowOrderByPetId(albumIds, ShowStateEnum.SHOW.getCode());
+        Map<Integer, List<UserPetPhoto>> albumGroup = photos.stream().collect(Collectors.groupingBy(photo -> photo.getPetId()));//根据相册ID对照片分组
 
-        */
 
         UserPetDTO petDTO = new UserPetDTO();
         BeanUtils.copyProperties(pet, petDTO);
@@ -151,11 +154,78 @@ public class PetServiceImpl implements PetService {
 
             UserPetAlbumDTO albumDTO = new UserPetAlbumDTO();
             BeanUtils.copyProperties(e, albumDTO);
+            if (albumGroup.get(e.getId()) != null)
+                albumDTO.setPhotoCount(albumGroup.get(e.getId()).size());//当前相册照片数量
+
             return albumDTO;
         }).collect(Collectors.toList());
 
         petDTO.setPetAlbumDTOS(albumDTOS);
 
         return petDTO;
+    }
+
+    /**
+     * 宠物相册相片 列表
+     *
+     * @param albumId
+     * @return
+     */
+    @Override
+    public UserPetAlbumDTO photoList(Integer albumId) {
+
+        UserPetAlbum album = userPetAlbumRepository.findOne(albumId);
+        if (album == null) {
+            throw new PetHomeException(ResultEnum.FAILURE.getCode(), "相册不存在");
+        }
+
+        List<UserPetPhoto> photos = userPetPhotoRepository.findByAlbumIdAndShowOrderById(albumId, ShowStateEnum.SHOW.getCode());
+
+        if (photos == null) {
+            throw new PetHomeException(ResultEnum.FAILURE.getCode(), "该相册中不存在相片");
+        }
+
+        photos.stream().map(e -> {
+
+            UserPetPhoto photoDTO = new UserPetPhoto();
+            BeanUtils.copyProperties(e, photoDTO);
+            return photoDTO;
+
+        }).collect(Collectors.toList());
+
+        UserPetAlbumDTO albumDTO = new UserPetAlbumDTO();
+        BeanUtils.copyProperties(album, albumDTO);
+        albumDTO.setPhotoCount(photos.size());
+
+        return albumDTO;
+    }
+
+    /**
+     * 删除相册
+     *
+     * @param albumId
+     * @return
+     */
+    @Override
+    @Transactional
+    public boolean albumDelete(Integer albumId) {
+
+
+        UserPetAlbum album = userPetAlbumRepository.findOne(albumId);
+        if (album == null) {
+            throw new PetHomeException(ResultEnum.RESULT_EMPTY);
+        }
+        album.setShow(ShowStateEnum.HIDE.getCode());
+        userPetAlbumRepository.save(album);
+
+        List<UserPetPhoto> photos = userPetPhotoRepository.findByAlbumId(albumId);
+        if (photos == null)
+            return true;
+
+        photos.stream().forEach(e -> e.setShow(ShowStateEnum.HIDE.getCode()));
+
+        userPetPhotoRepository.save(photos);
+
+        return true;
     }
 }

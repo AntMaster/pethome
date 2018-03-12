@@ -1,7 +1,10 @@
 package com.shumahe.pethome.DTO;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.shumahe.pethome.Domain.UserPetPhoto;
 import lombok.Data;
+
+import java.util.List;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @Data
@@ -14,6 +17,10 @@ public class UserPetAlbumDTO {
 
     private String coverPath;
 
-    private Integer photoCount;
+    private String description;
+
+    private Integer photoCount = 0;
+
+    private List<UserPetPhotoDTO> petPhotoDTOS;
 
 }

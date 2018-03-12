@@ -41,7 +41,7 @@ public class UserPetDTO {
     /**
      * 相册数量
      */
-    private Integer albumCount;
+    private Integer albumCount = 0;
 
     List<UserPetAlbumDTO> petAlbumDTOS;
 

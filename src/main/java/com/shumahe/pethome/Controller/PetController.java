@@ -1,5 +1,6 @@
 package com.shumahe.pethome.Controller;
 
+import com.shumahe.pethome.DTO.UserPetAlbumDTO;
 import com.shumahe.pethome.DTO.UserPetDTO;
 import com.shumahe.pethome.Domain.UserPet;
 import com.shumahe.pethome.Domain.UserPetAlbum;
@@ -9,6 +10,8 @@ import com.shumahe.pethome.Exception.PetHomeException;
 import com.shumahe.pethome.Form.UserPetAlbumForm;
 import com.shumahe.pethome.Form.UserPetForm;
 import com.shumahe.pethome.Form.UserPetPhotoForm;
+import com.shumahe.pethome.Repository.UserPetAlbumRepository;
+import com.shumahe.pethome.Repository.UserPetPhotoRepository;
 import com.shumahe.pethome.Service.PetService;
 import com.shumahe.pethome.Util.ResultVOUtil;
 import com.shumahe.pethome.VO.ResultVO;
@@ -29,9 +32,14 @@ public class PetController {
     @Autowired
     private PetService petService;
 
+    @Autowired
+    private UserPetAlbumRepository userPetAlbumRepository;
+
+    @Autowired
+    private UserPetPhotoRepository userPetPhotoRepository;
 
     /**
-     * 新增   宠卡
+     * 新增宠卡
      *
      * @param petForm
      * @param bindingResult
@@ -55,7 +63,7 @@ public class PetController {
 
 
     /**
-     * 新增   宠卡  相册
+     * 新增相册
      *
      * @param albumForm
      * @param bindingResult
@@ -75,9 +83,48 @@ public class PetController {
         return ResultVOUtil.success(album);
     }
 
+    /**
+     * 修改相册
+     */
+    @PostMapping("/album/{openId}")
+    public ResultVO albumModify(@RequestParam("albumId") Integer albumId,
+                                @RequestParam(value = "name", defaultValue = "EMPTY") String name,
+                                @RequestParam(value = "description", defaultValue = "EMPTY") String description) {
+
+
+        if (name.equals("EMPTY") && description.equals("EMPTY")) {
+
+            throw new PetHomeException(ResultEnum.PARAM_ERROR.getCode(), "相册名称和相册描述不能同时为空");
+        }
+
+        UserPetAlbum album = userPetAlbumRepository.findOne(albumId);
+        if (album == null) {
+            throw new PetHomeException(ResultEnum.RESULT_EMPTY);
+        }
+
+        if (!name.equals("EMPTY"))
+            album.setName(name);
+
+        if (!description.equals("EMPTY"))
+            album.setDescription(description);
+
+        UserPetAlbum save = userPetAlbumRepository.save(album);
+        return ResultVOUtil.success(save);
+    }
+
 
     /**
-     * 新增   宠卡  相册
+     * 删除相册
+     */
+    @DeleteMapping("/album/{openId}")
+    public ResultVO albumDelete(@RequestParam("albumId") Integer albumId) {
+
+        boolean delete = petService.albumDelete(albumId);
+        return ResultVOUtil.success(delete);
+    }
+
+    /**
+     * 新增相片
      *
      * @param photoForm
      * @param bindingResult
@@ -95,6 +142,46 @@ public class PetController {
 
         UserPetPhoto photo = petService.photoAdd(photoForm);
         return ResultVOUtil.success(photo);
+    }
+
+    /**
+     * 修改相册
+     */
+    @PostMapping("/photo/{openId}")
+    public ResultVO photoModify(@RequestParam("photoId") Integer albumId,
+                                @RequestParam(value = "name", defaultValue = "EMPTY") String name,
+                                @RequestParam(value = "description", defaultValue = "EMPTY") String description) {
+
+
+        if (name.equals("EMPTY") && description.equals("EMPTY")) {
+
+            throw new PetHomeException(ResultEnum.PARAM_ERROR.getCode(), "相册名称和相册描述不能同时为空");
+        }
+
+        UserPetPhoto photo = userPetPhotoRepository.findOne(albumId);
+        if (photo == null) {
+            throw new PetHomeException(ResultEnum.RESULT_EMPTY);
+        }
+
+        if (!name.equals("EMPTY"))
+            photo.setName(name);
+
+        if (!description.equals("EMPTY"))
+            photo.setDescription(description);
+
+        UserPetPhoto save = userPetPhotoRepository.save(photo);
+        return ResultVOUtil.success(save);
+    }
+
+    /**
+     * 删除相片
+     */
+    @DeleteMapping("/photo/{openId}")
+    public ResultVO albumDelete(@RequestParam("photoIds") String[] photoId) {
+
+
+        //boolean delete = petService.albumDelete(albumId);
+        return ResultVOUtil.success(123);
     }
 
 
@@ -119,7 +206,7 @@ public class PetController {
      * @return
      */
     @GetMapping("/album/{openId}")
-    public ResultVO petList(@RequestParam("petId") Integer petId) {
+    public ResultVO albumList(@RequestParam("petId") Integer petId) {
 
 
         UserPetDTO userPets = petService.albumList(petId);
@@ -128,8 +215,18 @@ public class PetController {
 
 
     /**
-     * 用户认证
+     * 宠卡相册相片 列表
+     *
+     * @param albumId
+     * @return
      */
+    @GetMapping("/photo/{openId}")
+    public ResultVO photoList(@RequestParam("albumId") Integer albumId) {
+
+        UserPetAlbumDTO photoDTO = petService.photoList(albumId);
+        return ResultVOUtil.success(photoDTO);
+    }
+
 
     /**
      *检查用户是否认证

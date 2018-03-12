@@ -1,5 +1,6 @@
 package com.shumahe.pethome.Service;
 
+import com.shumahe.pethome.DTO.UserPetAlbumDTO;
 import com.shumahe.pethome.DTO.UserPetDTO;
 import com.shumahe.pethome.Domain.UserPet;
 import com.shumahe.pethome.Domain.UserPetAlbum;
@@ -51,6 +52,20 @@ public interface PetService {
      */
     UserPetDTO albumList(Integer petId);
 
+
+    /**
+     * 宠物相册相片 列表
+     * @param albumId
+     * @return
+     */
+    UserPetAlbumDTO photoList(Integer albumId);
+
+    /**
+     * 删除相册
+     * @param albumId
+     * @return
+     */
+    boolean albumDelete(Integer albumId);
 
     /**
      * 用户宠卡列表
