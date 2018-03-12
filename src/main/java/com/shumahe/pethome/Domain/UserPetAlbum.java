@@ -32,6 +32,7 @@ public class UserPetAlbum {
     @Column(name = "show")
     private Integer show;
 
+
     @CreatedDate
     @Column(name = "createtime")
     private Date createTime;
