@@ -25,10 +25,12 @@ public class AuthAspect {
      *
      */
     @Pointcut("execution(public * com.shumahe.pethome.Controller.PublishController.*(..))")
-    public void     validateAutoInfo() {
+    public void  validateAutoInfo() {
+
 
 
     }
+
 
     @Before("validateAutoInfo()")
     public void doBefore() {

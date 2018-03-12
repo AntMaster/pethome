@@ -2,10 +2,7 @@ package com.shumahe.pethome.Service;
 
 import com.shumahe.pethome.DTO.PrivateMsgDTO;
 import com.shumahe.pethome.DTO.PublicMsgDTO;
-import com.shumahe.pethome.DTO.PublishDTO;
 import com.shumahe.pethome.Domain.PetPublish;
-import com.shumahe.pethome.Domain.PublishTalk;
-import com.shumahe.pethome.Domain.UserTalk;
 import com.shumahe.pethome.Form.ReplyPrivateForm;
 import com.shumahe.pethome.Form.ReplyPublishForm;
 import org.springframework.data.domain.PageRequest;
