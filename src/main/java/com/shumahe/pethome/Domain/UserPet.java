@@ -22,7 +22,7 @@ public class UserPet {
     private Integer userId;
 
 
-    private String headImageUrl;
+    private String headImgUrl;
 
 
     private String nickName;
@@ -40,7 +40,7 @@ public class UserPet {
     private Date birthday;
 
 
-    private Integer contraceptionState;
+    private Integer contraception;
 
 
     private String description;
