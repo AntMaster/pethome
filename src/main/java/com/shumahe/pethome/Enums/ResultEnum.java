@@ -17,6 +17,8 @@ public enum ResultEnum {
 
     OPENID_EMPTY(3,"openId为空"),
 
+    OPENID_ERROR(3,"openId不正确"),
+
     PARAM_ERROR(4, "参数不正确"),
 
     ORDER_OWNER_ERROR(19, "该订单不属于当前用户"),

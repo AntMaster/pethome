@@ -9,31 +9,34 @@ import javax.validation.constraints.NotNull;
 @Data
 public class UserPetForm {
 
-    @NotBlank(message = "用户主键必填")
+
     private String userId;
 
 
-    @NotNull(message = "爱宠类别必填")
+    @NotNull(message = "爱宠类别classifyId必填")
     private Integer classifyId;
 
 
-    @NotBlank(message = "爱宠头像必填")
-    private int headImgUrl;
+    private Integer varietyId;
 
 
-    @NotBlank(message = "爱宠昵称必填")
+    @NotBlank(message = "爱宠头像headImgUrl必填")
+    private String headImgUrl;
+
+
+    @NotBlank(message = "爱宠昵称nickName必填")
     private String nickName;
 
 
-    @NotBlank(message = "爱宠性别必填")
-    private String sex;
+    @NotNull(message = "爱宠性别sex必填")
+    private Integer sex;
 
 
-    @NotBlank(message = "爱宠生日必填")
+    @NotBlank(message = "爱宠生日birthday必填")
     private String birthday;
 
 
-    @NotBlank(message = "爱宠小特点必填")
+    @NotBlank(message = "爱宠小特点description必填")
     private String description;
 
 

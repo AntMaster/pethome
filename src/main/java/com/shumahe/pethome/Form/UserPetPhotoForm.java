@@ -9,18 +9,18 @@ import javax.validation.constraints.NotNull;
 public class UserPetPhotoForm {
 
 
-    @NotNull(message = "相册主键不能为空")
+    @NotNull(message = "相册主键albumId必填")
     private Integer albumId;
+
 
     private String name;
 
-    private String description;
-
-    @NotBlank(message = "照片路径不能为空")
+    @NotBlank(message = "照片路径path必填")
     private String path;
 
 
-    private Integer cover;
+    private String description;
+
 
 
 }

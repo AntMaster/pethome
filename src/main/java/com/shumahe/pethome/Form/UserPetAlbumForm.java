@@ -9,11 +9,11 @@ import javax.validation.constraints.NotNull;
 public class UserPetAlbumForm {
 
 
-    @NotBlank(message = "宠物主键不能为空")
+    @NotNull(message = "宠物主键petId必填")
     private Integer petId;
 
 
-    @NotBlank(message = "相册不能为空")
+    @NotBlank(message = "相册名称name必填")
     private String name;
 
 

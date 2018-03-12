@@ -11,14 +11,14 @@ public class ReplyPublishForm {
 
     private Integer talkId;
 
-    @NotBlank(message = "发表人ID必填")
+    @NotBlank(message = "回复人replierFrom必填")
     private String replierFrom;
 
 
     private String replierAccept;
 
 
-    @NotBlank(message = "评论内容必填")
+    @NotBlank(message = "评论内容content必填")
     private String content;
 
 

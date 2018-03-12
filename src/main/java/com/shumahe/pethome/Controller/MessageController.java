@@ -4,6 +4,7 @@ package com.shumahe.pethome.Controller;
 import com.shumahe.pethome.DTO.PrivateMsgDTO;
 import com.shumahe.pethome.DTO.PublicMsgDTO;
 import com.shumahe.pethome.DTO.PublishDTO;
+import com.shumahe.pethome.DTO.UserDTO;
 import com.shumahe.pethome.Domain.PetPublish;
 
 import com.shumahe.pethome.Enums.ResultEnum;
@@ -88,7 +89,7 @@ public class MessageController {
 
 
     /**
-     *  主题  互动详情   √
+     * 主题  互动详情   √
      *
      * @param publishId
      * @param openId
@@ -114,7 +115,7 @@ public class MessageController {
     }
 
     /**
-     *  主题  私信详情   √
+     * 主题  私信详情   √
      *
      * @param publishId
      * @param openId
@@ -128,7 +129,7 @@ public class MessageController {
         }
 
         PetPublish pet = petPublishRepository.findById(publishId);
-        List<List<PrivateMsgDTO>> petPrivateTalks = messageService.petPrivateTalks(pet,openId);
+        List<List<PrivateMsgDTO>> petPrivateTalks = messageService.petPrivateTalks(pet, openId);
 
         long talkCount = petPrivateTalks.stream().mapToInt(num -> num.size()).summaryStatistics().getSum();
 
@@ -138,6 +139,7 @@ public class MessageController {
         publishDTO.setPrivateTalkDTO(petPrivateTalks);
         return ResultVOUtil.success(publishDTO);
     }
+
     /**
      * 回复互动 √
      *
@@ -202,6 +204,20 @@ public class MessageController {
 
         PrivateMsgDTO msg = messageService.replyPrivate(replyPrivateFrom, pet);
         return ResultVOUtil.success(msg);
+    }
+
+
+    /**
+     * 用户中心
+     *
+     * @param openId
+     * @return
+     */
+    @GetMapping("user")
+    public ResultVO findMyInfo(@RequestParam("openId") String openId) {
+
+        UserDTO userDTO = messageService.findMyInfo(openId);
+        return ResultVOUtil.success(userDTO);
     }
 
 

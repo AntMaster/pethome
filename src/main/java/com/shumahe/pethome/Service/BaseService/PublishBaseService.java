@@ -20,6 +20,4 @@ public interface PublishBaseService {
     List<PublishDTO> findPetExtends(List<PetPublish> petPublishes);
 
 
-
-
 }

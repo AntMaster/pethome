@@ -1,5 +1,6 @@
 package com.shumahe.pethome.Domain;
 
+import com.shumahe.pethome.Enums.ContraceptionStateEnum;
 import lombok.Data;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
@@ -22,7 +23,7 @@ public class UserPet {
      * 用户ID
      */
     @Column(name = "userid")
-    private Integer userId;
+    private String userId;
 
 
     /**
@@ -69,7 +70,7 @@ public class UserPet {
      * 绝育状态
      */
     @Column(name = "contraception")
-    private Integer contraception;
+    private Integer contraception = ContraceptionStateEnum.FALSE.getCode();
 
     /**
      * 宠物描述

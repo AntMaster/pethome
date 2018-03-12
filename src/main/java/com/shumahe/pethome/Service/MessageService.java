@@ -2,6 +2,7 @@ package com.shumahe.pethome.Service;
 
 import com.shumahe.pethome.DTO.PrivateMsgDTO;
 import com.shumahe.pethome.DTO.PublicMsgDTO;
+import com.shumahe.pethome.DTO.UserDTO;
 import com.shumahe.pethome.Domain.PetPublish;
 import com.shumahe.pethome.Form.ReplyPrivateForm;
 import com.shumahe.pethome.Form.ReplyPublishForm;
@@ -66,6 +67,14 @@ public interface MessageService {
      * @param replyPublishForm
      */
     PublicMsgDTO replyPublic(ReplyPublishForm replyPublishForm, PetPublish pet);
+
+
+    /**
+     * 个人中心
+     * @param openId
+     * @return
+     */
+    UserDTO findMyInfo(String openId);
 
 
 }
