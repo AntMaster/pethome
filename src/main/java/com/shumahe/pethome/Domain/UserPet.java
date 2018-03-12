@@ -7,11 +7,10 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import javax.persistence.*;
 import java.util.Date;
 
-/*@Entity
+@Entity
 @Data
 @Table(name = "userpet")
 @EntityListeners(AuditingEntityListener.class)
-*/
 public class UserPet {
 
     @Id
@@ -19,33 +18,69 @@ public class UserPet {
     private Integer id;
 
 
+    /**
+     * 用户ID
+     */
+    @Column(name = "userid")
     private Integer userId;
 
 
+    /**
+     * 头像
+     */
+    @Column(name = "headimgurl")
     private String headImgUrl;
 
 
+    /**
+     * 昵称
+     */
+    @Column(name = "nickname")
     private String nickName;
 
 
+    /**
+     * 分类
+     */
+    @Column(name = "classifyid")
     private Integer classifyId;
 
 
+    /**
+     * 品种
+     */
+    @Column(name = "varietyid")
     private Integer varietyId;
 
 
+    /**
+     * 性别
+     */
+    @Column(name = "sex")
     private Integer sex;
 
-
+    /**
+     * 生日
+     */
+    @Column(name = "birthday")
     private Date birthday;
 
-
+    /**
+     * 绝育状态
+     */
+    @Column(name = "contraception")
     private Integer contraception;
 
-
+    /**
+     * 宠物描述
+     */
+    @Column(name = "description")
     private String description;
 
-
+    /**
+     * 芯片号
+     */
+    @Column(name = "chipno")
     private String chipNo;
 
     /**
