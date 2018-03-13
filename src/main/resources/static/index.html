@@ -53,13 +53,13 @@
                                      :class="[{xunzhu:item.publishType == 2},{found:item.petFindState == 1}]">
                                     {{item.publishType == 1 ? "寻宠":"寻主"}}
                                 </div>
-                                <img class="tag-img" v-if="item.classifyID == 2 && item.petFindState == 2"
+                                <img class="tag-img" v-if="item.classifyId == 2 && item.petFindState == 2"
                                      src="img/icon/icon-miao.png"/>
-                                <img class="tag-img" v-if="item.classifyID == 2 && item.petFindState == 1"
+                                <img class="tag-img" v-if="item.classifyId == 2 && item.petFindState == 1"
                                      src="img/icon/icon-miao-found.png"/>
-                                <img class="tag-img" v-if="item.classifyID == 3 && item.petFindState == 2"
+                                <img class="tag-img" v-if="item.classifyId == 3 && item.petFindState == 2"
                                      src="img/icon/icon-wang.png"/>
-                                <img class="tag-img" v-if="item.classifyID == 3 && item.petFindState == 1"
+                                <img class="tag-img" v-if="item.classifyId == 3 && item.petFindState == 1"
                                      src="img/icon/icon-wang.png"/>
                             </div>
                             <div class="card-header no-border">
@@ -118,9 +118,9 @@
             //1：寻宠；2：寻主
             //1：已找到；2：未找到
             dynamicArr: [
-                {classifyID: 2, publishType: 1, petFindState: 2},
-                {classifyID: 3, publishType: 2, petFindState: 2},
-                {classifyID: 2, publishType: 2, petFindState: 1}
+                {classifyId: 2, publishType: 1, petFindState: 2},
+                {classifyId: 3, publishType: 2, petFindState: 2},
+                {classifyId: 2, publishType: 2, petFindState: 1}
             ]
         },
         mounted: function () {
@@ -240,7 +240,7 @@
     var itemsPerLoad = 20;
 
     function addItems() {
-        app.dynamicArr.push({classifyID: 2, publishType: 2, petFindState: 2});
+        app.dynamicArr.push({classifyId: 2, publishType: 2, petFindState: 2});
     }
 
     //addItems();

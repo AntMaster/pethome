@@ -24,7 +24,7 @@ public class PublishPetForm {
     private int varietyId;
 
 
-    @NotBlank(message = "丢失时间lostTime必填")
+    //@NotBlank(message = "丢失时间lostTime必填")
     private String lostTime;
 
 

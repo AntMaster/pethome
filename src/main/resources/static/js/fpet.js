@@ -8,19 +8,19 @@ var app = new Vue({
         varietyArr: [],
         varietyName: '',
         formData: {
-            publishType: '',
-            classifyID: '',
-            varietyID: '',
+            publishType: 1,
+            classifyId: 0,
+            varietyId: 0,
             petName: '',
-            petSex: '',
-            petDescription: '',
-            petImage: '',
-            lostTime: '',
-            lostLocation: '',
-            latitude: '',
-            longitude: '',
-            ownerName: '',
-            ownerContact: ''
+            petSex: 1,
+            petDescription: null,
+            petImage: null,
+            lostTime: null,
+            lostLocation: null,
+            latitude: 0.0,
+            longitude: 0.0,
+            ownerName: null,
+            ownerContact: null
         }
     },
     mounted: function () {
@@ -47,7 +47,7 @@ var app = new Vue({
         //选择品种
         selectVarietyArr: function (id, name) {
             //id用于上传，name用于绑定model显示中文
-            app.formData.varietyID = id;
+            app.formData.varietyId = id;
             app.varietyName = name;
         },
         selectSex: function (sex) {
@@ -68,13 +68,18 @@ var app = new Vue({
             $.ajax({
                 url: '/pethome/publish/pet/Aileen',
                 type: 'PUT',
-                contentType: 'application/json',
+                //contentType: 'application/json',
+                //contentType: "application/json charset=utf-8",
+                //contentType: "application/x-www-form-urlencoded",
                 dataType: 'json',
-                data: JSON.stringify(app.formData),
+                data: app.formData,
                 success: function (res) {
                     console.log(res);
                     if (res.code === 1) {
                         app.dynamicArr = res.data;
+                    }else {
+                        alert(res.msg);
+
                     }
                 }
             });
@@ -144,17 +149,17 @@ $(document).on("pageInit", function (e, pageId, $page) {
                 resList: []
             },
             methods: {
-                search(w) {
+                search:function(w) {
                     //alert(w);
                 },
-                handleSearchComplete(res) {
+                handleSearchComplete:function(res) {
                     //获取检索结果
                     if (res == undefined) return false;
                     if (res.zr.length > 0) {
                         this.resList = res.zr;
                     }
                 },
-                selectAddress(address, point) {
+                selectAddress:function(address, point) {
                     $.router.back("fpet.html");
                     app.formData.lostLocation = address;
                     app.formData.latitude = point.lat;
