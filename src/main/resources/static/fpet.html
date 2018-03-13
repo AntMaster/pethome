@@ -26,7 +26,7 @@
                             <div class="item-inner">
                                 <div class="item-title label">宠物昵称</div>
                                 <div class="item-input">
-                                    <input v-model="formData.PetName" type="text" placeholder="请输入宠物昵称">
+                                    <input v-model="formData.petName" type="text" placeholder="请输入宠物昵称">
                                 </div>
                             </div>
                         </div>
@@ -58,7 +58,7 @@
                             <div class="item-inner">
                                 <div class="item-title label">宠物品种</div>
                                 <div class="item-input">
-                                    <input v-model="formData.VarietyID" class="open-popup" data-popup=".popup-petVariety" placeholder="请选择宠物品种">
+                                    <input v-model="varietyName" class="open-popup" data-popup=".popup-petVariety" placeholder="请选择宠物品种">
                                 </div>
                             </div>
                         </div>
@@ -84,7 +84,7 @@
                             <div class="item-inner">
                                 <div class="item-title label">丢失地点</div>
                                 <div class="item-input">
-                                    <input v-model="formData.LostLocation" type="text" placeholder="请填写丢失地点">
+                                    <input v-model="formData.lostLocation" type="text" placeholder="请填写丢失地点">
                                 </div>
                             </div>
                         </a>
@@ -94,7 +94,7 @@
                             <div class="item-inner">
                                 <div class="item-title label">主人姓名</div>
                                 <div class="item-input">
-                                    <input placeholder="请填写主人姓名">
+                                    <input v-model="formData.ownerName" placeholder="请填写主人姓名">
                                 </div>
                             </div>
                         </div>
@@ -104,7 +104,7 @@
                             <div class="item-inner">
                                 <div class="item-title label">联系方式</div>
                                 <div class="item-input">
-                                    <input type="number" placeholder="请填写常用手机号码">
+                                    <input v-model="formData.ownerContact" type="number" placeholder="请填写常用手机号码">
                                 </div>
                             </div>
                         </div>
@@ -118,7 +118,7 @@
                             <div class="item-inner">
                                 <div class="item-title label">描述</div>
                                 <div class="item-input">
-                                    <input v-model="formData.PetDescription" type="text" placeholder="请描述宠物特点（选填）">
+                                    <input v-model="formData.petDescription" type="text" placeholder="请描述宠物特点（选填）">
                                 </div>
                             </div>
                         </div>
@@ -129,7 +129,7 @@
                             <div class="item-inner">
                                 <div class="item-title label">图片</div>
                                 <div class="item-input">
-                                    <input v-model="formData.petImage" type="text" placeholder="">
+                                    <input type="text" placeholder="">
                                 </div>
                             </div>
                         </div>
@@ -142,11 +142,11 @@
         <div class="popup popup-petVariety">
             <div class="variety-box">
                 <ul class="commonList-row">
-                    <li v-for="item in 12" class="flex-center">
+                    <li v-for="(item,index) in varietyArr" @click="selectVarietyArr(item.id,item.name)" class="flex-center close-popup">
                         <div class="avatar">
                             <img src="img/test/avatar.jpg" />
                         </div>
-                        <div class="name">柯基</div>
+                        <div class="name">{{item.name}}</div>
                     </li>
                 </ul>
             </div>

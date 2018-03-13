@@ -4,6 +4,9 @@ var app = new Vue({
         petType: '',
         maleActive: false,
         femaleActive: false,
+        varietyArrDataSource: [],
+        varietyArr: [],
+        varietyName: '',
         formData: {
             publishType: '',
             classifyID: '',
@@ -11,31 +14,54 @@ var app = new Vue({
             petName: '',
             petSex: '',
             petDescription: '',
+            petImage: '',
             lostTime: '',
             lostLocation: '',
             latitude: '',
             longitude: '',
             ownerName: '',
-            ownerContact: '',
-            petImage: ''
+            ownerContact: ''
         }
     },
+    mounted: function () {
+        this.init();
+    },
     methods: {
+        init: function () {
+            //加载宠物类别
+            $.ajax({
+                url: '/pethome/pet/variety',
+                type: 'GET',
+                dataType: 'json',
+                data: null,
+                success: function (res) {
+                    if (res.code === 1) {
+                        app.varietyArrDataSource = res.data;
+                        app.varietyArr = app.varietyArrDataSource["2"];
+                    }
+                }
+            });
+            //默认猫子品种
+
+        },
+        //选择品种
+        selectVarietyArr: function (id, name) {
+            //id用于上传，name用于绑定model显示中文
+            app.formData.varietyID = id;
+            app.varietyName = name;
+        },
         selectSex: function (sex) {
             if (sex == 1) {
                 //公
                 this.maleActive = !this.maleActive;
                 this.femaleActive = false;
-                this.maleActive ? this.formData.PetSex = 1 : this.formData.PetSex = '';
+                this.maleActive ? this.formData.petSex = 1 : this.formData.petSex = '';
             } else {
                 //母
                 this.femaleActive = !this.femaleActive;
                 this.maleActive = false;
-                this.femaleActive ? this.formData.PetSex = 2 : this.formData.PetSex = '';
+                this.femaleActive ? this.formData.petSex = 2 : this.formData.petSex = '';
             }
-        },
-        selectVariety: function () {
-
         },
         submitRelease: function () {
 
@@ -44,7 +70,7 @@ var app = new Vue({
                 type: 'PUT',
                 contentType: 'application/json',
                 dataType: 'json',
-                data: app.formData,
+                data: JSON.stringify(app.formData),
                 success: function (res) {
                     console.log(res);
                     if (res.code === 1) {
@@ -53,7 +79,6 @@ var app = new Vue({
                 }
             });
         }
-
     }
 });
 
@@ -66,14 +91,14 @@ $(document).on('click', '.create-actions', function () {
         {
             text: '喵',
             onClick: function () {
-                app.formData.ClassifyID = 2;
+                app.formData.classifyID = 2;
                 app.petType = '喵';
             }
         },
         {
             text: '汪',
             onClick: function () {
-                app.formData.ClassifyID = 3;
+                app.formData.classifyID = 3;
                 app.petType = '汪';
             }
         }
@@ -97,7 +122,7 @@ $("#datetime-picker").datetimePicker({
     </header>',
     onClose: function () {
         console.log($("#datetime-picker").val());
-        app.formData.LostTime = $("#datetime-picker").val()
+        app.formData.lostTime = $("#datetime-picker").val()
     }
 });
 $(document).on("pageInit", function (e, pageId, $page) {
@@ -119,21 +144,21 @@ $(document).on("pageInit", function (e, pageId, $page) {
                 resList: []
             },
             methods: {
-                search: function (w) {
+                search(w) {
                     //alert(w);
                 },
-                handleSearchComplete: function (res) {
+                handleSearchComplete(res) {
                     //获取检索结果
                     if (res == undefined) return false;
                     if (res.zr.length > 0) {
                         this.resList = res.zr;
                     }
                 },
-                selectAddress: function (address, point) {
+                selectAddress(address, point) {
                     $.router.back("fpet.html");
-                    app.formData.LostLocation = address;
-                    app.formData.Latitude = point.lat;
-                    app.formData.Longitude = point.lng;
+                    app.formData.lostLocation = address;
+                    app.formData.latitude = point.lat;
+                    app.formData.longitude = point.lng;
                 }
             },
             watch: {
