@@ -9,6 +9,8 @@ import java.util.List;
 public interface UserPetPhotoRepository  extends JpaRepository<UserPetPhoto,Integer>{
 
 
+    List<UserPetPhoto>  findByIdIn(List<Integer> photoIds);
+
     List<UserPetPhoto> findByAlbumIdAndShowOrderById(Integer albumId,Integer show);
 
     List<UserPetPhoto> findByAlbumIdInAndShowOrderByPetId(int[] albumId,Integer show);

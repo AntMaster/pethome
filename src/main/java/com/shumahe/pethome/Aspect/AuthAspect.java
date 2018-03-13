@@ -29,26 +29,28 @@ public class AuthAspect {
     @Autowired
     UserBasicRepository userBasicRepository;
 
-    @Before("execution(public * com.shumahe.pethome.Controller.PetController.*(..))")
-    public void validaTest() {
+    //@Before("execution(public * com.shumahe.pethome.Controller.PetController.*(..))")
+    @Before("execution(public * com.shumahe.pethome.Controller.PublishController.*(..))")
+    //@Before("execution(public * com.shumahe.pethome.Controller.DynamicController.*(..))")
+    public void validaOpenId() {
 
-        HttpServletRequest request = ((ServletRequestAttributes)RequestContextHolder.getRequestAttributes()).getRequest();
+        HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
         String[] URI = request.getRequestURI().split("/");
         String openId = URI[URI.length - 1];
 
         UserBasic user = userBasicRepository.findByOpenId(openId);
-        if (user ==null){
+        if (user == null) {
             throw new PetHomeException(ResultEnum.OPENID_ERROR);
         }
     }
+
 
     @Pointcut("execution(public * com.shumahe.pethome.Controller.PublishController.*(..))")
     public void validateAutoInfo() {
 
     }
 
-
-    @Before("validateAutoInfo()")
+ /*   @Before("validateAutoInfo()")
     public void doBefore() {
         ServletRequestAttributes attributes = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
         HttpServletRequest request = attributes.getRequest();
@@ -61,5 +63,5 @@ public class AuthAspect {
     @After("validateAutoInfo()")
     public void doAfter() {
         log.info("22222");
-    }
+    }*/
 }

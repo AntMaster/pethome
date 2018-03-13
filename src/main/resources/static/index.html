@@ -1,43 +1,325 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
+
 <head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-    <script type="text/javascript" src="js/jquery-3.3.1.min.js"></script>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>首页</title>
+    <meta name="viewport" content="initial-scale=1, maximum-scale=1">
+    <link rel="shortcut icon" href="/favicon.ico">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <link rel="stylesheet" href="libs/l7/light7.min.css">
+    <link rel="stylesheet" href="libs/swiper/swiper.min.css">
+    <link rel="stylesheet" href="dest/all.min.css">
 </head>
+
 <body>
-<h1>上传</h1>
-
-<img onclick="getElementById('inputfile').click()" title="点击添加图片" alt="点击添加图片">
-<input type="file" name="file" style="" name="file" id="inputFile" enctype="multipart/form-data" accept="image/*"/>
-
-
+<!-- 你的html代码 -->
+<div class="page" id="index">
+    <!-- tabbar -->
+    <mc-tabbar page="index"></mc-tabbar>
+    <div class="content index-content infinite-scroll" data-distance="100">
+        <!-- banner -->
+        <div class="index-banner">
+            <div class="swiper-container">
+                <div class="swiper-wrapper">
+                    <div class="swiper-slide"></div>
+                    <div class="swiper-slide"></div>
+                    <div class="swiper-slide"></div>
+                </div>
+                <!-- 如果需要分页器 -->
+                <div class="swiper-pagination"></div>
+            </div>
+        </div>
+        <!-- nav -->
+        <div class="index-nav center-block">
+            <ul class="commonList-row">
+                <li @click="loaDdynamicList" class="active">动态</li>
+                <li @click="loadFindPetList">寻宠</li>
+                <li @click="loadFindOwnerList">寻主</li>
+                <li @click="loadFindAttentionList">关注</li>
+            </ul>
+        </div>
+        <!-- list -->
+        <div class="index-list">
+            <ul>
+                <li v-for="(item,index) in dynamicArr" class="v-cloak">
+                    <a>
+                        <div class="card facebook-card">
+                            <!-- 标签，寻宠/寻主 -->
+                            <div class="card-tag">
+                                <div class="tag-title flex-center"
+                                     :class="[{xunzhu:item.publishType == 2},{found:item.petFindState == 1}]">
+                                    {{item.publishType == 1 ? "寻宠":"寻主"}}
+                                </div>
+                                <img class="tag-img" v-if="item.classifyID == 2 && item.petFindState == 2"
+                                     src="img/icon/icon-miao.png"/>
+                                <img class="tag-img" v-if="item.classifyID == 2 && item.petFindState == 1"
+                                     src="img/icon/icon-miao-found.png"/>
+                                <img class="tag-img" v-if="item.classifyID == 3 && item.petFindState == 2"
+                                     src="img/icon/icon-wang.png"/>
+                                <img class="tag-img" v-if="item.classifyID == 3 && item.petFindState == 1"
+                                     src="img/icon/icon-wang.png"/>
+                            </div>
+                            <div class="card-header no-border">
+                                <div class="facebook-avatar">
+                                    <img :src="item.publisherPhoto"
+                                         width="34" height="34">
+                                </div>
+                                <div class="facebook-name">{{item.publisherName}}</div>
+                                <div class="facebook-date">{{item.lostTime}}</div>
+                            </div>
+                            <div class="card-content">
+                                {{item.petDescription}}
+                            </div>
+                            <div class="card-footer no-border">
+                                <div href="#" class="link">
+                                    <img src="img/icon/card-look.png"/>
+                                    <span>{{item.viewCount}}</span>
+                                </div>
+                                <div href="#" class="link" @click="share(item.id)">
+                                    <img src="img/icon/card-share.png"/>
+                                    <span>{{item.shareCount}}</span>
+                                </div>
+                                <div href="#" class="link" @click="attention(index,item.id,item.likeState)">
+                                    <img :src="item.likeState ? 'img/icon/card-zaned.png' : 'img/icon/card-zan.png'"/>
+                                    <span>关注</span>
+                                </div>
+                                <div href="#" class="link" @click="comment(item.id)">
+                                    <img src="img/icon/card-comment.png"/>
+                                    <span>{{item.publicMsgCount}}</span>
+                                </div>
+                            </div>
+                        </div>
+                    </a>
+                </li>
+            </ul>
+            <!-- preloader -->
+            <div class="infinite-scroll-preloader">
+                <div class="preloader"></div>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="https://cdn.bootcss.com/jquery/1.12.4/jquery.min.js"></script>
+<script type='text/javascript' src='libs/l7/light7.min.js'></script>
+<script type='text/javascript' src='libs/swiper/swiper.min.js'></script>
+<script type='text/javascript' src='js/vue.js'></script>
+<script type='text/javascript' src='js/common.js'></script>
+<script type='text/javascript' src='js/components.js'></script>
 <script>
+    var app = new Vue({
+        el: "#index",
+        data: {
+            //是否认证
+            isAuthority: false,
+            //模拟数据
+            //1：寻宠；2：寻主
+            //1：已找到；2：未找到
+            dynamicArr: [
+                {classifyID: 2, publishType: 1, petFindState: 2},
+                {classifyID: 3, publishType: 2, petFindState: 2},
+                {classifyID: 2, publishType: 2, petFindState: 1}
+            ]
+        },
+        mounted: function () {
+            //初始化操作
+            this.loaDdynamicList();
+        },
+        methods: {
+
+            loaDdynamicList: function () {
+
+                //load data
+                $.ajax({
+                    url: '/pethome/publish/index/Aileen',
+                    type: 'GET',
+                    //contentType: 'application/json',
+                    dataType: 'json',
+                    data: null,
+                    success: function (res) {
+                        if (res.code === 1) {
+                            app.dynamicArr = res.data;
+                        }
+                    }
+                });
+
+            },
+            loadFindPetList: function () {
+
+                $.ajax({
+                    url: '/pethome/publish/index/Aileen',
+                    type: 'GET',
+                    //contentType: 'application/json',
+                    dataType: 'json',
+                    data: {
+                        publishType: 1
+                    },
+                    success: function (res) {
+                        if (res.code === 1) {
+                            app.dynamicArr = res.data;
+                        }
+                    }
+                });
+            },
+            loadFindOwnerList: function () {
+                $.ajax({
+                    url: '/pethome/publish/index/Aileen',
+                    type: 'GET',
+                    //contentType: 'application/json',
+                    dataType: 'json',
+                    data: {
+                        publishType: 2
+                    },
+                    success: function (res) {
+                        if (res.code === 1) {
+                            app.dynamicArr = res.data;
+                        }
+                    }
+                });
+            },
+            loadFindAttentionList: function () {
 
 
+                $.ajax({
+                    url: '/pethome/dynamic/like/Aileen',
+                    type: 'GET',
+                    //contentType: 'application/json',
+                    dataType: 'json',
+                    data: null,
+                    success: function (res) {
+                        if (res.code === 1) {
+                            app.dynamicArr = res.data;
+                        }
+                    }
+                });
+            },
+            //评论
+            comment: function () {
+                app.isAuthority ? window.location.href = "detail.html" : $.modal(goAuthormodal);
+            },
+            //分享
+            share: function () {
 
-    $("#inputFile").change(function () {
-        //创建FormData对象
-        var data = new FormData();
-        //为FormData对象添加数据
-        //
-        $.each($('#inputFile')[0].files, function (i, file) {
-            data.append('file', file);
-        });
-        $.ajax({
-            url: '/pethome/upload/publish',
-            type: 'POST',
-            data: data,
-            cache: false,
-            contentType: false,    //不可缺
-            processData: false,    //不可缺
-            success: function (data) {
-                console.log(data)
+            },
+            //关注
+            attention: function (index, id, likeState) {
+
+                var params = {
+                    publishId: id,
+                    dynamicType: 0
+                }
+                if (likeState) {
+                    params.dynamicType = 3;//取关
+                } else {
+                    params.dynamicType = 1;//关注
+                }
+
+                //load data
+                $.ajax({
+                    url: '/pethome/dynamic/like/Aileen',
+                    type: 'PUT',
+                    contentType: 'application/json',
+                    dataType: 'json',
+                    data: JSON.stringify(params),
+                    success: function (res) {
+                        if (res.data === true) {
+                            //app.dynamicArr = res.data;
+                            app.dynamicArr[index].likeState = !likeState;
+                        }
+                    }
+                });
 
             }
+        }
+    });
+    $.init();
+    var loading = false;
+    var maxItems = 100;
+    var itemsPerLoad = 20;
+
+    function addItems() {
+        app.dynamicArr.push({classifyID: 2, publishType: 2, petFindState: 2});
+    }
+
+    //addItems();
+    var lastIndex = app.dynamicArr.length;
+    $(document).on('infinite', '.infinite-scroll', function () {
+
+        // 如果正在加载，则退出
+        if (loading) return;
+
+        // 设置flag
+        loading = true;
+
+        setTimeout(function () {
+            loading = false;
+            if (lastIndex >= maxItems) {
+                $.detachInfiniteScroll($('.infinite-scroll'));
+                $('.infinite-scroll-preloader').remove();
+                return;
+            }
+            addItems();
+            lastIndex = app.dynamicArr.length;
+        }, 500);
+    });
+    $(function () {
+        var swiper = new Swiper('.swiper-container', {
+            slidesPerView: 'auto',
+            initialSlide: 1,
+            centeredSlides: true,
+            //spaceBetween: 100,
+            pagination: '.swiper-pagination'
+        });
+        $(".index-nav li").click(function () {
+            $(".index-nav li").removeClass("active");
+            $(this).addClass("active");
         });
     });
-</script>
 
+    function closeGoAuthorModal() {
+        $.closeModal();
+    }
+
+    //选择认证类型
+    function goAuthor() {
+        $.modal(selectAuthorTypeModal);
+    }
+
+    function toAuthorPage(type) {
+        type == 0 ? window.location.href = "pv.html" : window.location.href = "ov.html";
+    }
+
+    //提示需要认证modal
+    var goAuthormodal = {
+        title: '',
+        afterText: '<div class="author-modal">' +
+        '<div class="close" onClick="closeGoAuthorModal()"><img src="img/icon/icon-modal-close.png"/></div>' +
+        '<div class="avatar"><img src="img/test/avatar.jpg"/></div>' +
+        '<div class="modal-msg">实名认证后可以解锁更多走丢宠物信息</div>' +
+        '<a class="modal-btn" onClick="goAuthor()">去认证</a>' +
+        '</div>',
+    };
+    //选择认证类型modal
+    var selectAuthorTypeModal = {
+        title: '',
+        afterText: '<div class="author-modal">' +
+        '<div class="close" onClick="closeGoAuthorModal()"><img src="img/icon/icon-modal-close.png"/></div>' +
+        //个人认证
+        '<div class="author-item" onClick="toAuthorPage(0)" style="margin-top:1.5rem;">' +
+        '<div class="author-item-inner">' +
+        '<img src="img/test/avatar.jpg"/><span>个人认证</span>' +
+        '</div>' +
+        '</div>' +
+        '<div class="author-item" onClick="toAuthorPage(1)" style="margin-bottom:1.3rem;">' +
+        '<div class="author-item-inner">' +
+        '<img src="img/test/avatar.jpg"/><span>组织或协会认证</span>' +
+        '</div>' +
+        '</div>' +
+        //组织或协会认证
+        '</div>'
+    };
+</script>
 </body>
 </html>

@@ -7,7 +7,8 @@ public enum DynamicTypeEnum {
 
 
     LIKE(1, "关注"),
-    SHARE(2, "转发");
+    SHARE(2, "转发"),
+    CANCEL(3, "取关");
 
     private int code;
 

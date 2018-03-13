@@ -42,14 +42,16 @@ public class PublishController {
      * @param size
      * @return
      */
-
-    @GetMapping("/index")
-    public ResultVO<List<PublishVO>> publishList(@RequestParam(value = "publishType", defaultValue = "0") Integer publishType,
-                                                 @RequestParam(value = "page", defaultValue = "0") Integer page,
-                                                 @RequestParam(value = "size", defaultValue = "10") Integer size) {
+    @GetMapping("/index/{openId}")
+    public ResultVO publishList(@PathVariable(name = "openId") String openId,
+                                @RequestParam(value = "publishType", defaultValue = "0") Integer publishType,
+                                @RequestParam(value = "page", defaultValue = "0") Integer page,
+                                @RequestParam(value = "size", defaultValue = "10") Integer size) {
 
         PageRequest request = new PageRequest(page, size);
-        return publishService.findAll(publishType, request);
+        List<PublishDTO> all = publishService.findAll(openId,publishType, request);
+        return ResultVOUtil.success(all);
+
     }
 
     /**
@@ -59,7 +61,7 @@ public class PublishController {
      * @param bindingResult
      * @return
      */
-    @PutMapping("/pet/create")
+    @PutMapping("/pet/{openId}")
     public ResultVO<Map<String, String>> create(@Valid PublishPetForm petForm, BindingResult bindingResult) {
 
         //验证表单数据是否正确

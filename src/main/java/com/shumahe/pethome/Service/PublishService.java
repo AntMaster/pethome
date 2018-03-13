@@ -24,7 +24,7 @@ public interface PublishService {
      * @param pageable
      * @return
      */
-    ResultVO<List<PublishVO>> findAll(Integer publishType, PageRequest pageable);
+    List<PublishDTO> findAll(String openId,Integer publishType, PageRequest pageable);
 
     /**
      * 寻宠发布

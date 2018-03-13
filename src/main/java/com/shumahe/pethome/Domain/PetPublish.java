@@ -132,7 +132,7 @@ public class PetPublish {
     /**
      * 关注量
      */
-    private Integer likeCount = 0;
+    //private Integer likeCount = 0;
 
     /**
      * 发布状态

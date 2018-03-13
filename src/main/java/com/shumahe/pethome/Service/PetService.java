@@ -68,6 +68,13 @@ public interface PetService {
     boolean albumDelete(Integer albumId);
 
     /**
+     * 删除相片
+     * @param albumId
+     * @return
+     */
+    boolean photoDelete(List<Integer> albumId);
+
+    /**
      * 用户宠卡列表
      */
 

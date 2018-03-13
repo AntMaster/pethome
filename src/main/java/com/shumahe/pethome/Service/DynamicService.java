@@ -1,5 +1,7 @@
 package com.shumahe.pethome.Service;
 
+import com.shumahe.pethome.DTO.PublishDTO;
+import com.shumahe.pethome.Domain.PetPublish;
 import com.shumahe.pethome.Domain.UserDynamic;
 import org.springframework.stereotype.Service;
 
@@ -8,6 +10,25 @@ import java.util.Map;
 
 
 public interface DynamicService {
+
+
+    /**
+     * 首页   关注，取关
+     * @param openId
+     * @param userDynamic
+     * @return
+     */
+    boolean likePublish(String openId,UserDynamic userDynamic);
+
+
+
+    /**
+     * 首页   我的关注
+     * @param openId
+     * @param
+     * @return
+     */
+    List<PublishDTO> MyLikes(String openId);
 
 
     /**
@@ -26,6 +47,7 @@ public interface DynamicService {
      * @return
      */
     List<Map<String,String>> findMyShare(String openId , int type);
+
 
     /**
      * 分享操作(主页)

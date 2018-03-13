@@ -1,7 +1,9 @@
 package com.shumahe.pethome.Controller;
 
+
 import com.shumahe.pethome.DTO.UserPetAlbumDTO;
 import com.shumahe.pethome.DTO.UserPetDTO;
+import com.shumahe.pethome.Domain.PetVariety;
 import com.shumahe.pethome.Domain.UserPet;
 import com.shumahe.pethome.Domain.UserPetAlbum;
 import com.shumahe.pethome.Domain.UserPetPhoto;
@@ -10,18 +12,27 @@ import com.shumahe.pethome.Exception.PetHomeException;
 import com.shumahe.pethome.Form.UserPetAlbumForm;
 import com.shumahe.pethome.Form.UserPetForm;
 import com.shumahe.pethome.Form.UserPetPhotoForm;
+import com.shumahe.pethome.Repository.PetVarietyRepository;
 import com.shumahe.pethome.Repository.UserPetAlbumRepository;
 import com.shumahe.pethome.Repository.UserPetPhotoRepository;
 import com.shumahe.pethome.Service.PetService;
 import com.shumahe.pethome.Util.ResultVOUtil;
 import com.shumahe.pethome.VO.ResultVO;
 import lombok.extern.slf4j.Slf4j;
+import net.minidev.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+
+import static java.util.Arrays.*;
 
 @RestController
 @Slf4j
@@ -37,6 +48,11 @@ public class PetController {
 
     @Autowired
     private UserPetPhotoRepository userPetPhotoRepository;
+
+
+    @Autowired
+    private PetVarietyRepository petVarietyRepository;
+
 
     /**
      * 新增宠卡
@@ -176,11 +192,14 @@ public class PetController {
     /**
      * 删除相片
      */
-    @DeleteMapping("/photo/{openId}")
-    public ResultVO albumDelete(@RequestParam("photoIds") String[] photoId) {
+    @DeleteMapping(value = "/photo/{openId}")
+    public ResultVO photoDelete(@RequestBody Map map) {
 
-
-        //boolean delete = petService.albumDelete(albumId);
+        List<Integer> photoIds = (ArrayList<Integer>) map.get("photoId");
+        if (photoIds.isEmpty()) {
+            throw new PetHomeException(ResultEnum.PARAM_ERROR);
+        }
+        boolean delete = petService.photoDelete(photoIds);
         return ResultVOUtil.success(123);
     }
 
@@ -227,10 +246,23 @@ public class PetController {
         return ResultVOUtil.success(photoDTO);
     }
 
-
     /**
-     *检查用户是否认证
+     * 获取宠物品种
+     *
+     * @return
      */
+    @GetMapping("/variety")
+    public ResultVO petVariety() {
 
+        List<PetVariety> petVarieties = petVarietyRepository.findAll();
+        if (petVarieties.isEmpty()) {
+            throw new PetHomeException(ResultEnum.RESULT_EMPTY);
+        }
+
+        Map<Integer, List<PetVariety>> varietyMap = petVarieties.stream().collect(Collectors.groupingBy(variety -> variety.getClassifyId()));
+
+        return ResultVOUtil.success(varietyMap);
+
+    }
 
 }

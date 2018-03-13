@@ -228,4 +228,25 @@ public class PetServiceImpl implements PetService {
 
         return true;
     }
+
+    /**
+     * 删除相片
+     *
+     * @param photoIds
+     * @return
+     */
+    @Override
+    public boolean photoDelete(List<Integer> photoIds) {
+
+        List<UserPetPhoto> photos = userPetPhotoRepository.findByIdIn(photoIds);
+        if (photos == null) {
+            return true;
+        }
+
+        photos.forEach(e -> e.setShow(ShowStateEnum.HIDE.getCode()));
+
+        userPetPhotoRepository.save(photos);
+
+        return true;
+    }
 }

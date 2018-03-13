@@ -1,18 +1,21 @@
 package com.shumahe.pethome.Controller;
 
+import com.shumahe.pethome.DTO.PublishDTO;
+import com.shumahe.pethome.Domain.PetPublish;
+import com.shumahe.pethome.Domain.UserDynamic;
+import com.shumahe.pethome.Enums.DynamicTypeEnum;
 import com.shumahe.pethome.Enums.ResultEnum;
 import com.shumahe.pethome.Exception.PetHomeException;
 
+import com.shumahe.pethome.Repository.PetPublishRepository;
+import com.shumahe.pethome.Repository.UserDynamicRepository;
 import com.shumahe.pethome.Service.BaseService.DynamicBaseService;
 import com.shumahe.pethome.Service.DynamicService;
 import com.shumahe.pethome.Util.ResultVOUtil;
 import com.shumahe.pethome.VO.ResultVO;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.*;
 
@@ -28,6 +31,45 @@ public class DynamicController {
 
     @Autowired
     DynamicBaseService dynamicBaseService;
+
+
+    @Autowired
+    PetPublishRepository petPublishRepository;
+
+    @Autowired
+    UserDynamicRepository userDynamicRepository;
+
+    /**
+     * 我的关注
+     *
+     * @param openId
+     * @return
+     */
+    @GetMapping("/like/{openId}")
+    public ResultVO mylikes(@PathVariable("openId") String openId) {
+
+        List<PublishDTO> publishDTOS = dynamicService.MyLikes(openId);
+
+        return ResultVOUtil.success(publishDTOS);
+    }
+
+
+    /**
+     * 关注取关 操作
+     *
+     * @param openId
+     * @return
+     */
+    @PutMapping("/like/{openId}")
+    public ResultVO likePublish(@PathVariable("openId") String openId, @RequestBody UserDynamic userDynamic) {
+
+
+        boolean state = dynamicService.likePublish(openId, userDynamic);
+
+
+        return ResultVOUtil.success(state);
+    }
+
 
     /**
      * 关注列表(我的关注 + 关注我的)
@@ -51,6 +93,7 @@ public class DynamicController {
 
     /**
      * 转发列表(我的关注 + 关注我的)
+     *
      * @param openId
      * @param type
      * @return

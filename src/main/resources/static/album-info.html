@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>相册详情</title>
+    <meta name="viewport" content="initial-scale=1, maximum-scale=1">
+    <link rel="shortcut icon" href="/favicon.ico">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <link rel="stylesheet" href="libs/l7/light7.min.css">
+    <link rel="stylesheet" href="libs/swiper/swiper.min.css">
+    <link rel="stylesheet" href="dest/all.min.css">
+    <link rel="stylesheet" type="text/css" href="dest/album-info.css" />
+</head>
+<!-- width:28%; margin:4%;-->
+
+<body>
+    <div class="page" id="album-info">
+        <div class="mask"></div>
+        <div class="content albumPage-content">
+            <!--封面-->
+            <div class="album-cover">
+                <div class="album-name">
+                    我家有宠初长成<img src="" alt="" class="editAlbumName" />
+                </div>
+                <div class="album-num">
+                    5张
+                </div>
+                <div class="pic-control album-btn">
+                    照片管理
+                </div>
+                <div class="cover-set album-btn">
+                    设置封面
+                </div>
+            </div>
+            <div class="photo-list">
+                <div class="photo">
+                    <div class="album-new">
+                        <input type="file" />
+                        <p class="plus">+</p>
+                        <p class="upPic">上传照片</p>
+                    </div>
+                </div>
+                <div class="photo">
+                    <span class="pic-del"></span>
+                </div>
+                <div class="photo">
+                    <span class="pic-del"></span>
+                </div>
+                <div class="photo">
+                    <span class="pic-del"></span>
+                </div>
+                <div class="photo">
+                    <span class="pic-del"></span>
+                </div>
+                <div class="photo">
+                    <span class="pic-del"></span>
+                </div>
+            </div>
+        </div>
+        <div class="cover-mask">
+            设为封面
+        </div>
+        <div class="del-mask">
+            删除照片
+        </div>
+    </div>
+    <script src="https://cdn.bootcss.com/jquery/1.12.4/jquery.min.js"></script>
+    <script type='text/javascript' src='libs/l7/light7.min.js'></script>
+    <script type='text/javascript' src='js/vue.js'></script>
+    <script type='text/javascript' src='js/common.js'></script>
+    <script type='text/javascript' src='js/album-info.js'></script>
+    <script>
+        $(function() {
+            //初始化一些样式
+            var pwidth = $(".photo").width();
+            $(".photo").css("height", pwidth);
+            var pmargin = window.innerWidth * 4 / 100;
+            $(".photo").css("margin-bottom", pmargin);
+        })
+    </script>
+</body>
+
+</html>

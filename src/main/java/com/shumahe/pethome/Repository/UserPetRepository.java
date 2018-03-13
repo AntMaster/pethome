@@ -8,7 +8,8 @@ import java.util.List;
 
 public interface UserPetRepository extends JpaRepository<UserPet,Integer> {
 
-
         List<UserPet> findByUserIdOrderByCreateTime(String openId);
+
+
 
 }

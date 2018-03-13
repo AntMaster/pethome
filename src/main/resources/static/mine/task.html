@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>我的任务</title>
+    <meta name="viewport" content="initial-scale=1, maximum-scale=1">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <link rel="stylesheet" href="../libs/l7/light7.min.css">
+    <link rel="stylesheet" href="../dest/all.min.css">
+</head>
+<body>
+    <div class="page" id="taskPage">
+        <!-- tabbar -->
+        <mc-tabbar page="mine" lv=2></mc-tabbar>
+        <div class="content taskPage-content">
+            <!-- nav -->
+            <div class="nav center-block">
+                <div class="nav-item flex-center" :class="{active:isPend}" @click="navChange(1)">
+                    <div class="nav-item-title">待处理（4）</div>
+                    <div class="nav-item-indicator"></div>
+                </div>
+                <div class="nav-item flex-center" :class="{active:!isPend}" @click="navChange(2)">
+                    <div class="nav-item-title">我发布的</div>
+                    <div class="nav-item-indicator"></div>
+                </div>
+            </div>
+            <!-- list -->
+            <div class="list-block media-list">
+                <ul>
+                    <li v-for="item in taskArr">
+                        <div class="item-content task-card">
+                            <div class="item-media">
+                                <img src="../img/test/avatar.jpg" style='width: 4rem;'>
+                            </div>
+                            <div class="item-inner">
+                                <div class="item-title-row">
+                                    <div class="item-title">发布频道：寻宠</div>
+                                </div>
+                                <div class="item-subtitle">宠物昵称：咪咪</div>
+                                <div class="item-subtitle">丢失日期：2018-02-10</div>
+                            </div>
+                            <div class="item-action flex-center">找到了</div>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    <script src="https://cdn.bootcss.com/jquery/1.12.4/jquery.min.js"></script>
+    <script type='text/javascript' src='../libs/l7/light7.min.js'></script>
+    <script type='text/javascript' src='../js/vue.js'></script>
+    <script type='text/javascript' src='../js/common.js'></script>
+    <script type='text/javascript' src='../js/components.js'></script>
+    <script src="../js/task.js"></script>
+</body>
+
+</html>

@@ -6,6 +6,7 @@ import com.shumahe.pethome.DTO.PublishDTO;
 import com.shumahe.pethome.Domain.PetPublish;
 
 import com.shumahe.pethome.Domain.UserBasic;
+import com.shumahe.pethome.Domain.UserDynamic;
 import com.shumahe.pethome.Enums.*;
 import com.shumahe.pethome.Exception.PetHomeException;
 
@@ -59,6 +60,10 @@ public class PublishServiceImpl implements PublishService {
     @Autowired
     MessageService messageService;
 
+
+    @Autowired
+    UserDynamicRepository userDynamicRepository;
+
     /**
      * 主页列表(动态+寻主+寻宠)
      *
@@ -67,21 +72,21 @@ public class PublishServiceImpl implements PublishService {
      * @return
      */
     @Override
-    public ResultVO findAll(Integer publishType, PageRequest pageable) {
+    public List<PublishDTO> findAll(String openId, Integer publishType, PageRequest pageable) {
 
 
         Page<PetPublish> result;
         if (publishType == 0) {
             /**动态*/
-            result = petPublishRepository.findByOrderByCreateTimeDesc(pageable);
+            result = petPublishRepository.findByPublishStateOrderByCreateTimeDesc(ShowStateEnum.SHOW.getCode(), pageable);
 
         } else {
             /**寻主/寻宠*/
-            result = petPublishRepository.findByPublishTypeOrderByCreateTimeDesc(publishType, pageable);
+            result = petPublishRepository.findByPublishTypeAndPublishStateOrderByCreateTimeDesc(publishType, ShowStateEnum.SHOW.getCode(), pageable);
         }
 
         List<PetPublish> publishList = result.getContent();
-        if (publishList == null) {
+        if (publishList.isEmpty()) {
             throw new PetHomeException(ResultEnum.RESULT_EMPTY);
         }
 
@@ -89,8 +94,21 @@ public class PublishServiceImpl implements PublishService {
         /**
          * BaseService查关联信息
          */
-        List<PublishDTO> list = publishBaseService.findPetExtends(publishList);
-        return ResultVOUtil.success(list);
+        List<PublishDTO> publishDTOS = publishBaseService.findPetExtends(publishList);
+
+        /**
+         * 查看我是否关注了该发布
+         */
+        List<UserDynamic> likes = userDynamicRepository.findByUserIdFromAndDynamicTypeOrderByCreateTimeDesc(openId, DynamicTypeEnum.LIKE.getCode());
+        int[] publishIds = likes.stream().mapToInt(e -> e.getPublishId()).distinct().toArray();
+
+        publishDTOS.forEach(a -> Arrays.stream(publishIds).forEach(e -> {
+            if (a.getId() == e) {
+                a.setLikeState(true);
+            }
+        }));
+
+        return publishDTOS;
 
     }
 

@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>宠卡</title>
+    <meta name="viewport" content="initial-scale=1, maximum-scale=1">
+    <link rel="shortcut icon" href="/favicon.ico">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <link rel="stylesheet" href="libs/l7/light7.min.css">
+    <link rel="stylesheet" href="libs/swiper/swiper.min.css">
+    <link rel="stylesheet" href="dest/all.min.css">
+</head>
+
+<body>
+    <div class="page" id="card-index">
+        <!-- tabbar -->
+        <mc-tabbar page="publish"></mc-tabbar>
+        <div class="content cardIndex-content">
+            <div class="card-box center-block">
+                <!-- 层叠效果 -->
+                <div class="stack">
+                    <div class="stack-one"></div>
+                    <div class="stack-two"></div>
+                </div>
+                <!-- 宠卡 -->
+                <div class="card-create">
+                    <!-- 正面 -->
+                    <div class="card-front">
+                        <div class="card-cover">
+                            <img src="img/card_cover.png" />
+                        </div>
+                        <div class="card-title">为爱宠创建身份证</div>
+                        <div class="card-subtitle">让Ta成为一个有身份的主子</div>
+                        <button class="card-btn center-block" @click="create()">创建宠卡</button>
+                    </div>
+                    <!-- 反面 -->
+                    <div class="card-back">
+                        <div class="avatar">
+                            <img src="img/test/avatar.jpg" />
+                        </div>
+                        <form class="card-form">
+                            <div class="card-form-item card-name-input">
+                                <input type="text" :model="cardFormModel.NickName" placeholder="请填写爱宠的名字" />
+                            </div>
+                            <!-- 类别 -->
+                            <div class="card-form-item">
+                                <div class="item-title">类别</div>
+                                <div class="item-input sex-input">
+                                    <span :class="{active:cardFormModel.ClassifyID == 3}" @click="selectClass(3)">汪</span>
+                                    <span :class="{active:cardFormModel.ClassifyID == 2}" @click="selectClass(2)">喵</span>
+                                </div>
+                            </div>
+                            <!-- 生日 -->
+                            <div class="card-form-item">
+                                <div class="item-title">生日</div>
+                                <div class="item-input">
+                                    <input :model="cardFormModel.Birthday" id="datetime-picker" value="2018-03-05 08:30" id="datetime-picker" class="date-picker" placeholder="还记得爱宠的生日吗" />
+                                </div>
+                            </div>
+                            <!-- 性别 -->
+                            <div class="card-form-item">
+                                <div class="item-title">性别</div>
+                                <div class="item-input sex-input">
+                                    <span :class="{active:cardFormModel.PetSex}" @click="selectSex(1)">公</span>
+                                    <span :class="{active:!cardFormModel.PetSex}" @click="selectSex(0)">母</span>
+                                </div>
+                            </div>
+                            <!-- 是否绝育 -->
+                            <div class="card-form-item">
+                                <div class="item-title">是否绝育</div>
+                                <div class="item-input sex-input">
+                                    <span :class="{active:cardFormModel.ContraceptionState}" @click="selectContraceptionState(1)">已绝育</span>
+                                    <span :class="{active:!cardFormModel.ContraceptionState}" @click="selectContraceptionState(0)">未绝育</span>
+                                </div>
+                            </div>
+                            <!-- 小特点 -->
+                            <div class="card-form-item">
+                                <div class="item-title">小特点</div>
+                                <div class="item-input">
+                                    <input v-model="cardFormModel.Description" placeholder="一句话描述下爱宠" />
+                                </div>
+                            </div>
+                            <!-- 芯片号 -->
+                            <div class="card-form-item">
+                                <div class="item-title">芯片号</div>
+                                <div class="item-input">
+                                    <input v-model="cardFormModel.ChipNo" placeholder="（选填）" />
+                                </div>
+                            </div>
+                            <!-- btn -->
+                            <div class="card-form-btn center-block" @click="submit">填好啦~</div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="https://cdn.bootcss.com/jquery/1.12.4/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/velocity/1.2.3/velocity.min.js"></script>
+    <script type='text/javascript' src='libs/l7/light7.min.js'></script>
+    <script type='text/javascript' src='js/vue.js'></script>
+    <script type='text/javascript' src='js/common.js'></script>
+    <script type="text/javascript" src='js/components.js'></script>
+    <script type="text/javascript" src='js/card-index.js'></script>
+</body>
+
+</html>

@@ -18,6 +18,10 @@ public class PublishDTO {
 
     private String publisherId;
 
+
+    private Integer publishType;
+
+
     //发布人昵称
     private String publisherName;
 
@@ -43,6 +47,12 @@ public class PublishDTO {
     private String ownerContact;
 
     private String petDescription;
+
+    private Integer viewCount;
+
+    private Integer shareCount;
+
+    private boolean likeState = false;
 
     //私信条数
     private Integer privateMsgCount = 0;

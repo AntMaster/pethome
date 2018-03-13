@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>发布寻宠</title>
+    <meta name="viewport" content="initial-scale=1, maximum-scale=1">
+    <link rel="shortcut icon" href="/favicon.ico">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <link rel="stylesheet" href="libs/l7/light7.min.css">
+    <link rel="stylesheet" href="libs/swiper/swiper.min.css">
+    <link rel="stylesheet" href="dest/all.min.css">
+</head>
+
+<body>
+    <div class="page" id="fpet">
+        <div class="mask"></div>
+        <div class="content fpet-content">
+            <div class="list-block">
+                <ul>
+                    <!-- Text inputs -->
+                    <li>
+                        <div class="item-content">
+                            <div class="item-inner">
+                                <div class="item-title label">宠物昵称</div>
+                                <div class="item-input">
+                                    <input v-model="formData.PetName" type="text" placeholder="请输入宠物昵称">
+                                </div>
+                            </div>
+                        </div>
+                    </li>
+                    <!-- Select -->
+                    <li>
+                        <div class="item-content">
+                            <div class="item-inner">
+                                <div class="item-title label">宠物性别</div>
+                                <div class="item-input sex-input">
+                                    <span @click="selectSex(1)" :class="{active:maleActive}">公</span>
+                                    <span @click="selectSex(2)" :class="{active:femaleActive}">母</span>
+                                </div>
+                            </div>
+                        </div>
+                    </li>
+                    <li>
+                        <div class="item-content item-link">
+                            <div class="item-inner">
+                                <div class="item-title label">宠物类别</div>
+                                <div class="item-input">
+                                    <input v-model="petType" class="create-actions" placeholder="请选择宠物类别">
+                                </div>
+                            </div>
+                        </div>
+                    </li>
+                    <li>
+                        <div class="item-content item-link">
+                            <div class="item-inner">
+                                <div class="item-title label">宠物品种</div>
+                                <div class="item-input">
+                                    <input v-model="formData.VarietyID" class="open-popup" data-popup=".popup-petVariety" placeholder="请选择宠物品种">
+                                </div>
+                            </div>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+            <div class="list-block">
+                <ul>
+                    <!-- Text inputs -->
+                    <li>
+                        <div class="item-content">
+                            <div class="item-inner">
+                                <div class="item-title label">丢失日期</div>
+                                <div class="item-input">
+                                    <input value="2018-03-05 08:30" id="datetime-picker" placeholder="请选择丢失日期">
+                                </div>
+                            </div>
+                        </div>
+                    </li>
+                    <!-- Select -->
+                    <li>
+                        <a class="item-content item-link" href="location.html">
+                            <div class="item-inner">
+                                <div class="item-title label">丢失地点</div>
+                                <div class="item-input">
+                                    <input v-model="formData.LostLocation" type="text" placeholder="请填写丢失地点">
+                                </div>
+                            </div>
+                        </a>
+                    </li>
+                    <li>
+                        <div class="item-content">
+                            <div class="item-inner">
+                                <div class="item-title label">主人姓名</div>
+                                <div class="item-input">
+                                    <input placeholder="请填写主人姓名">
+                                </div>
+                            </div>
+                        </div>
+                    </li>
+                    <li>
+                        <div class="item-content">
+                            <div class="item-inner">
+                                <div class="item-title label">联系方式</div>
+                                <div class="item-input">
+                                    <input type="number" placeholder="请填写常用手机号码">
+                                </div>
+                            </div>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+            <div class="list-block">
+                <ul>
+                    <li>
+                        <div class="item-content">
+                            <div class="item-inner">
+                                <div class="item-title label">描述</div>
+                                <div class="item-input">
+                                    <input v-model="formData.PetDescription" type="text" placeholder="请描述宠物特点（选填）">
+                                </div>
+                            </div>
+                        </div>
+                    </li>
+                    <!-- Select -->
+                    <li>
+                        <div class="item-content">
+                            <div class="item-inner">
+                                <div class="item-title label">图片</div>
+                                <div class="item-input">
+                                    <input v-model="formData.petImage" type="text" placeholder="">
+                                </div>
+                            </div>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+            <button type="submit" class="publish-btn" @click="submitRelease">提交</button>
+        </div>
+        <!--宠物品种 popup -->
+        <div class="popup popup-petVariety">
+            <div class="variety-box">
+                <ul class="commonList-row">
+                    <li v-for="item in 12" class="flex-center">
+                        <div class="avatar">
+                            <img src="img/test/avatar.jpg" />
+                        </div>
+                        <div class="name">柯基</div>
+                    </li>
+                </ul>
+            </div>
+            <div class="cancel-btn">
+                <div class="btn flex-center close-popup">取消</div>
+            </div>
+        </div>
+    </div>
+    <script src="https://cdn.bootcss.com/jquery/1.12.4/jquery.min.js"></script>
+    <script type='text/javascript' src='libs/l7/light7.min.js'></script>
+    <script type='text/javascript' src='js/vue.js'></script>
+    <script type='text/javascript' src='js/common.js'></script>
+    <script src="https://unpkg.com/vue-baidu-map"></script>
+    <script type='text/javascript' src='js/fpet.js'></script>
+</body>
+
+</html>

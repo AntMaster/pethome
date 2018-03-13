@@ -11,6 +11,7 @@ import java.util.Date;
 @Data
 public class PublishPetForm {
 
+
     @NotBlank(message = "宠物昵称petName必填")
     private String petName;
 

@@ -1,5 +1,6 @@
 package com.shumahe.pethome.Domain;
 
+import com.shumahe.pethome.Enums.ReadStateEnum;
 import lombok.Data;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
@@ -44,6 +45,13 @@ public class UserDynamic {
 
 
     /**
+     * 阅读状态
+     */
+    @Column(name = "readstate")
+    private Integer readState = ReadStateEnum.NOT_READ.getCode();
+
+
+    /**
      * 互动提交时间
      */
     @CreatedDate
@@ -54,6 +62,7 @@ public class UserDynamic {
     /**
      * 最后一次互动时间
      */
+    @LastModifiedDate
     @Column(name = "updatetime")
     private Date updateTime;
 
