@@ -10,9 +10,11 @@ import com.shumahe.pethome.Exception.PetHomeException;
 import com.shumahe.pethome.Repository.UserBasicRepository;
 import lombok.extern.slf4j.Slf4j;
 import me.chanjar.weixin.common.api.WxConsts;
+import me.chanjar.weixin.common.bean.menu.WxMenu;
 import me.chanjar.weixin.common.exception.WxErrorException;
 import me.chanjar.weixin.mp.api.WxMpInMemoryConfigStorage;
 import me.chanjar.weixin.mp.api.WxMpService;
+import me.chanjar.weixin.mp.bean.menu.WxMpMenu;
 import me.chanjar.weixin.mp.bean.result.WxMpOAuth2AccessToken;
 import me.chanjar.weixin.mp.bean.result.WxMpUser;
 import org.springframework.beans.BeanUtils;
@@ -27,6 +29,8 @@ import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.List;
 
+import static org.hibernate.validator.internal.util.Contracts.assertNotNull;
+
 /**
  * Created by zhangyu
  */
@@ -34,7 +38,8 @@ import java.util.List;
 @RequestMapping("/wechat")
 @Slf4j
 public class WechatController {
-
+    //http://girl.nat300.top/pethome/wechat/authorize?returnUrl=http://girl.nat300.top/pethome/index.html
+//http://girl.nat300.top/pethome/index.html?openid=oCLNDwc8bUgjnBUibOX1yfPh5Ni0
     @Autowired
     private WxMpService wxMpService;
 
@@ -49,14 +54,15 @@ public class WechatController {
 
 
     @GetMapping("/authorize")
-    public String authorize(@RequestParam("returnUrl") String returnUrl) {
+    public String authorize() {//@RequestParam("returnUrl") String returnUrl
+
         //1. 配置
         //2. 调用方法
         String url = projectUrlConfig.getWechatMpAuthorize() + "/pethome/wechat/userinfo";
 
         String redirectUrl;
         try {
-            redirectUrl = wxMpService.oauth2buildAuthorizationUrl(url, WxConsts.OAuth2Scope.SNSAPI_USERINFO, URLEncoder.encode(returnUrl, "UTF-8"));
+            redirectUrl = wxMpService.oauth2buildAuthorizationUrl(url, WxConsts.OAuth2Scope.SNSAPI_USERINFO, URLEncoder.encode("http://girl.nat300.top/pethome/index.html", "UTF-8"));
         } catch (UnsupportedEncodingException e) {
             log.error("【有异常】{}", e);
             throw new PetHomeException(999, e.getMessage());
@@ -76,7 +82,8 @@ public class WechatController {
      */
     @GetMapping("/userinfo")
     public String userInfo(@RequestParam("code") String code,
-                           @RequestParam("state") String returnUrl) {
+                           @RequestParam("state") String returnUrl) throws WxErrorException {
+
 
         WxMpOAuth2AccessToken wxMpOAuth2AccessToken;
         WxMpUser user;
@@ -86,12 +93,17 @@ public class WechatController {
             wxMpOAuth2AccessToken = wxMpService.oauth2getAccessToken(code);//如果code使用过，5分钟内再次使用会报错。
             user = wxMpService.oauth2getUserInfo(wxMpOAuth2AccessToken, null);
 
-            saveUser(user);
+
+
+            //saveUser(user);
 
         } catch (WxErrorException e) {
             log.error("【微信网页授权】{}", e);
             throw new PetHomeException(ResultEnum.WECHAT_MP_ERROR.getCode(), e.getError().getErrorMsg());
         }
+
+
+
 
         return "redirect:" + returnUrl + "?openid=" + wxMpOAuth2AccessToken.getOpenId();
     }
