@@ -648,10 +648,11 @@ public class MessageServiceImpl implements MessageService {
 
         UserDTO userDTO = new UserDTO(my.getOpenId(), my.getNickName(), my.getHeadImgUrl());
         userDTO.setApprove(my.getApprove());
-        userDTO.setTagsName(tagsName);
         userDTO.setUnFinishCount(petCount);
         userDTO.setPrivateMsgCount(privateCount);
         userDTO.setPublicMsgCount(publishCount);
+        if (!tagsName.isEmpty())
+            userDTO.setTagName(tagsName.get(0));
 
 
         return userDTO;

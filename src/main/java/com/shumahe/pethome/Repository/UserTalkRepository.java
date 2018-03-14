@@ -58,7 +58,7 @@ public interface UserTalkRepository extends JpaRepository<UserTalk, Integer> {
      * @param readState
      * @return
      */
-    @Query(value = "select count(id) from UserTalk  where publishId = ?1 AND  showstate = ?2", nativeQuery = true)
+    @Query(value = "select count(id) from UserTalk  where publisherId = ?1 AND  showstate = ?2", nativeQuery = true)
     int notReadTalksCount(String openId,Integer readState);
 
 

@@ -252,14 +252,14 @@ public class PublishServiceImpl implements PublishService {
     /**
      * 已找到
      *
-     * @param publishId
+     * @param id
      * @param openId
      * @return
      */
     @Override
-    public PetPublish petFound(Integer publishId, String openId) {
+    public PetPublish petFound(String openId,Integer id) {
 
-        PetPublish pet = petPublishRepository.findByIdAndPublisherId(publishId, openId);
+        PetPublish pet = petPublishRepository.findByIdAndPublisherId(id, openId);
         if (pet == null) {
             throw new PetHomeException(ResultEnum.RESULT_EMPTY.getCode(), "未查询到该发布");
         }

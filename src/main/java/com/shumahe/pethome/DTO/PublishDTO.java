@@ -1,8 +1,11 @@
 package com.shumahe.pethome.DTO;
 
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonInclude;
 
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.shumahe.pethome.Util.serializer.Date2LongSerializer;
 import lombok.Data;
 
 
@@ -34,6 +37,9 @@ public class PublishDTO {
 
     private String petImage;
 
+    //@JsonSerialize(using = Date2LongSerializer.class)
+    //@JsonFormat(timezone = "GMT+8", pattern = "yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(timezone = "GMT+8", pattern = "yyyy-MM-dd")
     private Date lostTime;
 
     private String lostLocation;
@@ -53,6 +59,8 @@ public class PublishDTO {
     private Integer shareCount;
 
     private boolean likeState = false;
+
+    private boolean findState ;
 
     //私信条数
     private Integer privateMsgCount = 0;

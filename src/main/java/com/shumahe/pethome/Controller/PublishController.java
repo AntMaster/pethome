@@ -49,7 +49,7 @@ public class PublishController {
                                 @RequestParam(value = "size", defaultValue = "10") Integer size) {
 
         PageRequest request = new PageRequest(page, size);
-        List<PublishDTO> all = publishService.findAll(openId,publishType, request);
+        List<PublishDTO> all = publishService.findAll(openId, publishType, request);
         return ResultVOUtil.success(all);
 
     }
@@ -111,14 +111,14 @@ public class PublishController {
      * 我的模块 ------> 发布列表
      * PS:按时间查个人
      */
-    @GetMapping("/user/publishlist")
-    public List<PublishDTO> myPublishList(@RequestParam("openId") String openId,
-                                          @RequestParam(value = "page", defaultValue = "0") Integer page,
-                                          @RequestParam(value = "size", defaultValue = "10") Integer size) {
+    @GetMapping("/{openId}")
+    public ResultVO myPublish(@PathVariable("openId") String openId,
+                                      @RequestParam(value = "page", defaultValue = "0") Integer page,
+                                      @RequestParam(value = "size", defaultValue = "10") Integer size) {
 
         PageRequest pageRequest = new PageRequest(page, size);
         List<PublishDTO> myPublishList = publishService.findMyPublishList(openId, pageRequest);
-        return myPublishList;
+        return ResultVOUtil.success(myPublishList);
     }
 
 
@@ -126,16 +126,16 @@ public class PublishController {
      * 我的模块 ------> 待处理列表
      * PS:按时间查个人
      */
-    @GetMapping("/user/notFoundList")
-    public List<PublishDTO> findNotFound(@RequestParam("openId") String openId,
-                                         @RequestParam(value = "page", defaultValue = "0") Integer page,
-                                         @RequestParam(value = "size", defaultValue = "10") Integer size) {
+    @GetMapping("/task/{openId}")
+    public ResultVO myNotFound(@PathVariable("openId") String openId,
+                               @RequestParam(value = "page", defaultValue = "0") Integer page,
+                               @RequestParam(value = "size", defaultValue = "10") Integer size) {
 
         PageRequest pageRequest = new PageRequest(page, size);
         List<PublishDTO> myPublishList = publishService.findNotFound(openId, pageRequest);
 
 
-        return myPublishList;
+        return ResultVOUtil.success(myPublishList);
     }
 
 
@@ -160,15 +160,16 @@ public class PublishController {
     /**
      * 详情模块 ------> 已找到
      *
-     * @param publishId
+     * @param id
      * @param openId
      * @return
      */
-    @PostMapping("pet/found")
-    public ResultVO petFound(Integer publishId, String openId) {
+    @PostMapping("pet/find/{openId}")
+    public ResultVO petFind(@PathVariable("openId") String openId, @RequestParam("id") Integer id) {
 
-        PetPublish petPublish = publishService.petFound(publishId, openId);
+        PetPublish petPublish = publishService.petFound(openId, id);
         return ResultVOUtil.success(petPublish);
+
     }
 
 }

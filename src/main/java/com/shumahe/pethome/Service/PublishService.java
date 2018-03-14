@@ -75,11 +75,11 @@ public interface PublishService {
     /**
      * 已找到
      *
-     * @param publishId
+     * @param id)
      * @param openId
      * @return
      */
-    PetPublish petFound(Integer publishId, String openId);
+    PetPublish petFound(String openId,Integer id);
 
 
 

@@ -82,7 +82,7 @@ public interface PublishTalkRepository extends JpaRepository<PublishTalk, Intege
      * @param ReplierAccept
      * @return
      */
-    @Query(value = "SELECT count(id) FROM PublishTalk WHERE PublishID in (SELECT DISTINCT PublishID FROM PublishTalk WHERE PublisherID = ?1 OR ReplierFrom = ?2 OR ReplierAccept = ?3 )AND ReadState = ?4;", nativeQuery = true)
+    @Query(value = "SELECT count(id) FROM PublishTalk WHERE PublishID in (SELECT DISTINCT PublishID FROM PublishTalk WHERE PublisherID = ?1 OR ReplierFrom = ?2 OR ReplierAccept = ?3 ) AND ReadState = ?4 ", nativeQuery = true)
     int notReadTalksCount(String PublisherID, String ReplierFrom, String ReplierAccept,Integer readCount);
 
 }

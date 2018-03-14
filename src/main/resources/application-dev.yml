@@ -59,9 +59,9 @@ spring:
 
 ######自定义配置
 web:
-  upload-path:  D:/test/
+  upload-path:  D:/petlove/
 
-picturePath: D:/test/
+picturePath: D:/petlove/upload/
 
 
 wechat:

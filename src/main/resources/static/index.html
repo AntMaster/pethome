@@ -35,7 +35,7 @@
         <!-- nav -->
         <div class="index-nav center-block">
             <ul class="commonList-row">
-                <li @click="loaDdynamicList" class="active">动态</li>
+                <li @click="loadDynamicList" class="active">动态</li>
                 <li @click="loadFindPetList">寻宠</li>
                 <li @click="loadFindOwnerList">寻主</li>
                 <li @click="loadFindAttentionList">关注</li>
@@ -72,6 +72,10 @@
                             </div>
                             <div class="card-content">
                                 {{item.petDescription}}
+                                <div class="card-content-img">
+                                    <img :src="(item.petImage).split(';')[0]"/>
+                                </div>
+
                             </div>
                             <div class="card-footer no-border">
                                 <div href="#" class="link">
@@ -114,22 +118,14 @@
         data: {
             //是否认证
             isAuthority: false,
-            //模拟数据
-            //1：寻宠；2：寻主
-            //1：已找到；2：未找到
-            dynamicArr: [
-                {classifyId: 2, publishType: 1, petFindState: 2},
-                {classifyId: 3, publishType: 2, petFindState: 2},
-                {classifyId: 2, publishType: 2, petFindState: 1}
-            ]
+            dynamicArr: []
         },
         mounted: function () {
-            //初始化操作
-            this.loaDdynamicList();
+            this.loadDynamicList();
         },
         methods: {
 
-            loaDdynamicList: function () {
+            loadDynamicList: function () {
 
                 //load data
                 $.ajax({
@@ -230,7 +226,6 @@
                         }
                     }
                 });
-
             }
         }
     });

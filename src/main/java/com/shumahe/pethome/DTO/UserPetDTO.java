@@ -1,5 +1,6 @@
 package com.shumahe.pethome.DTO;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.shumahe.pethome.Domain.UserPetAlbum;
 import com.shumahe.pethome.Enums.ContraceptionStateEnum;
@@ -35,6 +36,7 @@ public class UserPetDTO {
     private String chipNo;
 
 
+    @JsonFormat(timezone = "GMT+8", pattern = "yyyy-MM-dd")
     private Date createTime;
 
 

@@ -59,8 +59,9 @@ public interface PetPublishRepository extends JpaRepository<PetPublish, Integer>
      * @param pageRequest
      * @return
      */
-    List<PetPublish> findByPublisherIdAndFindStateOrderByCreateTimeDesc(String openId, int petFindState, PageRequest pageRequest);
+    List<PetPublish> findByPublisherIdAndFindStateOrderByCreateTimeDesc(String openId, Integer petFindState, Pageable pageRequest);
 
+    //List<PetPublish> findByPublisherIdAndFindStateOrderByCreateTimeDesc(String openId, Integer findState);
 
     /**
      * 查询一个发布
@@ -87,7 +88,7 @@ public interface PetPublishRepository extends JpaRepository<PetPublish, Integer>
      * @param findState
      * @return
      */
-    @Query(value = "select count(id) from petpublish where PublisherId = ?1 and FindState = ?2", nativeQuery = true)
+    @Query(value = "select count(id) from petpublish where publisher_id = ?1 and Find_State = ?2", nativeQuery = true)
     int notReadPetCount(String openId, Integer findState);
 
 

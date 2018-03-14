@@ -1,5 +1,6 @@
 package com.shumahe.pethome.DTO;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
 
 import java.util.Date;
@@ -69,6 +70,7 @@ public class PrivateMsgDTO {
     /**
      * 互动时间
      */
+    @JsonFormat(timezone = "GMT+8", pattern = "yyyy-MM-dd")
     private Date talkDate;
 
 

@@ -3,6 +3,8 @@ package com.shumahe.pethome.Controller;
 import com.shumahe.pethome.Enums.ResultEnum;
 import com.shumahe.pethome.Exception.PetHomeException;
 import com.shumahe.pethome.Util.FileUtil;
+import com.shumahe.pethome.Util.ResultVOUtil;
+import com.shumahe.pethome.VO.ResultVO;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.*;
@@ -22,8 +24,7 @@ public class FileController {
       在Servlet 里用this.getServletContext().getRealPath("/");获得绝对路径。
         struts里用this.getServlet().getServletContext().getRealPath("/")获得绝对路径。
     */
-//C:\Users\zhangkaikai\AppData\Local\Temp\tomcat-docbase.2888174334023273962.8080\
-// C:\Users\zhangkaikai\AppData\Local\Temp\tomcat-docbase.6824274477539226052.8080\
+
     //
     /**
      * 发布上传图片
@@ -35,20 +36,21 @@ public class FileController {
     @Value("${picturePath}")
     private  String picturePath;
 
-    @RequestMapping(value = "/publish", method = RequestMethod.POST)
-    public String upload(@RequestParam("file") MultipartFile file, HttpServletRequest request) {
 
+    @PutMapping(value = "/publish")
+    public ResultVO upload(@RequestParam("file") MultipartFile file, HttpServletRequest request) {
 
         String fileName = (System.currentTimeMillis() + file.getOriginalFilename()).replaceAll(";", "");
-
-        String filePath = request.getSession().getServletContext().getRealPath("")  + "WEB-INF" + File.separator + "classes" + File.separator;
+        //String filePath = request.getSession().getServletContext().getRealPath("")  + "WEB-INF" + File.separator + "classes" + File.separator;
+        String filePath =  picturePath + File.separator + "picture" + File.separator + "publish" +  File.separator  ;
         try {
             FileUtil.uploadFile(file.getBytes(), filePath, fileName);
         } catch (Exception e) {
             throw new PetHomeException(ResultEnum.FAILURE.getCode(), "文件上传失败");
         }
 
-        return "/upload/publish/" + fileName;
+        String path  = "upload/picture/publish/" + fileName;
+        return ResultVOUtil.success(path);
     }
 
 /*

@@ -33,7 +33,6 @@ public class PublishBaseServiceImpl implements PublishBaseService {
     UserBasicRepository userBasicRepository;
 
 
-
     /**
      * 查询发布扩展信息(发布人详情 + 评论数详情)
      *
@@ -52,16 +51,20 @@ public class PublishBaseServiceImpl implements PublishBaseService {
          */
         List<Object[]> commentCount = publishTalkRepository.findPublishCommentCount(publishIds);
 
+
         //Map<publishId,msgCount>
         List<Map<Integer, Integer>> msgCount = new ArrayList<>();
 
-        commentCount.stream().forEach((Object[] count) -> {
+        if (!commentCount.isEmpty()) {
 
-            Map<Integer, Integer> _tempMsg = new HashMap<>();
-            _tempMsg.put((Integer) count[0], (Integer) count[1]);
-            msgCount.add(_tempMsg);
+            commentCount.stream().forEach((Object[] count) -> {
 
-        });
+                Map<Integer, Integer> _tempMsg = new HashMap<>();
+                _tempMsg.put((Integer) count[0], (Integer) count[1]);
+                msgCount.add(_tempMsg);
+
+            });
+        }
 
 
         /**
@@ -77,12 +80,14 @@ public class PublishBaseServiceImpl implements PublishBaseService {
 
         publishDTOS.stream().forEach(publishDTO -> {
 
-            msgCount.stream().forEach(msg -> msg.forEach((k, v) -> {
-                if (publishDTO.getId() == k) {
-                    publishDTO.setPublicMsgCount(v);
-                    return;
-                }
-            }));
+            if (!msgCount.isEmpty()){
+                msgCount.stream().forEach(msg -> msg.forEach((k, v) -> {
+                    if (publishDTO.getId() == k) {
+                        publishDTO.setPublicMsgCount(v);
+                        return;
+                    }
+                }));
+            }
 
             userBasics.stream().forEach(userBasic -> {
                 if (publishDTO.getPublisherId().trim().equals(userBasic.getOpenId().trim())) {

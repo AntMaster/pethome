@@ -26,13 +26,13 @@
                     <li>
                         <div class="item-content head">
                             <div class="item-media">
-                                <img src="img/test/avatar.jpg" />
+                                <img :src="myself.headImgUrl" />
                             </div>
                             <div class="item-inner">
                                 <div class="item-title-row">
-                                    <div class="item-title">猫大王的幸福生活</div>
+                                    <div class="item-title">{{myself.nickName}}</div>
                                 </div>
-                                <div class="item-subtitle item-tag flex-center">已认证</div>
+                                <div class="item-subtitle item-tag flex-center">{{myself.approve ? '已认证' : '未认证' }}</div>
                             </div>
                             <!-- 身份 -->
                             <div class="item-identity"></div>
@@ -41,8 +41,8 @@
                 </ul>
                 <!-- 是否志愿者 -->
                 <div class="volunteer-tag">
-                    <img src="img/test/avatar.jpg" />
-                    <span>志愿者</span>
+                    <img :src="myself.headImgUrl" />
+                    <span>{{myself.tagName}}</span>
                 </div>
             </div>
             <!-- 菜单 -->
@@ -82,7 +82,7 @@
                             </div>
                             <div class="item-inner">
                                 <div class="item-title">私信
-                                    <span class="badge">4</span>
+                                    <span class="badge">{{myself.privateMsgCount}}</span>
                                 </div>
                             </div>
                         </a>
@@ -103,7 +103,9 @@
                                 <i class="icon icon-f7"></i>
                             </div>
                             <div class="item-inner">
-                                <div class="item-title">互动</div>
+                                <div class="item-title">互动
+                                    <span class="badge">{{myself.publicMsgCount}}</span>
+                                </div>
                             </div>
                         </a>
                     </li>

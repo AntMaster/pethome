@@ -6,7 +6,7 @@ import lombok.Getter;
 public enum PetFindStateEnum {
 
     FOUND(1, "已找到"),
-    NOT_FOUND(2, "未找到");
+    NOT_FOUND(0, "未找到");
 
     private int code;
 

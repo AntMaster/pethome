@@ -17,6 +17,8 @@ public class UserDTO {
 
     private List<String> tagsName;
 
+    private String tagName;
+
     private Integer publishCount;
 
 

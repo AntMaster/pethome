@@ -1,5 +1,6 @@
 package com.shumahe.pethome.DTO;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.shumahe.pethome.Enums.ShowStateEnum;
 import lombok.Data;
@@ -27,6 +28,7 @@ public class UserPetPhotoDTO {
     private String description;
 
 
+    @JsonFormat(timezone = "GMT+8", pattern = "yyyy-MM-dd")
     private Date createTime;
 
 }
