@@ -42,7 +42,7 @@
                             <div class="item-subtitle">宠物昵称：{{item.petName}}</div>
                             <div class="item-subtitle">丢失日期：{{item.lostTime}}</div>
                         </div>
-                        <div class="item-action flex-center" :class="{unactive:!item.findState == 0}" @click="findPet(index)">{{item.findState ? "已找到": "找到了"}}</div>
+                        <div class="item-action flex-center" :class="{unActive:!item.findState == 0}" @click="findPet(index)">{{item.findState ? "已找到": "找到了"}}</div>
                     </div>
                 </li>
             </ul>
