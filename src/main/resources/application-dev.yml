@@ -67,10 +67,13 @@ picturePath: D:/petlove/upload/
 wechat:
   mpAppId: wx41fd8229749f5df8
   mpAppSecret: 76cde729d3bbf04728661309549298f5
+  myAppToken: ishumahe160107
+  myAppEncodingAESKey: PXIlIEdOXBDmXYKVsFHgvzsOroMPybpvUwujU7ugako
 
 
 projectUrl:
   wechatMpAuthorize: http://girl.nat300.top
 #wechatOpenAuthorize: http://girl.nat300.top
   petHome: http://girl.nat300.top
+  xx: http://girl.nat300.top/pethome/wechat/entry
 

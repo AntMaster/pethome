@@ -7,9 +7,9 @@ import javax.persistence.Entity;
 import javax.persistence.Table;
 import java.util.Date;
 
-@Entity
+/*@Entity
 @Data
-@Table(name = "publishtalk")
+@Table(name = "publishtalk")*/
 public class PublishView {
 
     /**

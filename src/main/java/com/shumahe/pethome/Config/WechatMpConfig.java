@@ -21,6 +21,7 @@ public class WechatMpConfig {
 
     @Bean
     public WxMpService wxMpService() {
+
         WxMpService wxMpService = new WxMpServiceImpl();
         wxMpService.setWxMpConfigStorage(wxMpConfigStorage());
         return wxMpService;
@@ -28,9 +29,11 @@ public class WechatMpConfig {
 
     @Bean
     public WxMpConfigStorage wxMpConfigStorage() {
-        WxMpInMemoryConfigStorage wxMpConfigStorage = new WxMpInMemoryConfigStorage();
-        wxMpConfigStorage.setAppId(accountConfig.getMpAppId());
-        wxMpConfigStorage.setSecret(accountConfig.getMpAppSecret());
-        return wxMpConfigStorage;
+        WxMpInMemoryConfigStorage config = new WxMpInMemoryConfigStorage();
+        config.setAppId(accountConfig.getMpAppId());
+        config.setSecret(accountConfig.getMpAppSecret());
+        config.setToken(accountConfig.getMyAppToken());
+        config.setAesKey(accountConfig.getMyAppEncodingAESKey());
+        return config;
     }
 }

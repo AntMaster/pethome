@@ -1,6 +1,8 @@
 package com.shumahe.pethome.Config;
 
 import lombok.Data;
+import org.apache.commons.lang3.builder.ToStringBuilder;
+import org.apache.commons.lang3.builder.ToStringStyle;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;
 
@@ -27,9 +29,13 @@ public class WechatAccountConfig {
      */
     private String mpAppSecret;
 
+    private String myAppToken;
 
-    /**
-     * 微信模版id
-     */
-    private Map<String, String> templateId;
+    private String myAppEncodingAESKey;
+
+    @Override
+    public String toString() {
+        return ToStringBuilder.reflectionToString(this,
+                ToStringStyle.MULTI_LINE_STYLE);
+    }
 }

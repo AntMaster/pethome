@@ -112,7 +112,19 @@
 <script type='text/javascript' src='js/vue.js'></script>
 <script type='text/javascript' src='js/common.js'></script>
 <script type='text/javascript' src='js/components.js'></script>
+<script type="text/javascript" src='http://res.wx.qq.com/open/js/jweixin-1.2.0.js'></script>
 <script>
+
+
+    /*   wx.config({
+           debug: true, // 开启调试模式,调用的所有api的返回值会在客户端alert出来，若要查看传入的参数，可以在pc端打开，参数信息会通过log打出，仅在pc端时才会打印。
+           appId: 'wx41fd8229749f5df8', // 必填，公众号的唯一标识
+           timestamp: , // 必填，生成签名的时间戳
+           nonceStr: '', // 必填，生成签名的随机串
+           signature: '',// 必填，签名
+           jsApiList: [] // 必填，需要使用的JS接口列表
+       });
+   */
     /*
 
 
@@ -144,12 +156,10 @@
         },
         mounted: function () {
             this.loadDynamicList();
+
         },
         methods: {
-
             loadDynamicList: function () {
-
-                //load data
                 $.ajax({
                     url: '/pethome/publish/index/Aileen',
                     type: 'GET',
@@ -164,7 +174,6 @@
                         }
                     }
                 });
-
             },
             loadFindPetList: function () {
 
@@ -221,7 +230,65 @@
             },
             //分享
             share: function () {
+                //encodeURI(http://girl.nat300.top/pethome/index.html)
+                //load data
+                $.ajax({
+                    url: '/pethome/entry/forward',
+                    type: 'GET',
+                    dataType: 'json',
+                    data: {
+                        url: encodeURI("http://girl.nat300.top/pethome/index.html")
+                    },
+                    success: function (res) {
+                        if (res.code === 1) {
+                            wx.config({
+                                debug: false, // 开启调试模式,调用的所有api的返回值会在客户端alert出来
+                                appId: res.data.appId, // 必填，公众号的唯一标识
+                                timestamp: res.data.timestamp, // 必填，生成签名的时间戳
+                                nonceStr: res.data.nonceStr, // 必填，生成签名的随机串
+                                signature: res.data.signature,// 必填，签名，见附录1
+                                jsApiList: [
+                                    "onMenuShareTimeline",
+                                    "onMenuShareAppMessage"
+                                ] // 必填，需要使用的JS接口列表，所有JS接口列表见附录2
+                            });
+                            wx.ready(function (res) {
+                                wx.onMenuShareAppMessage({
+                                    title: "213",
+                                    desc: "21312312",
+                                    link: "213123",
+                                    imgUrl: "23113123",
+                                    trigger: function (res) {
 
+                                    },
+                                    success: function (res) {
+
+                                    },
+                                    cancel: function (res) {
+
+                                    },
+                                    fail: function (res) {
+
+                                    }
+                                });
+                                wx.onMenuShareTimeline({
+                                    title: "213",
+                                    desc: "21312312",
+                                    link: "213123",
+                                    imgUrl: "23113123",
+                                    trigger: function (res) {
+                                    },
+                                    success: function (res) {
+                                    },
+                                    cancel: function (res) {
+                                    },
+                                    fail: function (res) {
+                                    }
+                                });
+                            });
+                        }
+                    }
+                });
             },
             //关注
             attention: function (index, id, likeState) {
