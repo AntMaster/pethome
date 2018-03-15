@@ -19,6 +19,8 @@ public class PublishDTO {
 
     private Integer id;
 
+
+
     private String publisherId;
 
 
@@ -31,15 +33,22 @@ public class PublishDTO {
     //发布人头像
     private String publisherPhoto;
 
+    //显示状态
+    private Integer publishState;
+
+
     private Integer classifyId;
+
+
+    private Integer varietyId;
 
     private String petName;
 
     private String petImage;
 
     //@JsonSerialize(using = Date2LongSerializer.class)
-    //@JsonFormat(timezone = "GMT+8", pattern = "yyyy-MM-dd HH:mm:ss")
-    @JsonFormat(timezone = "GMT+8", pattern = "yyyy-MM-dd")
+    //@JsonFormat(timezone = "GMT+8", pattern = "yyyy-MM-dd")
+    @JsonFormat(timezone = "GMT+8", pattern = "yyyy-MM-dd HH:mm:ss")
     private Date lostTime;
 
     private String lostLocation;
@@ -56,11 +65,14 @@ public class PublishDTO {
 
     private Integer viewCount;
 
+
     private Integer shareCount;
+
 
     private boolean likeState = false;
 
-    private boolean findState ;
+    //状态
+    private boolean findState;
 
     //私信条数
     private Integer privateMsgCount = 0;

@@ -155,3 +155,15 @@ input:-ms-input-placeholder {
     /* Internet Explorer 10-11 */
     color: #bbbbbb;
 }
+
+.petText {
+    position: absolute;
+    top: 1.5rem;
+    right: 5.5rem;
+    font-size: .6rem;
+    background-color: #ffffff;
+    border-radius: .4rem;
+    border-bottom-right-radius: 0;
+    padding: 0 .25rem;
+    color: #6a5651;
+}

@@ -46,7 +46,7 @@ public class PrivateMsgDTO {
     /**
      * 接收人昵称
      */
-    private String  userAcceptName;
+    private String userAcceptName;
 
 
     /**
@@ -64,18 +64,25 @@ public class PrivateMsgDTO {
     /**
      * 最后一次交流时间
      */
+    @JsonFormat(timezone = "GMT+8", pattern = "yyyy-MM-dd HH:mm:ss")
     private Date lastModify;
 
 
     /**
      * 互动时间
      */
-    @JsonFormat(timezone = "GMT+8", pattern = "yyyy-MM-dd")
-    private Date talkDate;
+    @JsonFormat(timezone = "GMT+8", pattern = "yyyy-MM-dd HH:mm:ss")
+    private Date talkTime;
 
 
     /**
      * 阅读状态
      */
     private Integer readState;
+
+
+    /**
+     * 显示状态
+     */
+    private Integer showState;
 }

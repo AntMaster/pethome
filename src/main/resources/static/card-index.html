@@ -39,11 +39,12 @@
                     <!-- 反面 -->
                     <div class="card-back">
                         <div class="avatar">
-                            <img src="img/test/avatar.jpg" />
+                            <img src="img/avatar-df.png" />
+                            <input class="avatar-upload" type="file" />
                         </div>
                         <form class="card-form">
                             <div class="card-form-item card-name-input">
-                                <input type="text" :model="cardFormModel.NickName" placeholder="请填写爱宠的名字" />
+                                <input type="text" v-model="cardFormModel.NickName" placeholder="请填写爱宠的名字" />
                             </div>
                             <!-- 类别 -->
                             <div class="card-form-item">

@@ -5,6 +5,7 @@ import com.shumahe.pethome.Domain.PublishTalk;
 
 import com.shumahe.pethome.Domain.UserTalk;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
@@ -84,5 +85,9 @@ public interface PublishTalkRepository extends JpaRepository<PublishTalk, Intege
      */
     @Query(value = "SELECT count(id) FROM PublishTalk WHERE PublishID in (SELECT DISTINCT PublishID FROM PublishTalk WHERE PublisherID = ?1 OR ReplierFrom = ?2 OR ReplierAccept = ?3 ) AND ReadState = ?4 ", nativeQuery = true)
     int notReadTalksCount(String PublisherID, String ReplierFrom, String ReplierAccept,Integer readCount);
+
+
+
+    List<PublishTalk> findByPublishIdOrderByReplyDateDesc(Integer id, Pageable pageRequest);
 
 }

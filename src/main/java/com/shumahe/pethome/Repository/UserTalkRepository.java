@@ -2,6 +2,7 @@ package com.shumahe.pethome.Repository;
 
 import com.shumahe.pethome.Domain.UserTalk;
 
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
@@ -29,6 +30,9 @@ public interface UserTalkRepository extends JpaRepository<UserTalk, Integer> {
      * @return
      */
     List<UserTalk> findByPublishIdOrderByTalkId(Integer publishId);
+
+
+    List<UserTalk> findByPublishIdOrderByIdDesc(Integer publishId, Pageable pageable);
 
     /**
      * 非发布者查询   该主题私信消息
