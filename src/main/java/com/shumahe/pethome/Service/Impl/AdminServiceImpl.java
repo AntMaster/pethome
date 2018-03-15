@@ -172,6 +172,7 @@ public class AdminServiceImpl implements AdminService {
             throw new PetHomeException(ResultEnum.RESULT_EMPTY);
         }
 
+
         msg.setShowState(showState);
 
         UserTalk save = userTalkRepository.save(msg);
