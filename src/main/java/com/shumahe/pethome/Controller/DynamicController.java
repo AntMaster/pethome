@@ -28,10 +28,8 @@ public class DynamicController {
     @Autowired
     DynamicService dynamicService;
 
-
     @Autowired
     DynamicBaseService dynamicBaseService;
-
 
     @Autowired
     PetPublishRepository petPublishRepository;

@@ -157,14 +157,10 @@
                     data: null,
                     success: function (res) {
                         if (res.code === 1) {
-                            //app.dynamicArr = res.data;
-                            if (res.code === 1) {
-                                app.dynamicArr = res.data;
-                                for (var i = 0; i < app.dynamicArr.length; i++) {
-                                    app.dynamicArr[i].petImage = app.dynamicArr[i].petImage.split(";")[0];
-                                }
+                            app.dynamicArr = res.data;
+                            for (var i = 0; i < app.dynamicArr.length; i++) {
+                                app.dynamicArr[i].petImage = app.dynamicArr[i].petImage.split(";")[0];
                             }
-
                         }
                     }
                 });
