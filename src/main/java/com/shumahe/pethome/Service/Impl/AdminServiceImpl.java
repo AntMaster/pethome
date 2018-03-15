@@ -185,6 +185,7 @@ public class AdminServiceImpl implements AdminService {
     @Override
     public List<PublicMsgDTO> findPublicMsg(Integer id, PageRequest pageRequest) {
 
+
         PetPublish publish = petPublishRepository.findById(id);
 
         if (publish == null) {
