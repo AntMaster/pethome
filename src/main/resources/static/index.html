@@ -160,7 +160,7 @@
         methods: {
             loadDynamicList: function () {
                 $.ajax({
-                    url: '/pethome/publish/index/Aileen',
+                    url: '/pethome/publish/index/'+GetQueryString("openId"),
                     type: 'GET',
                     dataType: 'json',
                     data: null,
