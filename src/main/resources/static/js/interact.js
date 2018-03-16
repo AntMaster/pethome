@@ -7,7 +7,7 @@ var interact = new Vue({
        
     },
     methods: {
-        reply(){
+        reply:function(){
             $.modal({
                 title:  '回复',
                 afterText: '<div class=""><textarea class="modal-reply-input"></textarea></div>',

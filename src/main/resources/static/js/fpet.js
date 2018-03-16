@@ -75,7 +75,7 @@ var app = new Vue({
 
 
             $.ajax({
-                url: '/pethome/publish/pet/Aileen',
+                url: '/pethome/publish/pet/'+GetQueryString("openId"),
                 type: 'PUT',
                 contentType: "application/x-www-form-urlencoded",
                 dataType: 'json',
