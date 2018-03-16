@@ -30,7 +30,7 @@ public class AuthAspect {
     UserBasicRepository userBasicRepository;
 
     //@Before("execution(public * com.shumahe.pethome.Controller.PetController.*(..))")
-    @Before("execution(public * com.shumahe.pethome.Controller.PublishController.*(..))")
+    //@Before("execution(public * com.shumahe.pethome.Controller.PublishController.*(..))")
     //@Before("execution(public * com.shumahe.pethome.Controller.DynamicController.*(..))")
     public void validaOpenId() {
 

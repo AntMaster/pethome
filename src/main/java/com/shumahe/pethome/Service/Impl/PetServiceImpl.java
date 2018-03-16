@@ -114,7 +114,7 @@ public class PetServiceImpl implements PetService {
     public List<UserPet> petList(String openId) {
 
         List<UserPet> pets = userPetRepository.findByUserIdOrderByCreateTime(openId);
-        if (pets == null) {
+        if (pets.isEmpty()) {
             throw new PetHomeException(ResultEnum.RESULT_EMPTY);
         }
 

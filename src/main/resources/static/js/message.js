@@ -12,7 +12,7 @@ var message = new Vue({
         $.init();
     },
     methods: {
-        navChange(t){
+        navChange:function(t){
             this.navActive = !this.navActive;
         }
     }

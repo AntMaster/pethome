@@ -1,29 +1,27 @@
 var interact = new Vue({
     el: "#chatPage",
-    data: {
-       
-    },
+    data: {},
     mounted: function () {
-       
+
     },
     methods: {
-        reply(){
+        reply: function () {
             $.modal({
-                title:  '回复',
+                title: '回复',
                 afterText: '<div class=""><textarea class="modal-reply-input"></textarea></div>',
                 buttons: [
                     {
                         text: '取消'
-                      },
-                      {
+                    },
+                    {
                         text: '确认',
                         bold: true,
                         onClick: function () {
-                          //发送回复
+                            //发送回复
                         }
-                      },
+                    },
                 ]
-              })
+            })
         }
     }
 });

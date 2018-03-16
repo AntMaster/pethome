@@ -20,7 +20,6 @@ public class PublishDTO {
     private Integer id;
 
 
-
     private String publisherId;
 
 
@@ -36,11 +35,14 @@ public class PublishDTO {
     //显示状态
     private Integer publishState;
 
-
+    //类别
     private Integer classifyId;
 
-
+    //品种
     private Integer varietyId;
+
+    //品种名称
+    private String varietyName;
 
     private String petName;
 
@@ -50,6 +52,9 @@ public class PublishDTO {
     //@JsonFormat(timezone = "GMT+8", pattern = "yyyy-MM-dd")
     @JsonFormat(timezone = "GMT+8", pattern = "yyyy-MM-dd HH:mm:ss")
     private Date lostTime;
+
+    @JsonFormat(timezone = "GMT+8", pattern = "yyyy-MM-dd HH:mm:ss")
+    private Date createTime;
 
     private String lostLocation;
 
@@ -87,3 +92,5 @@ public class PublishDTO {
     private List<List<PublicMsgDTO>> publicTalkDTO;
 
 }
+
+

@@ -39,56 +39,56 @@
                     <!-- 反面 -->
                     <div class="card-back">
                         <div class="avatar">
-                            <img src="img/avatar-df.png" />
-                            <input class="avatar-upload" type="file" />
+                            <img  :src="cardFormModel.headImgUrl ? cardFormModel.headImgUrl : 'img/avatar-df.png' " /><!--src="img/avatar-df.png"-->
+                            <input class="avatar-upload"  accept="image/*" type="file" name="file"  />
                         </div>
                         <form class="card-form">
                             <div class="card-form-item card-name-input">
-                                <input type="text" v-model="cardFormModel.NickName" placeholder="请填写爱宠的名字" />
+                                <input type="text" v-model="cardFormModel.nickName" placeholder="请填写爱宠的名字" />
                             </div>
                             <!-- 类别 -->
                             <div class="card-form-item">
                                 <div class="item-title">类别</div>
                                 <div class="item-input sex-input">
-                                    <span :class="{active:cardFormModel.ClassifyID == 3}" @click="selectClass(3)">汪</span>
-                                    <span :class="{active:cardFormModel.ClassifyID == 2}" @click="selectClass(2)">喵</span>
+                                    <span :class="{active:cardFormModel.classifyId == 3}" @click="selectClass(3)">汪</span>
+                                    <span :class="{active:cardFormModel.classifyId == 2}" @click="selectClass(2)">喵</span>
                                 </div>
                             </div>
                             <!-- 生日 -->
                             <div class="card-form-item">
                                 <div class="item-title">生日</div>
                                 <div class="item-input">
-                                    <input :model="cardFormModel.Birthday" id="datetime-picker" value="2018-03-05 08:30" id="datetime-picker" class="date-picker" placeholder="还记得爱宠的生日吗" />
+                                    <input :model="cardFormModel.birthday" id="datetime-picker" value="2018-03-05 08:30" id="datetime-picker" class="date-picker" placeholder="还记得爱宠的生日吗" />
                                 </div>
                             </div>
                             <!-- 性别 -->
                             <div class="card-form-item">
                                 <div class="item-title">性别</div>
                                 <div class="item-input sex-input">
-                                    <span :class="{active:cardFormModel.PetSex}" @click="selectSex(1)">公</span>
-                                    <span :class="{active:!cardFormModel.PetSex}" @click="selectSex(0)">母</span>
+                                    <span :class="{active:cardFormModel.sex}" @click="selectSex(1)">公</span>
+                                    <span :class="{active:!cardFormModel.sex}" @click="selectSex(0)">母</span>
                                 </div>
                             </div>
                             <!-- 是否绝育 -->
                             <div class="card-form-item">
                                 <div class="item-title">是否绝育</div>
                                 <div class="item-input sex-input">
-                                    <span :class="{active:cardFormModel.ContraceptionState}" @click="selectContraceptionState(1)">已绝育</span>
-                                    <span :class="{active:!cardFormModel.ContraceptionState}" @click="selectContraceptionState(0)">未绝育</span>
+                                    <span :class="{active:cardFormModel.contraception}" @click="selectContraceptionState(1)">已绝育</span>
+                                    <span :class="{active:!cardFormModel.contraception}" @click="selectContraceptionState(0)">未绝育</span>
                                 </div>
                             </div>
                             <!-- 小特点 -->
                             <div class="card-form-item">
                                 <div class="item-title">小特点</div>
                                 <div class="item-input">
-                                    <input v-model="cardFormModel.Description" placeholder="一句话描述下爱宠" />
+                                    <input v-model="cardFormModel.description" placeholder="一句话描述下爱宠" />
                                 </div>
                             </div>
                             <!-- 芯片号 -->
                             <div class="card-form-item">
                                 <div class="item-title">芯片号</div>
                                 <div class="item-input">
-                                    <input v-model="cardFormModel.ChipNo" placeholder="（选填）" />
+                                    <input v-model="cardFormModel.chipNo" placeholder="（选填）" />
                                 </div>
                             </div>
                             <!-- btn -->

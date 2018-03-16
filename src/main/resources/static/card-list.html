@@ -19,76 +19,37 @@
         <mc-tabbar page="card"></mc-tabbar>
         <div class="content cardListPage-content">
             <ul class="petCard-list">
-                <li>
-                    <a class="petCard-item" style="background-color: #fab11b;">
+                <li v-for="(item, index) in petArr">
+                    <a class="petCard-item" style="background-color: #fab11b;" @click="goPetAlbum(item.id)">
                         <!-- 昵称 -->
                         <div class="name">
-                            大王
+                            {{item.nickName}}
                         </div>
                         <!-- 类别 -->
                         <div class="classify classify-cat">
-                            <span class="icon"></span> 喵
+                            <span class="icon"></span> {{item.classifyId == 2 ? "喵" : "汪"}}
                         </div>
                         <div class="info-box">
                             <div class="info-item">
                                 <img src="" class="icon" />
-                                <span>未绝育</span>
+                                <span>{{item.contraception ==  1 ? "已节育" : "未节育" }}</span>
                             </div>
                             <div class="info-item">
                                 <img src="" class="icon" />
-                                <span>未绝育</span>
+                                <span>{{item.birthday}}</span>
                             </div>
                             <div class="info-item">
                                 <img src="" class="icon" />
-                                <span>未绝育</span>
+                                <span>{{item.description}}</span>
                             </div>
                         </div>
                         <!-- 头像 -->
                         <div class="avatar">
-                            <img src="img/test/avatar.jpg" />
+                            <img :src="item.headImgUrl" />
                         </div>
                         <!-- 芯片号 -->
                         <div class="chip-num chip-num-cat">
-                            芯片号：1234
-                        </div>
-                        <!-- icon x 4 -->
-                        <div class="petCard-icon petCard-icon-1"></div>
-                        <div class="petCard-icon petCard-icon-2"></div>
-                        <div class="petCard-icon petCard-icon-3"></div>
-                        <div class="petCard-icon petCard-icon-4"></div>
-                    </a>
-                </li>
-                <li>
-                    <a class="petCard-item" style="background-color: #5adacd;">
-                        <!-- 昵称 -->
-                        <div class="name">
-                            仙仙
-                        </div>
-                        <!-- 类别 -->
-                        <div class="classify classify-dog">
-                            <span class="icon"></span> 汪
-                        </div>
-                        <div class="info-box">
-                            <div class="info-item">
-                                <img src="" class="icon" />
-                                <span>未绝育</span>
-                            </div>
-                            <div class="info-item">
-                                <img src="" class="icon" />
-                                <span>未绝育</span>
-                            </div>
-                            <div class="info-item">
-                                <img src="" class="icon" />
-                                <span>未绝育</span>
-                            </div>
-                        </div>
-                        <!-- 头像 -->
-                        <div class="avatar">
-                            <img src="img/test/avatar.jpg" />
-                        </div>
-                        <!-- 芯片号 -->
-                        <div class="chip-num chip-num-dog">
-                            芯片号：1234
+                            芯片号：{{item.chipNo}}
                         </div>
                         <!-- icon x 4 -->
                         <div class="petCard-icon petCard-icon-1"></div>

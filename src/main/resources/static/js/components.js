@@ -20,10 +20,10 @@ Vue.component('mc-tabbar', {
     '</a>' +
     '</div>' +
     '<div class="center">' +
-    '<a class="action external" :class="{active:publish}"><img :src="tabbarIcon(3)" /><span>发布</span></a>' +
+    '<a :href="toPublish()" class="action external" :class="{active:publish}"><img :src="tabbarIcon(3)" /><span>发布</span></a>' +
     '</div>' +
     '<div class="right">' +
-    '<a :href="toCard()" class="item external" :class="{active:card}">' +
+    '<a href="javacript:;" @click="toCard" class="item external" :class="{active:card}">' +
     '<div class="icon"><img :src="tabbarIcon(4)" /></div><span>宠卡</span>' +
     '</a>' +
     '<a :href="toMine()" class="item external" :class="{active:mine}">' +
@@ -54,27 +54,43 @@ Vue.component('mc-tabbar', {
     },
     methods: {
         toIndex: function () {
-            if (this.lv == 2) return "../index.html";
-            return "index.html";
+
+            if (this.lv == 2) return "../index.html?openId=" + GetQueryString("openId");
+            return "index.html?openId=" + GetQueryString("openId");
         },
         toSearch: function () {
-            if (this.lv == 2) return "../search.html";
-            return "search.html";
+            if (this.lv == 2) return "../search.html?openId=" + GetQueryString("openId");
+            return "search.html?openId=" + GetQueryString("openId");
+        },
+        toPublish: function () {
+            if (this.lv == 2) return "../fpet.html?openId=" + GetQueryString("openId");
+            return "fpet.html?openId=" + GetQueryString("openId");
         },
         toCard: function () {
             //load data
+
+            var temp_lv = this.lv;
             $.ajax({
-                url: '/pethome/pet/Aileen',
+                url: '/pethome/pet/' + GetQueryString("openId"),
                 type: 'GET',
                 dataType: 'json',
                 data: null,
                 success: function (res) {
                     if (res.code === 1) {
-                        if (Vue.lv == 2) return "../card-list.html";
-                        return "card-list.html";
+
+                        if (temp_lv == 2) {
+                            window.location.href = "../card-list.html?openId=" + GetQueryString("openId");
+                        } else {
+                            window.location.href = "card-list.html?openId=" + GetQueryString("openId");
+                        }
+
                     } else {
-                        if (Vue.lv == 2) return "../card-list.html";
-                        return "card-list.html";
+
+                        if (temp_lv == 2) {
+                            window.location.href = "../card-index.html?openId=" + GetQueryString("openId");
+                        } else {
+                            window.location.href = "card-index.html?openId=" + GetQueryString("openId");
+                        }
                     }
                 }
             });
@@ -82,8 +98,9 @@ Vue.component('mc-tabbar', {
 
         },
         toMine: function () {
-            if (this.lv == 2) return "../mine.html";
-            return "mine.html";
+
+            if (this.lv == 2) return "../mine.html?openId=" + GetQueryString("openId");
+            return "mine.html?openId=" + GetQueryString("openId");
         },
         tabbarIcon: function (i) {
             switch (i) {
