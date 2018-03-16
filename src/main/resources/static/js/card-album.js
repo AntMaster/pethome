@@ -39,7 +39,7 @@ var app = new Vue({
 
         loadAlbumList: function () {
             $.ajax({
-                url: '/pethome/pet/album/Aileen',
+                url: '/pethome/pet/album/' + GetQueryString("openId"),
                 type: 'GET',
                 dataType: 'json',
                 data: {
@@ -54,7 +54,7 @@ var app = new Vue({
             });
         },
         goPetPhoto: function (id) {
-            window.location.href = "./card-album.html?albumId=" + id;
+            window.location.href = "./album-info.html?openId="+ GetQueryString("openId") +"&albumId=" + id;
         },
 
 
@@ -110,7 +110,7 @@ $(document).on('click', '.album-new', function () {
                     return;
                 }
                 $.ajax({
-                    url: '/pethome/pet/album/Aileen',
+                    url: '/pethome/pet/album/'+GetQueryString("openId"),
                     type: 'PUT',
                     dataType: 'json',
                     data: {
@@ -150,7 +150,7 @@ $(document).on('click', '.del-mask', function () {
             onClick: function () {
 
                 $.ajax({
-                    url: '/pethome/pet/album/Aileen',
+                    url: '/pethome/pet/album/'+GetQueryString("oepnId"),
                     type: 'PUT',
                     dataType: 'json',
                     data: {
