@@ -105,4 +105,3 @@ $(".avatar-upload").change(function (e) {
         }
     });
 });
-<!--ddd-->
