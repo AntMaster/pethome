@@ -83,9 +83,9 @@ var app = new Vue({
                 success: function (res) {
                     if (res.code === 1) {
                         app.dynamicArr = res.data;
+                        window.location.href = "./index.html?openId=" + GetQueryString("openId");
                     } else {
                         alert(res.msg);
-
                     }
                 }
             });
@@ -204,7 +204,7 @@ $(".petImg-upload").change(function (e) {
     });
 
     $.ajax({
-        url: "/pethome/upload/publish/",
+        url: "/pethome/upload/publish",
         type: 'PUT',
         data: data,
         cache: false,

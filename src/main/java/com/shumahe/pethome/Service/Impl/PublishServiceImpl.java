@@ -5,6 +5,7 @@ import com.shumahe.pethome.DTO.PublicMsgDTO;
 import com.shumahe.pethome.DTO.PublishDTO;
 import com.shumahe.pethome.Domain.PetPublish;
 
+import com.shumahe.pethome.Domain.PetVariety;
 import com.shumahe.pethome.Domain.UserBasic;
 import com.shumahe.pethome.Domain.UserDynamic;
 import com.shumahe.pethome.Enums.*;
@@ -47,22 +48,22 @@ public class PublishServiceImpl implements PublishService {
 
 
     @Autowired
-    PetVarietyRepository petVarietyRepository;
+    private PetVarietyRepository petVarietyRepository;
 
     @Autowired
-    UserBasicRepository userBasicRepository;
-
-
-    @Autowired
-    PublishBaseService publishBaseService;
+    private UserBasicRepository userBasicRepository;
 
 
     @Autowired
-    MessageService messageService;
+    private PublishBaseService publishBaseService;
 
 
     @Autowired
-    UserDynamicRepository userDynamicRepository;
+    private MessageService messageService;
+
+
+    @Autowired
+    private UserDynamicRepository userDynamicRepository;
 
     /**
      * 主页列表(动态+寻主+寻宠)
@@ -218,6 +219,16 @@ public class PublishServiceImpl implements PublishService {
         }
         pet.setViewCount(pet.getViewCount() + 1);
         petPublishRepository.save(pet);
+
+
+
+        /**
+         * 品种名称
+         */
+        PetVariety petVariety = petVarietyRepository.findOne(pet.getVarietyId());
+        if(petVariety != null)
+            publishDTO.setVarietyName(petVariety.getName());
+
 
         /**
          * 互动信息

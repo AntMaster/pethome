@@ -36,12 +36,16 @@ public class FileController {
     @Value("${picturePath}")
     private  String picturePath;
 
-
+    /**
+     * 发布上传图片
+     * @param file
+     * @param
+     * @return
+     */
     @PutMapping(value = "/publish")
-    public ResultVO upload(@RequestParam("file") MultipartFile file, HttpServletRequest request) {
+    public ResultVO upload(@RequestParam("file") MultipartFile file) {
 
         String fileName = (System.currentTimeMillis() + file.getOriginalFilename()).replaceAll(";", "");
-        //String filePath = request.getSession().getServletContext().getRealPath("")  + "WEB-INF" + File.separator + "classes" + File.separator;
         String filePath =  picturePath + File.separator + "picture" + File.separator + "publish" +  File.separator  ;
         try {
             FileUtil.uploadFile(file.getBytes(), filePath, fileName);
@@ -53,58 +57,43 @@ public class FileController {
         return ResultVOUtil.success(path);
     }
 
-/*
-
-    @RequestMapping(value = "/publish", method = RequestMethod.POST)
-    public String upload(@RequestParam("file") MultipartFile file, HttpServletRequest request) {
-
+    /**
+     * 宠卡上传头像
+     * @param file
+     * @param
+     * @return
+     */
+    @PutMapping(value = "/pet")
+    public ResultVO petUpload(@RequestParam("file") MultipartFile file) {
 
         String fileName = (System.currentTimeMillis() + file.getOriginalFilename()).replaceAll(";", "");
-
-        String filePath = request.getSession().getServletContext().getRealPath("")  + "upload" + File.separator + "publish" + File.separator;
+        String filePath =  picturePath + File.separator + "picture" + File.separator + "pet" +  File.separator  ;
         try {
             FileUtil.uploadFile(file.getBytes(), filePath, fileName);
         } catch (Exception e) {
             throw new PetHomeException(ResultEnum.FAILURE.getCode(), "文件上传失败");
         }
 
-        return "/upload/publish/" + fileName;
+        String path  = "upload/picture/pet/" + fileName;
+        return ResultVOUtil.success(path);
     }
 
-*/
+  /*  @PutMapping(value = "/pet")
+    public ResultVO petUpload(@RequestParam("file") MultipartFile file) {
 
-
-
-    @PostMapping("/publish/save")
-    public String savePetImg(@RequestParam("file") MultipartFile file) {
-
-        if (!file.isEmpty()) {
-            try {
-                /*
-                 * 这段代码执行完毕之后，图片上传到了工程的跟路径； 大家自己扩散下思维，如果我们想把图片上传到
-                 * d:/files大家是否能实现呢？ 等等;
-                 * 这里只是简单一个例子,请自行参考，融入到实际中可能需要大家自己做一些思考，比如： 1、文件路径； 2、文件名；
-                 * 3、文件格式; 4、文件大小的限制;
-                 */
-                BufferedOutputStream out = new BufferedOutputStream(new FileOutputStream(new File(file.getOriginalFilename())));
-                System.out.println(file.getName());
-                out.write(file.getBytes());
-                out.flush();
-                out.close();
-            } catch (FileNotFoundException e) {
-                e.printStackTrace();
-                return "上传失败," + e.getMessage();
-            } catch (IOException e) {
-                e.printStackTrace();
-                return "上传失败," + e.getMessage();
-            }
-
-            return "上传成功";
-
-        } else {
-            return "上传失败，因为文件是空的.";
+        String fileName = (System.currentTimeMillis() + file.getOriginalFilename()).replaceAll(";", "");
+        //String filePath = request.getSession().getServletContext().getRealPath("")  + "WEB-INF" + File.separator + "classes" + File.separator;
+        String filePath =  picturePath + File.separator + "picture" + File.separator + "publish" +  File.separator  ;
+        try {
+            FileUtil.uploadFile(file.getBytes(), filePath, fileName);
+        } catch (Exception e) {
+            throw new PetHomeException(ResultEnum.FAILURE.getCode(), "文件上传失败");
         }
+
+        String path  = "upload/picture/pet/" + fileName;
+        return ResultVOUtil.success(path);
     }
+*/
 
 
 }

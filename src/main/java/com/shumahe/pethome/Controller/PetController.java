@@ -62,8 +62,6 @@ public class PetController {
      * @param bindingResult
      * @return
      */
-
-
     @PutMapping("/{openId}")
     public ResultVO save(@PathVariable("openId") String openId, @Valid UserPetForm petForm, BindingResult bindingResult) {
 
@@ -128,6 +126,36 @@ public class PetController {
         UserPetAlbum save = userPetAlbumRepository.save(album);
         return ResultVOUtil.success(save);
     }
+
+
+    /**
+     * 删除所有相册
+     */
+//    @DeleteMapping("/album/{openId}")
+//    public ResultVO albumDeleteAll(@RequestParam("albumId") Integer albumId,
+//                                @RequestParam(value = "name", defaultValue = "EMPTY") String name,
+//                                @RequestParam(value = "description", defaultValue = "EMPTY") String description) {
+//
+//
+//        if (name.equals("EMPTY") && description.equals("EMPTY")) {
+//
+//            throw new PetHomeException(ResultEnum.PARAM_ERROR.getCode(), "相册名称和相册描述不能同时为空");
+//        }
+//
+//        UserPetAlbum album = userPetAlbumRepository.findOne(albumId);
+//        if (album == null) {
+//            throw new PetHomeException(ResultEnum.RESULT_EMPTY);
+//        }
+//
+//        if (!name.equals("EMPTY"))
+//            album.setName(name);
+//
+//        if (!description.equals("EMPTY"))
+//            album.setDescription(description);
+//
+//        UserPetAlbum save = userPetAlbumRepository.save(album);
+//        return ResultVOUtil.success(save);
+//    }
 
 
     /**

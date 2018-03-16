@@ -39,7 +39,7 @@ import static org.hibernate.validator.internal.util.Contracts.assertNotNull;
 @Slf4j
 public class WechatController {
     //http://girl.nat300.top/pethome/wechat/authorize?returnUrl=http://girl.nat300.top/pethome/index.html
-//http://girl.nat300.top/pethome/index.html?openid=oCLNDwc8bUgjnBUibOX1yfPh5Ni0
+    //http://girl.nat300.top/pethome/index.html?openid=oCLNDwc8bUgjnBUibOX1yfPh5Ni0
     @Autowired
     private WxMpService wxMpService;
 
@@ -95,14 +95,12 @@ public class WechatController {
 
 
 
-            //saveUser(user);
+            saveUser(user);
 
         } catch (WxErrorException e) {
             log.error("【微信网页授权】{}", e);
             throw new PetHomeException(ResultEnum.WECHAT_MP_ERROR.getCode(), e.getError().getErrorMsg());
         }
-
-
 
 
         return "redirect:" + returnUrl + "?openid=" + wxMpOAuth2AccessToken.getOpenId();

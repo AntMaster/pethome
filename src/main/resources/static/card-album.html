@@ -25,35 +25,35 @@
             <a class="petCard-item" style="background-color: #5adacd;">
                 <!-- 昵称 -->
                 <div class="name">
-                    仙仙
+                    {{pet.nickName}}
                 </div>
                 <!-- 类别 -->
                 <div class="classify classify-dog">
-                    <span class="icon"></span> 汪
+                    <span class="icon"></span> {{pet.classifyId == 2 ? "喵" : "汪"}}
                 </div>
                 <div class="info-box">
                     <div class="info-item">
                         <img src="" class="icon" />
-                        <span>未绝育</span>
+                        <span>{{pet.contraception ==  1 ? "已节育" : "未节育" }}</span>
                     </div>
                     <div class="info-item">
                         <img src="" class="icon" />
-                        <span>未绝育</span>
+                        <span>{{pet.birthday}}</span>
                     </div>
                     <div class="info-item">
                         <img src="" class="icon" />
-                        <span>未绝育</span>
+                        <span>{{pet.description}}</span>
                     </div>
                 </div>
                 <!-- 头像 -->
                 <div class="avatar animated" @click="play(petType)">
-                    <img src="img/test/avatar.jpg" />
+                    <img :src="pet.headImgUrl" />
                 </div>
                 <!-- 文字 -->
-                <div class="petText animated" style="display:none;">{{petText}}</div>
+                <div class="petText animated" style="display:none;"></div>
                 <!-- 芯片号 -->
                 <div class="chip-num chip-num-dog">
-                    芯片号：1234
+                    芯片号：{{pet.chipNo}}
                 </div>
                 <!-- icon x 4 -->
                 <div class="petCard-icon petCard-icon-1"></div>
@@ -64,8 +64,8 @@
             <!--按钮标题-->
             <div class="pet-album">
                 <div class="album-title">
-                    <span class="album-title-name">大王的相册</span>
-                    <span class="album-title-btn">管理相册</span>
+                    <span class="album-title-name">{{pet.nickName}}的相册</span>
+                    <span class="album-title-btn" @click="openManageModel">管理相册</span>
                 </div>
             </div>
             <!--相册列表-->
@@ -81,37 +81,15 @@
 
                 </div>
                 <!--下面是重复的相册-->
-                <div class="album-body">
+                <div v-for="(item ,index) in petAlbums " @click="goPetPhoto(item.id)"  class="album-body"><!--">
                     <!--这是封面图-->
                     <div class="album-pic">
-                        <span class="album-del"></span>
+                        <span class="album-del"  v-if="isManageModel"></span>
                     </div>
                     <!--这是名字和张数-->
                     <div class="album-info">
-                        <p class="album-name">我家有宠初长成</p>
-                        <p class="album-num">0张</p>
-                    </div>
-                </div>
-                <div class="album-body">
-                    <!--这是封面图-->
-                    <div class="album-pic">
-                        <span class="album-del"></span>
-                    </div>
-                    <!--这是名字和张数-->
-                    <div class="album-info">
-                        <p class="album-name">我家有宠初长成</p>
-                        <p class="album-num">0张</p>
-                    </div>
-                </div>
-                <div class="album-body">
-                    <!--这是封面图-->
-                    <div class="album-pic">
-                        <span class="album-del"></span>
-                    </div>
-                    <!--这是名字和张数-->
-                    <div class="album-info">
-                        <p class="album-name">我家有宠初长成</p>
-                        <p class="album-num">0张</p>
+                        <p class="album-name">{{item.name}}</p>
+                        <p class="album-num">{{item.photoCount}}张</p>
                     </div>
                 </div>
             </div>
