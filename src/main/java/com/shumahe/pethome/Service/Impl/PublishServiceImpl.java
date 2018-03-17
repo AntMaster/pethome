@@ -3,11 +3,8 @@ package com.shumahe.pethome.Service.Impl;
 
 import com.shumahe.pethome.DTO.PublicMsgDTO;
 import com.shumahe.pethome.DTO.PublishDTO;
-import com.shumahe.pethome.Domain.PetPublish;
+import com.shumahe.pethome.Domain.*;
 
-import com.shumahe.pethome.Domain.PetVariety;
-import com.shumahe.pethome.Domain.UserBasic;
-import com.shumahe.pethome.Domain.UserDynamic;
 import com.shumahe.pethome.Enums.*;
 import com.shumahe.pethome.Exception.PetHomeException;
 
@@ -46,6 +43,8 @@ public class PublishServiceImpl implements PublishService {
     @Autowired
     private UserTalkRepository userTalkRepository;
 
+    @Autowired
+    private PublishViewRepository publishViewRepository;
 
     @Autowired
     private PetVarietyRepository petVarietyRepository;
@@ -64,6 +63,8 @@ public class PublishServiceImpl implements PublishService {
 
     @Autowired
     private UserDynamicRepository userDynamicRepository;
+
+
 
     /**
      * 主页列表(动态+寻主+寻宠)
@@ -124,6 +125,7 @@ public class PublishServiceImpl implements PublishService {
         /**
          * 转换为PetPublish对象
          */
+
         PetPublish petPublish = new PetPublish();
         copyProperties(petForm, petPublish);
 
@@ -221,7 +223,6 @@ public class PublishServiceImpl implements PublishService {
         petPublishRepository.save(pet);
 
 
-
         /**
          * 品种名称
          */
@@ -234,6 +235,9 @@ public class PublishServiceImpl implements PublishService {
          * 互动信息
          */
         List<List<PublicMsgDTO>> msgDTOS = messageService.petPublicTalks(pet);
+        if (msgDTOS != null){
+            publishDTO.setPublicMsgCount((int) msgDTOS.stream().mapToInt(List::size).summaryStatistics().getSum());
+        }
 
 
         /**
@@ -246,15 +250,22 @@ public class PublishServiceImpl implements PublishService {
          * 互动条数
          */
         if (openId.equals(pet.getPublisherId())) {
-            publishDTO.setPublicMsgCount(userTalkRepository.findPrivateMsgCount(publishId));
+            publishDTO.setPrivateMsgCount(userTalkRepository.findPrivateMsgCount(publishId));
         }
 
 
         BeanUtils.copyProperties(pet, publishDTO);
-
         publishDTO.setPublicTalkDTO(msgDTOS);
         publishDTO.setPublisherName(myself.getNickName());
         publishDTO.setPublisherPhoto(myself.getHeadImgUrl());
+
+
+        /**
+         * 浏览条数
+         */
+        Integer publishView = publishBaseService.getPublishView(openId, pet);
+        publishDTO.setViewCount(publishView);
+
 
         return publishDTO;
 

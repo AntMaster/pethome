@@ -54,10 +54,50 @@ public class WechatController {
     private WechatAccountConfig wechatAccountConfig;
 
 
+    /**
+     * @param signature
+     * @param timestamp
+     * @param nonce
+     * @param echostr
+     * @return
+     */
+    @GetMapping(path = "/serverConfig")
+    @ResponseBody
+    public String authGet(@RequestParam(name = "signature") String signature,
+                          @RequestParam(name = "timestamp") String timestamp,
+                          @RequestParam(name = "nonce") String nonce,
+                          @RequestParam(name = "echostr") String echostr) {
 
 
+        log.info("\n接收到来自微信服务器的认证消息：[{}, {}, {}, {}]", signature, timestamp, nonce, echostr);
 
-    @GetMapping("/authorize")
+        if (StringUtils.isAnyBlank(signature, timestamp, nonce, echostr)) {
+            throw new IllegalArgumentException("请求参数非法，请核实!");
+        }
+
+        if (wxMpService.checkSignature(timestamp, nonce, signature)) {
+            return echostr;
+        }
+
+        return "非法请求";
+    }
+
+
+    @GetMapping("/jsApiSignature")
+    @ResponseBody
+    public ResultVO forward(@RequestParam(name = "url") String url)  {
+
+        WxJsapiSignature jsapiSignature = null;
+        try {
+            jsapiSignature = wxMpService.createJsapiSignature(url);
+        } catch (WxErrorException e) {
+            e.printStackTrace();
+        }
+        return ResultVOUtil.success(jsapiSignature);
+    }
+
+
+    @GetMapping("/webAuth")
     public String authorize() {//@RequestParam("returnUrl") String returnUrl
 
 
@@ -93,7 +133,6 @@ public class WechatController {
         WxMpOAuth2AccessToken wxMpOAuth2AccessToken;
         WxMpUser user;
         try {
-
 
             wxMpOAuth2AccessToken = wxMpService.oauth2getAccessToken(code);//如果code使用过，5分钟内再次使用会报错。
             user = wxMpService.oauth2getUserInfo(wxMpOAuth2AccessToken, null);

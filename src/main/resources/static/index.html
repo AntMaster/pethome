@@ -69,7 +69,7 @@
                                 <div class="facebook-name">{{item.publisherName}}</div>
                                 <div class="facebook-date">{{item.lostTime}}</div>
                             </div>
-                            <div class="card-content">
+                            <div class="card-content" @click="entryDetail(item.id)">
                                 {{item.petDescription}}
                                 <div class="card-content-img">
                                     <img :src="item.petImage"/>
@@ -81,7 +81,7 @@
                                     <img src="img/icon/card-look.png"/>
                                     <span>{{item.viewCount}}</span>
                                 </div>
-                                <div href="#" class="link" @click="share(item.id)">
+                                <div href="#" class="link" id="onMenuShareAppMessage" @click="share(item.id)">
                                     <img src="img/icon/card-share.png"/>
                                     <span>{{item.shareCount}}</span>
                                 </div>
@@ -114,38 +114,119 @@
 <script type="text/javascript" src='http://res.wx.qq.com/open/js/jweixin-1.2.0.js'></script>
 <script>
 
+    $(function () {
 
-    /*   wx.config({
-           debug: true, // 开启调试模式,调用的所有api的返回值会在客户端alert出来，若要查看传入的参数，可以在pc端打开，参数信息会通过log打出，仅在pc端时才会打印。
-           appId: 'wx41fd8229749f5df8', // 必填，公众号的唯一标识
-           timestamp: , // 必填，生成签名的时间戳
-           nonceStr: '', // 必填，生成签名的随机串
-           signature: '',// 必填，签名
-           jsApiList: [] // 必填，需要使用的JS接口列表
-       });
-   */
-    /*
+        $.ajax({
+            url: '/pethome/wechat/jsApiSignature',
+            type: 'GET',
+            dataType: 'json',
+            data: {
+                url: encodeURI("http://girl.nat300.top/pethome/index.html")
+            },
+            success: function (res) {
+                if (res.code === 1) {
 
+                    wx.config({
+                        debug: false, // 开启调试模式,调用的所有api的返回值会在客户端alert出来
+                        appId: res.data.appId, // 必填，公众号的唯一标识
+                        timestamp: res.data.timestamp, // 必填，生成签名的时间戳
+                        nonceStr: res.data.nonceStr, // 必填，生成签名的随机串
+                        signature: res.data.signature,// 必填，签名，见附录1
+                        jsApiList: [
+                            "onMenuShareTimeline",
+                            "onMenuShareAppMessage",
+                            /*"onMenuShareQQ",
+                            "onMenuShareQZone",
+                            "onMenuShareWeibo"
+*/
+                        ]
+                    });
+                }
+            }
+        });
 
-        wx.config({
-            debug: true, // 开启调试模式,调用的所有api的返回值会在客户端alert出来，若要查看传入的参数，可以在pc端打开，参数信息会通过log打出，仅在pc端时才会打印。
-            appId: 'wx41fd8229749f5df8', // 必填，公众号的唯一标识
-            timestamp: , // 必填，生成签名的时间戳
-            nonceStr: '', // 必填，生成签名的随机串
-            signature: '',// 必填，签名
-            jsApiList: [] // 必填，需要使用的JS接口列表
+        wx.ready(function (Api) {
+            /* wx.hideOptionMenu();
+             wx.hideMenuItems();*/
+            /**
+             * 朋友圈
+             */
+
+            wx.onMenuShareAppMessage({
+                title: '溜了溜了',
+                desc: '从前有一只大鱼和一只小鱼。有一天 小鱼问大鱼：大～鱼～大～鱼～你～平～常～喜～欢～吃～什～么～丫。大鱼说：我～喜～欢～吃～说～话～慢～的～小～鱼。然后小鱼说：喔 酱紫 造了！',
+                link: 'http://girl.nat300.top/pethome/index.html?openId=Allen',
+                imgUrl: 'https://avatars3.githubusercontent.com/u/12826895?s=460&v=4',
+                trigger: function (res) {
+                    // 不要尝试在trigger中使用ajax异步请求修改本次分享的内容，因为客户端分享操作是一个同步操作，这时候使用ajax的回包会还没有返回
+                    alert('用户点击发送给朋友');
+                },
+                success: function (res) {
+                    alert('已分享');
+                },
+                cancel: function (res) {
+                    alert('已取消');
+                },
+                fail: function (res) {
+                    alert(JSON.stringify(res));
+                }
+            });
+
+            wx.onMenuShareTimeline({
+                title: '溜了溜了',
+                desc: '从前有一只大鱼和一只小鱼。有一天 小鱼问大鱼：大～鱼～大～鱼～你～平～常～喜～欢～吃～什～么～丫。大鱼说：我～喜～欢～吃～说～话～慢～的～小～鱼。然后小鱼说：喔 酱紫 造了！',
+                link: 'http://girl.nat300.top/pethome/index.html?openId=Allen',
+                imgUrl: 'https://avatars3.githubusercontent.com/u/12826895?s=460&v=4',
+                success: function () {
+                    alert("success")
+                }, cancel: function () {
+                    alert("cancel")
+                }
+            });
+
+            /**
+             * 分享到QQ
+             */
+            wx.onMenuShareQQ({
+                title: '这是一条测试的title',
+                desc: '从前有一只大鱼和一只小鱼。有一天 小鱼问大鱼：大～鱼～大～鱼～你～平～常～喜～欢～吃～什～么～丫。大鱼说：我～喜～欢～吃～说～话～慢～的～小～鱼。然后小鱼说：喔 酱紫 造了！',
+                link: 'http://girl.nat300.top/pethome/index.html?openId=Allen',
+                imgUrl: 'https://avatars3.githubusercontent.com/u/12826895?s=460&v=4',
+                success: function () {
+                },
+                cancel: function () {
+                }
+            });
+            /**
+             * 分享到qq空间
+             */
+            wx.onMenuShareQZone({
+                title: '这是一条测试的title',
+                desc: '从前有一只大鱼和一只小鱼。有一天 小鱼问大鱼：大～鱼～大～鱼～你～平～常～喜～欢～吃～什～么～丫。大鱼说：我～喜～欢～吃～说～话～慢～的～小～鱼。然后小鱼说：喔 酱紫 造了！',
+                link: 'http://girl.nat300.top/pethome/index.html?openId=Allen',
+                imgUrl: 'https://avatars3.githubusercontent.com/u/12826895?s=460&v=4',
+                success: function () {
+                },
+                cancel: function () {
+                }
+            });
+            wx.onMenuShareWeibo({
+                title: '这是一条测试的title',
+                desc: '从前有一只大鱼和一只小鱼。有一天 小鱼问大鱼：大～鱼～大～鱼～你～平～常～喜～欢～吃～什～么～丫。大鱼说：我～喜～欢～吃～说～话～慢～的～小～鱼。然后小鱼说：喔 酱紫 造了！',
+                link: 'http://girl.nat300.top/pethome/index.html?openId=Allen',
+                imgUrl: 'https://avatars3.githubusercontent.com/u/12826895?s=460&v=4',
+                success: function () {
+                },
+                cancel: function () {
+                }
+            });
+
         });
 
 
+    });
 
-        wx.ready(function(){
-            // config信息验证后会执行ready方法，所有接口调用都必须在config接口获得结果之后，config是一个客户端的异步操作，所以如果需要在页面加载时就调用相关接口，则须把相关接口放在ready函数中调用来确保正确执行。对于用户触发时才调用的接口，则可以直接调用，不需要放在ready函数中。
-        });
 
-        wx.error(function(res){
-            // config信息验证失败会执行error函数，如签名过期导致验证失败，具体错误信息可以打开config的debug模式查看，也可以在返回的res参数中查看，对于SPA可以在这里更新签名。
-        });
-    */
     var app = new Vue({
         el: "#index",
         data: {
@@ -160,7 +241,7 @@
         methods: {
             loadDynamicList: function () {
                 $.ajax({
-                    url: '/pethome/publish/index/'+GetQueryString("openId"),
+                    url: '/pethome/publish/index/' + GetQueryString("openId"),
                     type: 'GET',
                     dataType: 'json',
                     data: null,
@@ -177,7 +258,7 @@
             loadFindPetList: function () {
 
                 $.ajax({
-                    url: '/pethome/publish/index/Aileen',
+                    url: '/pethome/publish/index/' + GetQueryString("openId"),
                     type: 'GET',
                     //contentType: 'application/json',
                     dataType: 'json',
@@ -193,7 +274,7 @@
             },
             loadFindOwnerList: function () {
                 $.ajax({
-                    url: '/pethome/publish/index/Aileen',
+                    url: '/pethome/publish/index/' + GetQueryString("openId"),
                     type: 'GET',
                     //contentType: 'application/json',
                     dataType: 'json',
@@ -211,7 +292,7 @@
 
 
                 $.ajax({
-                    url: '/pethome/dynamic/like/Aileen',
+                    url: '/pethome/dynamic/like/' + GetQueryString("openId"),
                     type: 'GET',
                     //contentType: 'application/json',
                     dataType: 'json',
@@ -229,65 +310,8 @@
             },
             //分享
             share: function () {
-                //encodeURI(http://girl.nat300.top/pethome/index.html)
-                //load data
-                $.ajax({
-                    url: '/pethome/entry/forward',
-                    type: 'GET',
-                    dataType: 'json',
-                    data: {
-                        url: encodeURI("http://girl.nat300.top/pethome/index.html")
-                    },
-                    success: function (res) {
-                        if (res.code === 1) {
-                            wx.config({
-                                debug: false, // 开启调试模式,调用的所有api的返回值会在客户端alert出来
-                                appId: res.data.appId, // 必填，公众号的唯一标识
-                                timestamp: res.data.timestamp, // 必填，生成签名的时间戳
-                                nonceStr: res.data.nonceStr, // 必填，生成签名的随机串
-                                signature: res.data.signature,// 必填，签名，见附录1
-                                jsApiList: [
-                                    "onMenuShareTimeline",
-                                    "onMenuShareAppMessage"
-                                ] // 必填，需要使用的JS接口列表，所有JS接口列表见附录2
-                            });
-                            wx.ready(function (res) {
-                                wx.onMenuShareAppMessage({
-                                    title: "213",
-                                    desc: "21312312",
-                                    link: "213123",
-                                    imgUrl: "23113123",
-                                    trigger: function (res) {
 
-                                    },
-                                    success: function (res) {
 
-                                    },
-                                    cancel: function (res) {
-
-                                    },
-                                    fail: function (res) {
-
-                                    }
-                                });
-                                wx.onMenuShareTimeline({
-                                    title: "213",
-                                    desc: "21312312",
-                                    link: "213123",
-                                    imgUrl: "23113123",
-                                    trigger: function (res) {
-                                    },
-                                    success: function (res) {
-                                    },
-                                    cancel: function (res) {
-                                    },
-                                    fail: function (res) {
-                                    }
-                                });
-                            });
-                        }
-                    }
-                });
             },
             //关注
             attention: function (index, id, likeState) {
@@ -316,6 +340,10 @@
                         }
                     }
                 });
+            },
+            entryDetail: function (id) {
+
+                window.location.href = "./detail.html?openId=" + GetQueryString("openId") + "&id=" +id;
             }
         }
     });

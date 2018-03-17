@@ -61,7 +61,7 @@ spring:
 web:
   upload-path:  D:/petlove/
 
-picturePath: D:/petlove/upload/
+picturePath: E:/petlove/upload/
 
 
 wechat:

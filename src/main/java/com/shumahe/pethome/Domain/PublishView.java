@@ -2,25 +2,28 @@ package com.shumahe.pethome.Domain;
 
 
 import lombok.Data;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
-import javax.persistence.Entity;
-import javax.persistence.Table;
+import javax.persistence.*;
 import java.util.Date;
 
-/*@Entity
+@Entity
 @Data
-@Table(name = "publishtalk")*/
+@Table(name = "publishview")
 public class PublishView {
 
     /**
      * id
      */
+    @Id
+    @GeneratedValue
     private Integer id;
+
 
     /**
      * 浏览者
      */
-    private Integer viewer;
+    private String viewer;
 
 
     /**
@@ -38,7 +41,7 @@ public class PublishView {
     /**
      * 发布人ID
      */
-    private Integer publisherId;
+    private String publisherId;
 
 
 }

@@ -317,7 +317,8 @@ public class MessageServiceImpl implements MessageService {
          */
         List<PublishTalk> talks = publishTalkRepository.findOnePublicTalk(pet.getId());
         if (talks.isEmpty()) {
-            throw new PetHomeException(ResultEnum.RESULT_EMPTY.getCode(), "留言互动消息为空");
+            //throw new PetHomeException(ResultEnum.RESULT_EMPTY.getCode(), "留言互动消息为空");
+            return null;
         }
 
         /**
