@@ -115,13 +115,13 @@
 <script>
 
     $(function () {
-
+        console.log(GetQueryString("openid"))
         $.ajax({
             url: '/pethome/wechat/jsApiSignature',
             type: 'GET',
             dataType: 'json',
             data: {
-                url: encodeURI("http://girl.nat300.top/pethome/index.html")
+                url: encodeURI(window.location.href)
             },
             success: function (res) {
                 if (res.code === 1) {
@@ -135,28 +135,26 @@
                         jsApiList: [
                             "onMenuShareTimeline",
                             "onMenuShareAppMessage",
-                            /*"onMenuShareQQ",
+                            "onMenuShareQQ",
                             "onMenuShareQZone",
                             "onMenuShareWeibo"
-*/
                         ]
                     });
                 }
             }
         });
 
-        wx.ready(function (Api) {
-            /* wx.hideOptionMenu();
-             wx.hideMenuItems();*/
+        wx.ready(function () {
+
             /**
              * 朋友圈
              */
 
             wx.onMenuShareAppMessage({
-                title: '溜了溜了',
+                title: '这是一条发给胡天鹅小姐姐的信息',
                 desc: '从前有一只大鱼和一只小鱼。有一天 小鱼问大鱼：大～鱼～大～鱼～你～平～常～喜～欢～吃～什～么～丫。大鱼说：我～喜～欢～吃～说～话～慢～的～小～鱼。然后小鱼说：喔 酱紫 造了！',
-                link: 'http://girl.nat300.top/pethome/index.html?openId=Allen',
-                imgUrl: 'https://avatars3.githubusercontent.com/u/12826895?s=460&v=4',
+                link: 'http://girl.nat300.top/pethome/wechat/webAuth?returnUrl=http://girl.nat300.top/pethome/index.html',
+                imgUrl: 'http://girl.nat300.top/pethome/upload/picture/publish/1521309726224418606052492799746.jpg',
                 trigger: function (res) {
                     // 不要尝试在trigger中使用ajax异步请求修改本次分享的内容，因为客户端分享操作是一个同步操作，这时候使用ajax的回包会还没有返回
                     alert('用户点击发送给朋友');
@@ -175,7 +173,7 @@
             wx.onMenuShareTimeline({
                 title: '溜了溜了',
                 desc: '从前有一只大鱼和一只小鱼。有一天 小鱼问大鱼：大～鱼～大～鱼～你～平～常～喜～欢～吃～什～么～丫。大鱼说：我～喜～欢～吃～说～话～慢～的～小～鱼。然后小鱼说：喔 酱紫 造了！',
-                link: 'http://girl.nat300.top/pethome/index.html?openId=Allen',
+                link: 'http://girl.nat300.top/pethome/index.html?openid=' + GetQueryString("openid"),
                 imgUrl: 'https://avatars3.githubusercontent.com/u/12826895?s=460&v=4',
                 success: function () {
                     alert("success")
@@ -190,7 +188,7 @@
             wx.onMenuShareQQ({
                 title: '这是一条测试的title',
                 desc: '从前有一只大鱼和一只小鱼。有一天 小鱼问大鱼：大～鱼～大～鱼～你～平～常～喜～欢～吃～什～么～丫。大鱼说：我～喜～欢～吃～说～话～慢～的～小～鱼。然后小鱼说：喔 酱紫 造了！',
-                link: 'http://girl.nat300.top/pethome/index.html?openId=Allen',
+                link: 'http://girl.nat300.top/pethome/index.html?openid=' + GetQueryString("openid"),
                 imgUrl: 'https://avatars3.githubusercontent.com/u/12826895?s=460&v=4',
                 success: function () {
                 },
@@ -201,9 +199,9 @@
              * 分享到qq空间
              */
             wx.onMenuShareQZone({
-                title: '这是一条测试的title',
+                title: '今天下雨,冷死个人,宇锅出去吃饭',
                 desc: '从前有一只大鱼和一只小鱼。有一天 小鱼问大鱼：大～鱼～大～鱼～你～平～常～喜～欢～吃～什～么～丫。大鱼说：我～喜～欢～吃～说～话～慢～的～小～鱼。然后小鱼说：喔 酱紫 造了！',
-                link: 'http://girl.nat300.top/pethome/index.html?openId=Allen',
+                link: 'http://girl.nat300.top/pethome/index.html?openid=' + GetQueryString("openid"),
                 imgUrl: 'https://avatars3.githubusercontent.com/u/12826895?s=460&v=4',
                 success: function () {
                 },
@@ -213,7 +211,8 @@
             wx.onMenuShareWeibo({
                 title: '这是一条测试的title',
                 desc: '从前有一只大鱼和一只小鱼。有一天 小鱼问大鱼：大～鱼～大～鱼～你～平～常～喜～欢～吃～什～么～丫。大鱼说：我～喜～欢～吃～说～话～慢～的～小～鱼。然后小鱼说：喔 酱紫 造了！',
-                link: 'http://girl.nat300.top/pethome/index.html?openId=Allen',
+                //link: 'http://girl.nat300.top/pethome/index.html?openid=' + GetQueryString("openid"),
+                link: 'http://girl.nat300.top/pethome/wechat/webAuth?returnUrl=http://girl.nat300.top/pethome/index.html',
                 imgUrl: 'https://avatars3.githubusercontent.com/u/12826895?s=460&v=4',
                 success: function () {
                 },
@@ -222,8 +221,6 @@
             });
 
         });
-
-
     });
 
 
@@ -241,7 +238,7 @@
         methods: {
             loadDynamicList: function () {
                 $.ajax({
-                    url: '/pethome/publish/index/' + GetQueryString("openId"),
+                    url: '/pethome/publish/index/' + GetQueryString("openid"),
                     type: 'GET',
                     dataType: 'json',
                     data: null,
@@ -258,7 +255,7 @@
             loadFindPetList: function () {
 
                 $.ajax({
-                    url: '/pethome/publish/index/' + GetQueryString("openId"),
+                    url: '/pethome/publish/index/' + GetQueryString("openid"),
                     type: 'GET',
                     //contentType: 'application/json',
                     dataType: 'json',
@@ -274,7 +271,7 @@
             },
             loadFindOwnerList: function () {
                 $.ajax({
-                    url: '/pethome/publish/index/' + GetQueryString("openId"),
+                    url: '/pethome/publish/index/' + GetQueryString("openid"),
                     type: 'GET',
                     //contentType: 'application/json',
                     dataType: 'json',
@@ -292,7 +289,7 @@
 
 
                 $.ajax({
-                    url: '/pethome/dynamic/like/' + GetQueryString("openId"),
+                    url: '/pethome/dynamic/like/' + GetQueryString("openid"),
                     type: 'GET',
                     //contentType: 'application/json',
                     dataType: 'json',
@@ -343,7 +340,7 @@
             },
             entryDetail: function (id) {
 
-                window.location.href = "./detail.html?openId=" + GetQueryString("openId") + "&id=" +id;
+                window.location.href = "./detail.html?openid=" + GetQueryString("openid") + "&id=" + id;
             }
         }
     });

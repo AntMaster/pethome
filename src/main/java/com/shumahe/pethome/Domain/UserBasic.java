@@ -1,5 +1,7 @@
 package com.shumahe.pethome.Domain;
 
+import com.shumahe.pethome.Enums.ApproveTypeEnum;
+import com.shumahe.pethome.Enums.BooleanEnum;
 import lombok.Data;
 
 import javax.persistence.*;
@@ -30,7 +32,7 @@ public class UserBasic {
 
 
     @Column(name = "approve")
-    private Integer approve;
+    private Integer approve = BooleanEnum.FALSE.getCode();
 
 
 }

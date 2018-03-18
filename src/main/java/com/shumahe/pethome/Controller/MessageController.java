@@ -213,8 +213,8 @@ public class MessageController {
      * @param openId
      * @return
      */
-    @GetMapping("/{openId}")
-    public ResultVO findMyInfo(@PathVariable("openId") String openId) {
+    @GetMapping("/{openid}")
+    public ResultVO findMyInfo(@PathVariable("openid") String openId) {
 
         UserDTO userDTO = messageService.findMyInfo(openId);
         return ResultVOUtil.success(userDTO);

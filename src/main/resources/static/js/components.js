@@ -55,23 +55,23 @@ Vue.component('mc-tabbar', {
     methods: {
         toIndex: function () {
 
-            if (this.lv == 2) return "../index.html?openId=" + GetQueryString("openId");
-            return "index.html?openId=" + GetQueryString("openId");
+            if (this.lv == 2) return "../index.html?openid=" + GetQueryString("openid");
+            return "index.html?openid=" + GetQueryString("openid");
         },
         toSearch: function () {
-            if (this.lv == 2) return "../search.html?openId=" + GetQueryString("openId");
-            return "search.html?openId=" + GetQueryString("openId");
+            if (this.lv == 2) return "../search.html?openid=" + GetQueryString("openid");
+            return "search.html?openid=" + GetQueryString("openid");
         },
         toPublish: function () {
-            if (this.lv == 2) return "../fpet.html?openId=" + GetQueryString("openId");
-            return "fpet.html?openId=" + GetQueryString("openId");
+            if (this.lv == 2) return "../fpet.html?openid=" + GetQueryString("openid");
+            return "fpet.html?openid=" + GetQueryString("openid");
         },
         toCard: function () {
             //load data
 
             var temp_lv = this.lv;
             $.ajax({
-                url: '/pethome/pet/' + GetQueryString("openId"),
+                url: '/pethome/pet/' + GetQueryString("openid"),
                 type: 'GET',
                 dataType: 'json',
                 data: null,
@@ -79,17 +79,17 @@ Vue.component('mc-tabbar', {
                     if (res.code === 1) {
 
                         if (temp_lv == 2) {
-                            window.location.href = "../card-list.html?openId=" + GetQueryString("openId");
+                            window.location.href = "../card-list.html?openid=" + GetQueryString("openid");
                         } else {
-                            window.location.href = "card-list.html?openId=" + GetQueryString("openId");
+                            window.location.href = "card-list.html?openid=" + GetQueryString("openid");
                         }
 
                     } else {
 
                         if (temp_lv == 2) {
-                            window.location.href = "../card-index.html?openId=" + GetQueryString("openId");
+                            window.location.href = "../card-index.html?openid=" + GetQueryString("openid");
                         } else {
-                            window.location.href = "card-index.html?openId=" + GetQueryString("openId");
+                            window.location.href = "card-index.html?openid=" + GetQueryString("openid");
                         }
                     }
                 }
@@ -99,8 +99,8 @@ Vue.component('mc-tabbar', {
         },
         toMine: function () {
 
-            if (this.lv == 2) return "../mine.html?openId=" + GetQueryString("openId");
-            return "mine.html?openId=" + GetQueryString("openId");
+            if (this.lv == 2) return "../mine.html?openid=" + GetQueryString("openid");
+            return "mine.html?openid=" + GetQueryString("openid");
         },
         tabbarIcon: function (i) {
             switch (i) {

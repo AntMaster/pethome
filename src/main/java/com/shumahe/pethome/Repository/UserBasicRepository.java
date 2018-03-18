@@ -39,7 +39,7 @@ public interface UserBasicRepository extends JpaRepository<UserBasic,Integer> {
      * @param openId
      * @return
      */
-    List<UserBasic> findByAppIdAndOpenId(String appId,String openId);
+    UserBasic findByAppIdAndOpenId(String appId,String openId);
 
 
 

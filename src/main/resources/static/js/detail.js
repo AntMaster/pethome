@@ -24,7 +24,7 @@ var app = new Vue({
         init: function () {
 
             $.ajax({
-                url: '/pethome/publish/detail/' + GetQueryString("openId"),
+                url: '/pethome/publish/detail/' + GetQueryString("openid"),
                 type: 'GET',
                 contentType: "application/x-www-form-urlencoded",
                 dataType: 'json',

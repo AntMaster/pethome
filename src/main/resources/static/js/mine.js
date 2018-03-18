@@ -10,7 +10,7 @@ var app = new Vue({
         loadMine: function () {
 
             $.ajax({
-                url: '/pethome/message/' + GetQueryString("openId"),
+                url: '/pethome/message/' + GetQueryString("openid"),
                 type: 'GET',
                 dataType: 'json',
                 data: null,
@@ -39,7 +39,7 @@ $(document).on("pageInit", function (e, pageId, $page) {
             mounted: function () {
                 //我的未找到
                 $.ajax({
-                    url: '/pethome/publish/task/'+ GetQueryString("openId") ,
+                    url: '/pethome/publish/task/'+ GetQueryString("openid") ,
                     type: 'GET',
                     dataType: 'json',
                     data: null,
@@ -60,7 +60,7 @@ $(document).on("pageInit", function (e, pageId, $page) {
                     this.isPend = true;
 
                     $.ajax({
-                        url: '/pethome/publish/task/'+GetQueryString("openId"),
+                        url: '/pethome/publish/task/'+GetQueryString("openid"),
                         type: 'GET',
                         dataType: 'json',
                         data: null,
@@ -79,7 +79,7 @@ $(document).on("pageInit", function (e, pageId, $page) {
                     this.isPend = false;
                     //我的未找到
                     $.ajax({
-                        url: '/pethome/publish/'+GetQueryString("openId"),
+                        url: '/pethome/publish/'+GetQueryString("openid"),
                         type: 'GET',
                         dataType: 'json',
                         data: null,
@@ -100,7 +100,7 @@ $(document).on("pageInit", function (e, pageId, $page) {
                     }
 
                     $.ajax({
-                        url: '/pethome/publish/pet/find/'+GetQueryString("openId"),
+                        url: '/pethome/publish/pet/find/'+GetQueryString("openid"),
                         type: 'POST',
                         dataType: 'json',
                         data: {
