@@ -340,8 +340,13 @@
                 });
             },
             entryDetail: function (id) {
-
-                window.location.href = "./detail.html?openid=" + GetQueryString("openid") + "&id=" + id;
+                //认证流程
+                // if(1){
+                //     $.modal(goAuthormodal);
+                // }else{
+                //
+                // }
+                //window.location.href = "./detail.html?openid=" + GetQueryString("openid") + "&id=" + id;
             }
         }
     });
@@ -407,7 +412,7 @@
         title: '',
         afterText: '<div class="author-modal">' +
         '<div class="close" onClick="closeGoAuthorModal()"><img src="img/icon/icon-modal-close.png"/></div>' +
-        '<div class="avatar"><img src="img/test/avatar.jpg"/></div>' +
+        '<div class="avatar"><img src="img/icon/goValidate.png"/></div>' +
         '<div class="modal-msg">实名认证后可以解锁更多走丢宠物信息</div>' +
         '<a class="modal-btn" onClick="goAuthor()">去认证</a>' +
         '</div>',
@@ -420,12 +425,12 @@
         //个人认证
         '<div class="author-item" onClick="toAuthorPage(0)" style="margin-top:1.5rem;">' +
         '<div class="author-item-inner">' +
-        '<img src="img/test/avatar.jpg"/><span>个人认证</span>' +
+        '<img src="img/icon/pv.png"/><span>个人认证</span>' +
         '</div>' +
         '</div>' +
         '<div class="author-item" onClick="toAuthorPage(1)" style="margin-bottom:1.3rem;">' +
         '<div class="author-item-inner">' +
-        '<img src="img/test/avatar.jpg"/><span>组织或协会认证</span>' +
+        '<img src="img/icon/ov.png"><span>组织或协会认证</span>' +
         '</div>' +
         '</div>' +
         //组织或协会认证

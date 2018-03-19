@@ -70,8 +70,8 @@ public class MessageController {
      * @param size
      * @return
      */
-    @GetMapping("/private/list")
-    public ResultVO findMyPrivateTalk(@RequestParam("openId") String openId,
+    @GetMapping("/my/private/{openId}")
+    public ResultVO findMyPrivateTalk(@PathVariable("openId") String openId,
                                       @RequestParam(value = "page", defaultValue = "0") Integer page,
                                       @RequestParam(value = "size", defaultValue = "200") Integer size) {
 
@@ -90,8 +90,8 @@ public class MessageController {
      * @param size
      * @return
      */
-    @GetMapping("/public/list")
-    public ResultVO findMyPublicTalk(@RequestParam("openId") String openId,
+    @GetMapping("/my/public/{openId}")
+    public ResultVO findMyPublicTalk(@PathVariable("openId") String openId,
                                      @RequestParam(value = "page", defaultValue = "0") Integer page,
                                      @RequestParam(value = "size", defaultValue = "200") Integer size) {
 
@@ -99,7 +99,6 @@ public class MessageController {
         List<List<Map<String, String>>> myPrivateTalk = messageService.findMyPublicTalk(openId, pageRequest);
 
         return ResultVOUtil.success(myPrivateTalk);
-
     }
 
 
@@ -107,11 +106,10 @@ public class MessageController {
      * 主题  互动详情   √
      *
      * @param publishId
-     * @param openId
      * @return
      */
-    @GetMapping("/public/detail")
-    public ResultVO petPublicTalk(@RequestParam("publishId") Integer publishId, @RequestParam("openId") String openId) {
+    @GetMapping("/public/{id}")
+    public ResultVO petPublicTalk(@PathVariable("id") Integer publishId) {
 
         if (publishId == 0) {
             throw new PetHomeException(ResultEnum.PARAM_ERROR);
@@ -121,7 +119,6 @@ public class MessageController {
         List<List<PublicMsgDTO>> petPublicTalks = messageService.petPublicTalks(pet);
 
         long talkCount = petPublicTalks.stream().mapToInt(num -> num.size()).summaryStatistics().getSum();
-
 
         PublishDTO publishDTO = new PublishDTO();
         publishDTO.setPublicMsgCount((int) talkCount);
@@ -136,8 +133,8 @@ public class MessageController {
      * @param openId
      * @return
      */
-    @GetMapping("/private/detail")
-    public ResultVO petPrivateTalk(@RequestParam("publishId") Integer publishId, @RequestParam("openId") String openId) {
+    @GetMapping("/private/{id}")
+    public ResultVO petPrivateTalk(@PathVariable("id") Integer publishId, @RequestParam("openId") String openId) {
 
         if (publishId == 0) {
             throw new PetHomeException(ResultEnum.PARAM_ERROR);
@@ -158,12 +155,12 @@ public class MessageController {
     /**
      * 回复互动 √
      *
-     * @param replyPrivateFrom
+     * @param replyPublishForm
      * @param bindingResult
      * @return
      */
-    @PutMapping("/public/{publishId}")
-    public ResultVO replayPublicMsg(@PathVariable("publishId") Integer publishId, @Valid ReplyPublishForm replyPrivateFrom, BindingResult bindingResult) {
+    @PutMapping("/public/{id}")
+    public ResultVO replayPublicMsg(@PathVariable("id") Integer publishId, @Valid ReplyPublishForm replyPublishForm, BindingResult bindingResult) {
 
 
         PetPublish pet = petPublishRepository.findById(publishId);
@@ -174,15 +171,15 @@ public class MessageController {
 
 
         if (bindingResult.hasErrors()) {
-            log.error("【私信回复参数不正确】参数不正确,petForm={}", replyPrivateFrom);
+            log.error("【互动回复参数不正确】参数不正确,petForm={}", replyPublishForm);
             throw new PetHomeException(ResultEnum.PARAM_ERROR.getCode(), bindingResult.getFieldError().getDefaultMessage());
         }
 
         /**
          * 判断是评论还是互动
          */
-        boolean talkIdEmpty = StringUtils.isEmpty(replyPrivateFrom.getTalkId());
-        boolean accepterEmpty = StringUtils.isEmpty(replyPrivateFrom.getReplierAccept());
+        boolean talkIdEmpty = StringUtils.isEmpty(replyPublishForm.getTalkId());
+        boolean accepterEmpty = StringUtils.isEmpty(replyPublishForm.getReplierAccept());
         if (talkIdEmpty || accepterEmpty) {
             if (!(talkIdEmpty && accepterEmpty)) {
                 log.error("【回复互动参数不正确】,若为评论,则评论ID和接收人都为-1");
@@ -190,7 +187,7 @@ public class MessageController {
             }
         }
 
-        PublicMsgDTO msgDTO = messageService.replyPublic(replyPrivateFrom, pet);
+        PublicMsgDTO msgDTO = messageService.replyPublic(replyPublishForm, pet);
         return ResultVOUtil.success(msgDTO);
     }
 
@@ -202,8 +199,8 @@ public class MessageController {
      * @param bindingResult
      * @return
      */
-    @PutMapping("/private/{publishId}")
-    public ResultVO replayPrivateMsg(@PathVariable("publishId") Integer publishId, @Valid ReplyPrivateForm replyPrivateFrom, BindingResult bindingResult) {
+    @PutMapping("/private/{id}")
+    public ResultVO replayPrivateMsg(@PathVariable("id") Integer publishId, @Valid ReplyPrivateForm replyPrivateFrom, BindingResult bindingResult) {
 
 
         PetPublish pet = petPublishRepository.findById(publishId);

@@ -25,8 +25,8 @@ var task = new Vue({
     methods: {
 
         waitDeal: function () {
-            this.isPend = true;
 
+            this.isPend = true;
             $.ajax({
                 url: '/pethome/publish/task/' + GetQueryString("openId"),
                 type: 'GET',

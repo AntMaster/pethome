@@ -1,6 +1,7 @@
 package com.shumahe.pethome.DTO;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 
 import java.util.Date;
@@ -22,36 +23,42 @@ public class PrivateMsgDTO {
     /**
      * 发送人ID
      */
+    @JsonProperty("replierFrom")
     private String userIdFrom;
 
 
     /**
      * 发送人昵称
      */
+    @JsonProperty("replierFromName")
     private String userIdFromName;
 
 
     /**
      * 发送人头像
      */
+    @JsonProperty("replierFromPhoto")
     private String userIdFromPhoto;
 
 
     /**
      * 接收人ID
      */
+    @JsonProperty("replierAccept")
     private String userIdAccept;
 
 
     /**
      * 接收人昵称
      */
+    @JsonProperty("replierAcceptName")
     private String userAcceptName;
 
 
     /**
      * 接收人头像
      */
+    @JsonProperty("replierAcceptPhoto")
     private String userAcceptPhoto;
 
 

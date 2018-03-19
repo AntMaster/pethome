@@ -76,17 +76,17 @@
             </div>
         </div>
         <!-- 按钮 找到了 -->
-        <div class="action-box">
-            <a>找到了</a>
+        <div class="action-box" >
+            <a  href="javascript:;" @click="found(detailData.publisherId)">找到了</a>
         </div>
         <div class="msg-box">
             <!-- 分页 -->
             <div class="segment-box">
-                <div class="item" :class="{active:msgListType}" @click="changeList">
+                <div class="item" :class="{active:msgListType=='interactMsg'}" @click="changeList(0)">
                     <div class="item-title">互动<span>{{detailData.publicMsgCount}}</span></div>
                     <div class="item-underline"></div>
                 </div>
-                <div class="item" :class="{active:!msgListType}" @click="changeList">
+                <div class="item" :class="{active:msgListType=='privateMsg'}" @click="changeList(1)">
                     <div class="item-title">
                         私信<span>{{detailData.privateMsgCount ? detailData.privateMsgCount : ''}}</span></div>
                     <div class="item-underline"></div>
@@ -97,44 +97,44 @@
                 为保障宠物安全，请使用私信提供线索
             </div>
             <!-- 消息列表 -->
-            <ul class="messageList">
-                <li v-for="(item,index) in showMsgList">
-                    <div class="card facebook-card"><a class="reply-btn open-reply-modal">回复</a>
+            <ul class="messageList" >
+                <li v-for="(items,index) in showMsgList">
+                    <div class="card facebook-card"><a class="reply-btn open-reply-modal" @click="reply(index,items[0].talkId,items[0].replierFrom)">回复</a>
                         <div class="card-header no-border">
-                            <div class="facebook-avatar"><img :src="item.replierFromPhoto" width="34" height="34">
+                            <div class="facebook-avatar"><img :src="items[0].replierFromPhoto" width="34" height="34">
                             </div>
-                            <div class="facebook-name">{{item.replierFromName}}</div>
-                            <div class="item-comment">{{item.content}}</div>
+                            <div class="facebook-name">{{items[0].replierFromName}}</div>
+                            <div class="item-comment">{{items[0].content}}</div>
                         </div>
-                        <div class="card-content">
+                        <div class="card-content" v-if="items.length > 1">
                             <ul class="reply-box">
-                                <li v-for="(item, index) in item.commonList" v-if="index == 0 && index < 2"><a>{{item.replierFromName}}：</a>{{item.content}}
+                                <li v-for="(item, index) in items" v-if="index > 0 && index < 3"><a>{{item.replierFromName}}：</a>{{item.content}}
                                 </li>
-                                <a v-if="item.length > 2" @click="expand">展开全部8条回复</a>
+                                <a v-if="items.length > 3" @click="expand" :click="expand()">展开全部{{items.length-3}}条回复</a>
                             </ul>
                         </div>
                     </div>
                 </li>
             </ul>
-            <!--<ul class="messageList">-->
-                <!--<li v-for="(items,index) in showMsgList">-->
-                    <!--<div class="card facebook-card"><a class="reply-btn open-reply-modal">回复</a>-->
-                        <!--<div class="card-header no-border">-->
-                            <!--<div class="facebook-avatar"><img :src="items[0].replierFromPhoto" width="34" height="34">-->
-                            <!--</div>-->
-                            <!--<div class="facebook-name">{{items[0].replierFromName}}</div>-->
-                            <!--<div class="item-comment">{{items[0].content}}</div>-->
-                        <!--</div>-->
-                        <!--<div class="card-content" v-if="items.length > 1">-->
-                            <!--<ul class="reply-box">-->
-                                <!--<li v-for="(item, index) in items" v-if="index > 0 && index < 3"><a>{{item.replierFromName}}：</a>{{item.content}}-->
-                                <!--</li>-->
-                                <!--<a v-if="items.length > 2" @click="expand">展开全部8条回复</a>-->
-                            <!--</ul>-->
-                        <!--</div>-->
-                    <!--</div>-->
-                <!--</li>-->
-            <!--</ul>-->
+            <ul class="messageList" >
+                <li v-for="(items,index) in showMsgList">
+                    <div class="card facebook-card"><a class="reply-btn open-reply-modal" @click="reply(index,items[0].talkId,items[0].replierFrom)">回复</a>
+                        <div class="card-header no-border">
+                            <div class="facebook-avatar"><img :src="items[0].replierFromPhoto" width="34" height="34">
+                            </div>
+                            <div class="facebook-name">{{items[0].replierFromName}}</div>
+                            <div class="item-comment">{{items[0].content}}</div>
+                        </div>
+                        <div class="card-content" v-if="items.length > 1">
+                            <ul class="reply-box">
+                                <li v-for="(item, index) in items" v-if="index > 0 && index < 3"><a>{{item.replierFromName}}：</a>{{item.content}}
+                                </li>
+                                <a v-if="items.length > 3" @click="expand" :click="expand()">展开全部{{items.length-3}}条回复</a>
+                            </ul>
+                        </div>
+                    </div>
+                </li>
+            </ul>
         </div>
         <!-- 回复栏 -->
         <div class="comment-box">

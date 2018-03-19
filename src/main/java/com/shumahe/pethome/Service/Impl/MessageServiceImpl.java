@@ -563,9 +563,12 @@ public class MessageServiceImpl implements MessageService {
         if (StringUtils.isEmpty(userTalk.getTalkId())) {
 
             List<UserTalk> talks = userTalkRepository.findByPublishIdOrderByTalkId(pet.getId());
-            int maxTalkId = talks.stream().mapToInt(e -> e.getTalkId()).summaryStatistics().getMax();
-            userTalk.setTalkId(maxTalkId + 1);
-
+            if(talks.isEmpty()){
+                userTalk.setTalkId(1);
+            }else{
+                int maxTalkId = talks.stream().mapToInt(e -> e.getTalkId()).summaryStatistics().getMax();
+                userTalk.setTalkId(maxTalkId + 1);
+            }
         }
 
         UserTalk save = userTalkRepository.save(userTalk);
