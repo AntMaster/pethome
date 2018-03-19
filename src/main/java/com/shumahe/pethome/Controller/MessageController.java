@@ -1,6 +1,7 @@
 package com.shumahe.pethome.Controller;
 
 
+import com.shumahe.pethome.Config.SMSConfig;
 import com.shumahe.pethome.DTO.PrivateMsgDTO;
 import com.shumahe.pethome.DTO.PublicMsgDTO;
 import com.shumahe.pethome.DTO.PublishDTO;
@@ -15,17 +16,31 @@ import com.shumahe.pethome.Form.ReplyPublishForm;
 import com.shumahe.pethome.Repository.PetPublishRepository;
 import com.shumahe.pethome.Repository.PublishTalkRepository;
 import com.shumahe.pethome.Service.MessageService;
+import com.shumahe.pethome.Util.MathUtil;
+import com.shumahe.pethome.Util.PhoneFormatCheckUtil;
 import com.shumahe.pethome.Util.ResultVOUtil;
 import com.shumahe.pethome.VO.ResultVO;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpRequest;
+import org.springframework.http.MediaType;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
 import org.springframework.util.StringUtils;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.client.RestTemplate;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
 
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -110,7 +125,7 @@ public class MessageController {
 
         PublishDTO publishDTO = new PublishDTO();
         publishDTO.setPublicMsgCount((int) talkCount);
-        publishDTO.setPublicTalkDTO(petPublicTalks);
+        publishDTO.setPublicTalk(petPublicTalks);
         return ResultVOUtil.success(publishDTO);
     }
 
@@ -136,7 +151,7 @@ public class MessageController {
 
         PublishDTO publishDTO = new PublishDTO();
         publishDTO.setPublicMsgCount((int) talkCount);
-        publishDTO.setPrivateTalkDTO(petPrivateTalks);
+        publishDTO.setPrivateTalk(petPrivateTalks);
         return ResultVOUtil.success(publishDTO);
     }
 
@@ -220,17 +235,69 @@ public class MessageController {
         return ResultVOUtil.success(userDTO);
     }
 
+    @Autowired
+    SMSConfig smsConfig;
+
+    @Autowired
+    RestTemplate restTemplate;
 
     /**
-     * 互动(评论和回复)列表 (我的)
+     * 获取短信验证码
      */
+    @GetMapping("/sms/{openId}")
+    private ResultVO getShortMessage(HttpServletRequest request,
+                                     @PathVariable("openId") String openId,
+                                     @RequestParam("phone") String mobile) {
+
+        boolean chinaPhoneLegal = PhoneFormatCheckUtil.isChinaPhoneLegal(mobile);
+        if (!chinaPhoneLegal) {
+            throw new PetHomeException(ResultEnum.PARAM_ERROR.getCode(), "手机号码不正确");
+        }
+
+        Integer code = MathUtil.getRandomNumber();
+        String massage = "【宠爱有家】您的验证码：" + code + "，请在10分钟内按页面提示提交验证码";
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
+
+        MultiValueMap<String, String> p = new LinkedMultiValueMap<>();
+        p.add("account", smsConfig.getAccount());
+        p.add("pswd", smsConfig.getPassword());
+        p.add("mobile", mobile);
+        p.add("msg", massage);
+
+        HttpEntity<MultiValueMap<String, String>> entity = new HttpEntity<>(p, headers);
+        String smsResult = restTemplate.postForObject(smsConfig.getUrl(), entity, String.class);
+
+        String hasError = smsResult.split(",")[1];
+        if (!String.valueOf(0).equals(hasError)) {
+            throw new PetHomeException(ResultEnum.PARAM_ERROR.getCode(), "发送短信验证码失败!");
+        }
+
+        HttpSession session = request.getSession();
+        Map<String, String> userSms = new HashMap<>();
+        userSms.put("code", code.toString());
+        session.setAttribute(openId, userSms);
+        session.setMaxInactiveInterval(1 * 60);
+        return ResultVOUtil.success(code);
+    }
 
     /**
-     * 私信(个人)入口在哪?
+     * 获取短信验证码
      */
+    @PostMapping("/sms/{openId}")
+    private ResultVO checkShortMessage(HttpServletRequest request,
+                                       @PathVariable("openId") String openId,
+                                       @RequestParam("code") String code) {
 
-    /**
-     * 私信列表(个人)
-     */
+        HttpSession session = request.getSession();
+        Map<String, String> userSms = (Map<String, String>) session.getAttribute(openId);
+        if (userSms == null || !code.equals(userSms.get("code"))) {
+            throw new PetHomeException(ResultEnum.RESULT_EMPTY.getCode(), "验证码已过期,请稍后再获取");
+        }
+
+        session.removeAttribute(openId);
+        return ResultVOUtil.success(true);
+    }
 
 }

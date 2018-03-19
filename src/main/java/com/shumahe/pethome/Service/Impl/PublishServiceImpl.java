@@ -255,7 +255,7 @@ public class PublishServiceImpl implements PublishService {
 
 
         BeanUtils.copyProperties(pet, publishDTO);
-        publishDTO.setPublicTalkDTO(msgDTOS);
+        publishDTO.setPublicTalk(msgDTOS);
         publishDTO.setPublisherName(myself.getNickName());
         publishDTO.setPublisherPhoto(myself.getHeadImgUrl());
 

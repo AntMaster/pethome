@@ -14,7 +14,9 @@ var app = new Vue({
         //interactmsgList: [],
         //私信列表
         //privateMsgList: [],
-        detailData: {}
+        detailData: {},
+        commentContent:''
+
     },
     mounted: function () {
         //初始化
@@ -34,7 +36,7 @@ var app = new Vue({
                 success: function (res) {
                     if (res.code === 1) {
                         app.detailData = res.data;
-                        app.showMsgList = res.data.publicMsgCount;
+                        app.showMsgList = res.data.publicTalk;
                     } else {
                         alert(res.msg);
                     }
@@ -54,6 +56,48 @@ var app = new Vue({
         //关注
         attention: function () {
 
+        },
+        reply: function (index) {
+            $.modal({
+                title: '回复',
+                text: '',
+                afterText: '<textarea class="reply-modal-textarea" placehodler="这里输入回复内容"></textarea>',
+                buttons: [{
+                    text: '确定',
+                    onClick: function () {
+
+                    }
+                }]
+            })
+        },
+        //发送评论
+        sendComment: function () {
+            if(!this.commentContent){
+                alert("请输入回复内容");
+                return;
+            }
+            $.ajax({
+                url: '/pethome/message/public/' + GetQueryString("id"),
+                type: 'PUT',
+                contentType: "application/x-www-form-urlencoded",
+                dataType: 'json',
+                data: {
+                    replierFrom: GetQueryString("openid"),
+                    content: this.commentContent
+                },
+                success: function (res) {
+                    if (res.code === 1) {
+                        //app.detailData = res.data;
+                       /* if(!app.showMsgList){
+                            app.showMsgList = new Array();
+
+                        }*/
+                        app.showMsgList[0].push(res.data);
+                    } else {
+                        alert(res.msg);
+                    }
+                }
+            });
         },
         //切换消息列表
         changeList: function () {

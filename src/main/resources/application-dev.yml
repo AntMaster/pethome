@@ -59,9 +59,14 @@ spring:
 
 ######自定义配置
 web:
-  upload-path:  D:/petlove/
+  upload-path:  E:/petlove/upload/
+  sms:
+    account: whlehuike
+    password: Tch147258
+    url: http://222.73.117.156/msg/HttpBatchSendSM
 
 picturePath: E:/petlove/upload/
+
 
 
 wechat:

@@ -27,7 +27,7 @@ public interface PublishViewRepository extends JpaRepository<PublishView,Integer
      * @return
      */
     @Query(value = "select publish_Id, count(publish_Id) as viewCount from PublishView where publish_Id in (?1) GROUP BY publish_Id ",nativeQuery = true)
-    List<Object[]> findViewCount(List<Integer> publishIds);
+    List<Integer[]> findViewCount(List<Integer> publishIds);
 
 
 }

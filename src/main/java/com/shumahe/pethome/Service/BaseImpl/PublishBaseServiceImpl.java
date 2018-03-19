@@ -32,7 +32,6 @@ public class PublishBaseServiceImpl implements PublishBaseService {
     PublishViewRepository publishViewRepository;
 
 
-
     /**
      * 查询发布扩展信息(发布人详情 + 评论数详情)
      *
@@ -41,8 +40,6 @@ public class PublishBaseServiceImpl implements PublishBaseService {
      */
     @Override
     public List<PublishDTO> findPetExtends(List<PetPublish> publishes) {
-
-
 
 
         List<Integer> publishIds = publishes.stream().map(e -> e.getId()).collect(Collectors.toList());
@@ -60,7 +57,6 @@ public class PublishBaseServiceImpl implements PublishBaseService {
         if (!commentCount.isEmpty()) {
 
             commentCount.stream().forEach((Object[] count) -> {
-
                 Map<Integer, Integer> _tempMsg = new HashMap<>();
                 _tempMsg.put((Integer) count[0], (Integer) count[1]);
                 msgCount.add(_tempMsg);
@@ -72,7 +68,7 @@ public class PublishBaseServiceImpl implements PublishBaseService {
         /**
          * step 2  发布ID查询浏览数量
          */
-        List<Object[]> viewObject = publishViewRepository.findViewCount(publishIds);
+        List<Integer[]> viewObject = publishViewRepository.findViewCount(publishIds);
         //Map<publishId,msgCount>
         List<Map<Integer, Integer>> viewCount = new ArrayList<>();
 
@@ -86,7 +82,6 @@ public class PublishBaseServiceImpl implements PublishBaseService {
 
             });
         }
-
 
 
         /**

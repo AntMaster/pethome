@@ -10,6 +10,7 @@ public class MathUtil {
 
     /**
      * 比较2个金额是否相等
+     *
      * @param d1
      * @param d2
      * @return
@@ -18,8 +19,12 @@ public class MathUtil {
         Double result = Math.abs(d1 - d2);
         if (result < MONEY_RANGE) {
             return true;
-        }else {
+        } else {
             return false;
         }
+    }
+
+    public static Integer getRandomNumber() {
+        return (int) ((Math.random() * 9 + 1) * 100000);
     }
 }
