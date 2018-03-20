@@ -288,7 +288,6 @@
             },
             loadFindAttentionList: function () {
 
-
                 $.ajax({
                     url: '/pethome/dynamic/like/' + GetQueryString("openid"),
                     type: 'GET',
@@ -304,7 +303,7 @@
             },
             //评论
             comment: function () {
-                app.isAuthority ? window.location.href = "detail.html" : $.modal(goAuthormodal);
+                app.isAuthority ? window.location.href = "detail.html?openid=" + GetQueryString("openid") : $.modal(goAuthormodal);
             },
             //分享
             share: function () {
@@ -317,7 +316,7 @@
                 var params = {
                     publishId: id,
                     dynamicType: 0
-                }
+                };
                 if (likeState) {
                     params.dynamicType = 3;//取关
                 } else {
@@ -326,7 +325,7 @@
 
                 //load data
                 $.ajax({
-                    url: '/pethome/dynamic/like/Aileen',
+                    url: '/pethome/dynamic/like/' + GetQueryString("openid"),
                     type: 'PUT',
                     contentType: 'application/json',
                     dataType: 'json',
@@ -341,12 +340,21 @@
             },
             entryDetail: function (id) {
                 //认证流程
-                // if(1){
-                //     $.modal(goAuthormodal);
-                // }else{
-                //
-                // }
-                //window.location.href = "./detail.html?openid=" + GetQueryString("openid") + "&id=" + id;
+
+                //load data
+                $.ajax({
+                    url: '/pethome/user/auth/' + GetQueryString("openid"),
+                    type: 'GET',
+                    dataType: 'json',
+                    data: null,
+                    success: function (res) {
+                        if (res.code === 1 && res.data === true) {
+                            window.location.href = "./detail.html?openid=" + GetQueryString("openid") + "&id=" + id;
+                        } else {
+                            $.modal(goAuthormodal);
+                        }
+                    }
+                });
             }
         }
     });
@@ -404,7 +412,8 @@
     }
 
     function toAuthorPage(type) {
-        type == 0 ? window.location.href = "pv.html" : window.location.href = "ov.html";
+
+        type == 0 ? window.location.href = "pv.html?openid=" + GetQueryString("openid") : window.location.href = "ov.html?openid=" + GetQueryString("openid");
     }
 
     //提示需要认证modal

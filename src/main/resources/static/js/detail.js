@@ -95,9 +95,18 @@ var app = new Vue({
                 dataType: 'json',
                 data: data,
                 success: function (res) {
+
+
                     if (res.code === 1) {
 
-                        if (!res.data.publicTalk) { //没有值
+                        var result = null;
+                        if (type == 0) {
+                            result = res.data.publicTalk;
+                        } else {
+                            result = res.data.privateTalk;
+                        }
+
+                        if (!result) { //没有值
                             if (!app.showMsgList) {
                                 app.showMsgList = new Array();
                             }
@@ -105,7 +114,7 @@ var app = new Vue({
 
                         } else {//有值
 
-                            app.showMsgList = res.data.publicTalk;
+                            app.showMsgList = result;
                         }
                     } else if (res.code == 2) {
 
@@ -157,11 +166,15 @@ var app = new Vue({
                 success: function (res) {
 
                     if (res.code == 1) {
+
                         if (!app.showMsgList) {
                             app.showMsgList = new Array();
                         }
                         app.showMsgList.push([res.data]);
-                    }else {
+                        app.commentContent = '';
+                        if (app.msgListType == "interactMsg")
+                            app.detailData.publicMsgCount++;
+                    } else {
                         alert(res.msg);
                     }
                 }
@@ -179,20 +192,37 @@ var app = new Vue({
 
                         var content = $("#replayContent").val();
 
+
                         if (!content) {
                             alert("请输入回复内容");
                             return;
                         }
-                        $.ajax({
-                            url: '/pethome/message/public/' + GetQueryString("id"),
-                            type: 'PUT',
-                            dataType: 'json',
-                            data: {
+
+                        var data = null;
+                        var url = null;
+                        if (app.msgListType == "interactMsg") {
+                            url = '/pethome/message/public/' + GetQueryString("id");
+                            data = {
                                 talkId: talkId,
                                 replierFrom: GetQueryString("openid"),
                                 replierAccept: replierFrom,
                                 content: content
-                            },
+                            }
+                        } else {
+                            url = '/pethome/message/private/' + GetQueryString("id");
+                            data = {
+                                talkId: talkId,
+                                userIdFrom: GetQueryString("openid"),
+                                userIdAccept: replierFrom,
+                                content: content
+                            }
+                        }
+
+                        $.ajax({
+                            url: url,
+                            type: 'PUT',
+                            dataType: 'json',
+                            data: data,
                             success: function (res) {
                                 if (res.code === 1) {
                                     app.showMsgList[index].push(res.data);

@@ -10,7 +10,7 @@ var app = new Vue({
         loadMine: function () {
 
             $.ajax({
-                url: '/pethome/message/' + GetQueryString("openid"),
+                url: '/pethome/user/' + GetQueryString("openid"),
                 type: 'GET',
                 dataType: 'json',
                 data: null,

@@ -116,30 +116,11 @@
                     </div>
                 </li>
             </ul>
-            <ul class="messageList" >
-                <li v-for="(items,index) in showMsgList">
-                    <div class="card facebook-card"><a class="reply-btn open-reply-modal" @click="reply(index,items[0].talkId,items[0].replierFrom)">回复</a>
-                        <div class="card-header no-border">
-                            <div class="facebook-avatar"><img :src="items[0].replierFromPhoto" width="34" height="34">
-                            </div>
-                            <div class="facebook-name">{{items[0].replierFromName}}</div>
-                            <div class="item-comment">{{items[0].content}}</div>
-                        </div>
-                        <div class="card-content" v-if="items.length > 1">
-                            <ul class="reply-box">
-                                <li v-for="(item, index) in items" v-if="index > 0 && index < 3"><a>{{item.replierFromName}}：</a>{{item.content}}
-                                </li>
-                                <a v-if="items.length > 3" @click="expand" :click="expand()">展开全部{{items.length-3}}条回复</a>
-                            </ul>
-                        </div>
-                    </div>
-                </li>
-            </ul>
         </div>
         <!-- 回复栏 -->
         <div class="comment-box">
             <input type="text" v-model="commentContent"/>
-            <a class="send" @click="sendComment">回复</a>
+            <a class="send" @click="sendComment">发送</a>
         </div>
     </div>
 </div>

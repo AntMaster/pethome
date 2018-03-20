@@ -65,8 +65,7 @@ web:
     password: Tch147258
     url: http://222.73.117.156/msg/HttpBatchSendSM
 
-picturePath: E:/petlove/upload/
-
+picturePath: C:/petlove/upload/
 
 
 wechat:

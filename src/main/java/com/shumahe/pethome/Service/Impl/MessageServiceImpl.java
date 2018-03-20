@@ -43,14 +43,6 @@ public class MessageServiceImpl implements MessageService {
     PublishTalkRepository publishTalkRepository;
 
 
-    @Autowired
-    private MemberTagsRepository memberTagsRepository;
-
-
-    @Autowired
-    private MemberTagsMappingRepository memberTagsMappingRepository;
-
-
     /**
      * 查询 我的互动
      *
@@ -317,7 +309,6 @@ public class MessageServiceImpl implements MessageService {
          */
         List<PublishTalk> talks = publishTalkRepository.findOnePublicTalk(pet.getId());
         if (talks.isEmpty()) {
-            //throw new PetHomeException(ResultEnum.RESULT_EMPTY.getCode(), "留言互动消息为空");
             return null;
         }
 
@@ -612,58 +603,5 @@ public class MessageServiceImpl implements MessageService {
 
     }
 
-
-    /**
-     * 我的中心
-     *
-     * @param openId
-     */
-    @Override
-    public UserDTO findMyInfo(String openId) {
-
-
-        UserBasic my = userBasicRepository.findByOpenId(openId);
-        if (my.getOpenId() == null) {
-            throw new PetHomeException(ResultEnum.RESULT_EMPTY);
-        }
-
-
-        //标签名称
-        List<MemberTagsMapping> tagsMapping = memberTagsMappingRepository.findByMemberIdOrderByTagId(my.getId());
-        List<Integer> tagID = tagsMapping.stream().map(e -> e.getTagId()).collect(Collectors.toList());
-        List<MemberTags> tags = memberTagsRepository.findByIdIn(tagID);
-        List<String> tagsName = tags.stream().map(e -> e.getName()).collect(Collectors.toList());
-
-        //待处理条数
-        int petCount = petPublishRepository.notReadPetCount(openId, PetFindStateEnum.NOT_FOUND.getCode());
-
-
-        //未读私信条数
-        int privateCount = userTalkRepository.notReadTalksCount(openId, ReadStateEnum.NOT_READ.getCode());
-
-
-        //未读互动条数
-        int publishCount = publishTalkRepository.notReadTalksCount(openId, openId, openId, ReadStateEnum.NOT_READ.getCode());
-
-        //转发条数
-        //List<UserDynamic> shareMe = userDynamicRepository.findByUserIdArriveAndDynamicTypeOrderByCreateTimeDesc(openId, DynamicTypeEnum.SHARE.getCode());
-
-
-        //关注条数
-        //List<UserDynamic> likeMe = userDynamicRepository.findByUserIdArriveAndDynamicTypeOrderByCreateTimeDesc(openId, DynamicTypeEnum.LIKE.getCode());
-
-
-        UserDTO userDTO = new UserDTO(my.getOpenId(), my.getNickName(), my.getHeadImgUrl());
-        userDTO.setApprove(my.getApprove());
-        userDTO.setUnFinishCount(petCount);
-        userDTO.setPrivateMsgCount(privateCount);
-        userDTO.setPublicMsgCount(publishCount);
-        if (!tagsName.isEmpty())
-            userDTO.setTagName(tagsName.get(0));
-
-
-        return userDTO;
-
-    }
 }
 

@@ -57,6 +57,29 @@ public class FileController {
         return ResultVOUtil.success(path);
     }
 
+
+    /**
+     * 发布上传图片
+     * @param file
+     * @param
+     * @return
+     */
+    @PutMapping(value = "/auth")
+    public ResultVO authUpload(@RequestParam("file") MultipartFile file) {
+
+        String fileName = (System.currentTimeMillis() + file.getOriginalFilename()).replaceAll(";", "");
+        String filePath =  picturePath + File.separator + "picture" + File.separator + "auth" +  File.separator  ;
+        try {
+            FileUtil.uploadFile(file.getBytes(), filePath, fileName);
+        } catch (Exception e) {
+            throw new PetHomeException(ResultEnum.FAILURE.getCode(), "文件上传失败");
+        }
+
+        String path  = "upload/picture/auth/" + fileName;
+        return ResultVOUtil.success(path);
+    }
+
+
     /**
      * 宠卡上传头像
      * @param file

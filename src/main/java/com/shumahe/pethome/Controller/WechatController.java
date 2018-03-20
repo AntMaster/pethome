@@ -1,9 +1,11 @@
 package com.shumahe.pethome.Controller;
 
 
+import com.google.gson.JsonObject;
 import com.shumahe.pethome.Config.ProjectUrlConfig;
 import com.shumahe.pethome.Config.WechatAccountConfig;
 import com.shumahe.pethome.Domain.UserBasic;
+import com.shumahe.pethome.Enums.ResultEnum;
 import com.shumahe.pethome.Exception.PetHomeException;
 import com.shumahe.pethome.Repository.UserBasicRepository;
 import com.shumahe.pethome.Util.ResultVOUtil;
@@ -11,11 +13,15 @@ import com.shumahe.pethome.VO.ResultVO;
 import lombok.extern.slf4j.Slf4j;
 import me.chanjar.weixin.common.api.WxConsts;
 import me.chanjar.weixin.common.bean.WxJsapiSignature;
+import me.chanjar.weixin.common.bean.menu.WxMenu;
+import me.chanjar.weixin.common.bean.menu.WxMenuButton;
 import me.chanjar.weixin.common.exception.WxErrorException;
 import me.chanjar.weixin.mp.api.WxMpInMemoryConfigStorage;
 import me.chanjar.weixin.mp.api.WxMpService;
+import me.chanjar.weixin.mp.bean.menu.WxMpMenu;
 import me.chanjar.weixin.mp.bean.result.WxMpOAuth2AccessToken;
 import me.chanjar.weixin.mp.bean.result.WxMpUser;
+import net.minidev.json.JSONObject;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -23,6 +29,8 @@ import org.springframework.web.bind.annotation.*;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
+import java.util.Arrays;
+import java.util.List;
 
 
 /**
@@ -46,8 +54,10 @@ public class WechatController {
     @Autowired
     private WechatAccountConfig wechatAccountConfig;
 
-    //WxMpInMemoryConfigStorage wxMpInMemoryConfigStorage;
+
     /**
+     * 服务器配置
+     *
      * @param signature
      * @param timestamp
      * @param nonce
@@ -75,7 +85,12 @@ public class WechatController {
         return "非法请求";
     }
 
-
+    /**
+     * JSAPI
+     *
+     * @param url
+     * @return
+     */
     @GetMapping("/jsApiSignature")
     @ResponseBody
     public ResultVO forward(@RequestParam(name = "url") String url) {
@@ -84,12 +99,17 @@ public class WechatController {
         try {
             jsapiSignature = wxMpService.createJsapiSignature(url);
         } catch (WxErrorException e) {
-            e.printStackTrace();
+            throw new PetHomeException(ResultEnum.WECHAT_MP_ERROR.getCode(), e.getMessage());
         }
         return ResultVOUtil.success(jsapiSignature);
     }
 
-
+    /**
+     * 网页授权
+     *
+     * @param returnUrl
+     * @return
+     */
     @GetMapping("/webAuth")
     public String authorize(@RequestParam("returnUrl") String returnUrl) {
 
@@ -118,17 +138,22 @@ public class WechatController {
      * @param returnUrl
      * @return
      */
+    /**
+     * 网页授权
+     *
+     * @param code
+     * @param returnUrl
+     * @return
+     * @throws WxErrorException
+     */
     @GetMapping("/userinfo")
     public String userInfo(@RequestParam("code") String code,
                            @RequestParam("state") String returnUrl) throws WxErrorException {
 
         WxMpOAuth2AccessToken wxMpOAuth2AccessToken = wxMpService.oauth2getAccessToken(code);//如果code使用过，5分钟内再次使用会报错。
-
-        String accessToken = wxMpOAuth2AccessToken.getAccessToken();
-
-        //wxMpOAuth2AccessToken = wxMpService.oauth2refreshAccessToken(wxMpOAuth2AccessToken.getRefreshToken());
         WxMpUser user = wxMpService.oauth2getUserInfo(wxMpOAuth2AccessToken, null);
-        //wxMpOAuth2AccessToken = wxMpService.oauth2refreshAccessToken(wxMpOAuth2AccessToken.getRefreshToken());
+
+
         saveUser(user);
         return "redirect:" + returnUrl + "?openid=" + wxMpOAuth2AccessToken.getOpenId();
     }
@@ -146,5 +171,39 @@ public class WechatController {
         userBasic.setHeadImgUrl(user.getHeadImgUrl());
         userBasic.setSex(user.getSexId());
         userBasicRepository.save(userBasic);
+    }
+
+
+    @GetMapping("/menu")
+    @ResponseBody
+    public ResultVO findWxMenu() {
+        try {
+            WxMpMenu wxMpMenu = wxMpService.getMenuService().menuGet();
+            return ResultVOUtil.success(wxMpMenu);
+
+        } catch (WxErrorException e) {
+            throw new PetHomeException(ResultEnum.WECHAT_MP_ERROR.getCode(), e.getMessage());
+        }
+    }
+
+    @PostMapping("/menu")
+    public ResultVO saveWxMenu() {
+        try {
+
+            WxMenuButton button = new WxMenuButton();
+            button.setName("宠爱有家");
+            button.setType("view");
+            button.setUrl("http://girl.nat300.top/pethome/wechat/webAuth?returnUrl=http://girl.nat300.top/pethome/index.html");
+            List<WxMenuButton> wxMenuButtons = Arrays.asList(button);
+
+            WxMenu wxMenu = new WxMenu();
+            wxMenu.setButtons(wxMenuButtons);
+
+            wxMpService.getMenuService().menuCreate(wxMenu);
+            return ResultVOUtil.success(wxMenu);
+
+        } catch (WxErrorException e) {
+            throw new PetHomeException(ResultEnum.WECHAT_MP_ERROR.getCode(), e.getMessage());
+        }
     }
 }

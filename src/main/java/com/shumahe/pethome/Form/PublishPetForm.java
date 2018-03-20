@@ -61,7 +61,7 @@ public class PublishPetForm {
 
     private String petDescription;
 
-    @NotBlank(message = "openId必填")
-    private String openId;
+    @NotBlank(message = "发布人主键必填")
+    private String publisherId;
 
 }

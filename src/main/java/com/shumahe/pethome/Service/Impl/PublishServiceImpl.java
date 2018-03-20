@@ -130,7 +130,6 @@ public class PublishServiceImpl implements PublishService {
         copyProperties(petForm, petPublish);
 
         //未转换成功的字段
-        petPublish.setPublisherId(petForm.getOpenId());
         petPublish.setPublishType(PublishTypeEnum.SEARCH_PET.getCode());
         petPublish.setLostTime(new DateStringConverter().fromString(petForm.getLostTime()));
 

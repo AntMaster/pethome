@@ -69,12 +69,5 @@ public interface MessageService {
     PublicMsgDTO replyPublic(ReplyPublishForm replyPublishForm, PetPublish pet);
 
 
-    /**
-     * 个人中心
-     * @param openId
-     * @return
-     */
-    UserDTO findMyInfo(String openId);
-
 
 }

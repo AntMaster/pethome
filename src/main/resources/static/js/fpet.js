@@ -22,6 +22,7 @@ var app = new Vue({
             longitude: 0.0,
             ownerName: null,
             ownerContact: null,
+            publisherId : GetQueryString("openid")
         }
     },
     mounted: function () {
@@ -67,6 +68,10 @@ var app = new Vue({
         },
         submitRelease: function () {
 
+            if(this.formData.publisherId != GetQueryString("openid")){
+
+            }
+
             if (this.petImageArr.length == 0) {
                 alert("宠物照片必填");
                 return;
@@ -75,7 +80,7 @@ var app = new Vue({
 
 
             $.ajax({
-                url: '/pethome/publish/pet/'+GetQueryString("openId"),
+                url: '/pethome/publish/pet/'+GetQueryString("openid"),
                 type: 'PUT',
                 contentType: "application/x-www-form-urlencoded",
                 dataType: 'json',
@@ -83,7 +88,7 @@ var app = new Vue({
                 success: function (res) {
                     if (res.code === 1) {
                         app.dynamicArr = res.data;
-                        window.location.href = "./index.html?openId=" + GetQueryString("openId");
+                        window.location.href = "./index.html?openId=" + GetQueryString("openid");
                     } else {
                         alert(res.msg);
                     }

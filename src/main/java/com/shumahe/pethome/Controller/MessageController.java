@@ -8,6 +8,10 @@ import com.shumahe.pethome.DTO.PublishDTO;
 import com.shumahe.pethome.DTO.UserDTO;
 import com.shumahe.pethome.Domain.PetPublish;
 
+import com.shumahe.pethome.Domain.UserApprove;
+import com.shumahe.pethome.Domain.UserBasic;
+import com.shumahe.pethome.Enums.ApproveTypeEnum;
+import com.shumahe.pethome.Enums.BooleanEnum;
 import com.shumahe.pethome.Enums.ResultEnum;
 import com.shumahe.pethome.Exception.PetHomeException;
 
@@ -15,6 +19,8 @@ import com.shumahe.pethome.Form.ReplyPrivateForm;
 import com.shumahe.pethome.Form.ReplyPublishForm;
 import com.shumahe.pethome.Repository.PetPublishRepository;
 import com.shumahe.pethome.Repository.PublishTalkRepository;
+import com.shumahe.pethome.Repository.UserApproveRepository;
+import com.shumahe.pethome.Repository.UserBasicRepository;
 import com.shumahe.pethome.Service.MessageService;
 import com.shumahe.pethome.Util.MathUtil;
 import com.shumahe.pethome.Util.PhoneFormatCheckUtil;
@@ -61,6 +67,10 @@ public class MessageController {
 
     @Autowired
     PublishTalkRepository publishTalkRepository;
+
+
+    @Autowired
+    UserBasicRepository userBasicRepository;
 
     /**
      * 我的私信列表
@@ -117,6 +127,10 @@ public class MessageController {
 
         PetPublish pet = petPublishRepository.findById(publishId);
         List<List<PublicMsgDTO>> petPublicTalks = messageService.petPublicTalks(pet);
+
+        if (petPublicTalks == null) {
+            throw new PetHomeException(ResultEnum.RESULT_EMPTY.getCode(), "私信消息为空");
+        }
 
         long talkCount = petPublicTalks.stream().mapToInt(num -> num.size()).summaryStatistics().getSum();
 
@@ -216,85 +230,6 @@ public class MessageController {
 
         PrivateMsgDTO msg = messageService.replyPrivate(replyPrivateFrom, pet);
         return ResultVOUtil.success(msg);
-    }
-
-
-    /**
-     * 用户中心
-     *
-     * @param openId
-     * @return
-     */
-    @GetMapping("/{openid}")
-    public ResultVO findMyInfo(@PathVariable("openid") String openId) {
-
-        UserDTO userDTO = messageService.findMyInfo(openId);
-        return ResultVOUtil.success(userDTO);
-    }
-
-    @Autowired
-    SMSConfig smsConfig;
-
-    @Autowired
-    RestTemplate restTemplate;
-
-    /**
-     * 获取短信验证码
-     */
-    @GetMapping("/sms/{openId}")
-    private ResultVO getShortMessage(HttpServletRequest request,
-                                     @PathVariable("openId") String openId,
-                                     @RequestParam("phone") String mobile) {
-
-        boolean chinaPhoneLegal = PhoneFormatCheckUtil.isChinaPhoneLegal(mobile);
-        if (!chinaPhoneLegal) {
-            throw new PetHomeException(ResultEnum.PARAM_ERROR.getCode(), "手机号码不正确");
-        }
-
-        Integer code = MathUtil.getRandomNumber();
-        String massage = "【宠爱有家】您的验证码：" + code + "，请在10分钟内按页面提示提交验证码";
-
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
-
-        MultiValueMap<String, String> p = new LinkedMultiValueMap<>();
-        p.add("account", smsConfig.getAccount());
-        p.add("pswd", smsConfig.getPassword());
-        p.add("mobile", mobile);
-        p.add("msg", massage);
-
-        HttpEntity<MultiValueMap<String, String>> entity = new HttpEntity<>(p, headers);
-        String smsResult = restTemplate.postForObject(smsConfig.getUrl(), entity, String.class);
-
-        String hasError = smsResult.split(",")[1];
-        if (!String.valueOf(0).equals(hasError)) {
-            throw new PetHomeException(ResultEnum.PARAM_ERROR.getCode(), "发送短信验证码失败!");
-        }
-
-        HttpSession session = request.getSession();
-        Map<String, String> userSms = new HashMap<>();
-        userSms.put("code", code.toString());
-        session.setAttribute(openId, userSms);
-        session.setMaxInactiveInterval(1 * 60);
-        return ResultVOUtil.success(code);
-    }
-
-    /**
-     * 获取短信验证码
-     */
-    @PostMapping("/sms/{openId}")
-    private ResultVO checkShortMessage(HttpServletRequest request,
-                                       @PathVariable("openId") String openId,
-                                       @RequestParam("code") String code) {
-
-        HttpSession session = request.getSession();
-        Map<String, String> userSms = (Map<String, String>) session.getAttribute(openId);
-        if (userSms == null || !code.equals(userSms.get("code"))) {
-            throw new PetHomeException(ResultEnum.RESULT_EMPTY.getCode(), "验证码已过期,请稍后再获取");
-        }
-
-        session.removeAttribute(openId);
-        return ResultVOUtil.success(true);
     }
 
 }
