@@ -8,7 +8,7 @@ var app = new Vue({
         getMessageCode: function () {
 
             $.ajax({
-                url: '/pethome/my/sms/' + GetQueryString("openid"),
+                url: '/pethome/user/sms/' + GetQueryString("openid"),
                 type: 'GET',
                 dataType: 'json',
                 data: {
@@ -24,7 +24,7 @@ var app = new Vue({
         submit: function () {
 
             $.ajax({
-                url: '/pethome/my/sms/' + GetQueryString("openid"),
+                url: '/pethome/user/sms/' + GetQueryString("openid"),
                 type: 'POST',
                 dataType: 'json',
                 data: {

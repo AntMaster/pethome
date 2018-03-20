@@ -231,5 +231,4 @@ public class MessageController {
         PrivateMsgDTO msg = messageService.replyPrivate(replyPrivateFrom, pet);
         return ResultVOUtil.success(msg);
     }
-
 }

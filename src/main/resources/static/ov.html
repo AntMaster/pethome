@@ -68,7 +68,7 @@
                                         <input type="text" v-model ="formData.messageCode" placeholder="请输入6位数验证码">
                                     </div>
                                     <!-- 验证码按钮 -->
-                                    <a class="verify-btn">点击获取</a>
+                                    <a class="verify-btn" @click="getMessageCode">点击获取</a>
                                 </div>
                             </div>
                         </li>

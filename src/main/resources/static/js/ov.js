@@ -12,11 +12,22 @@ var app = new Vue({
     },
     methods: {
 
-
+        getMessageCode: function () {
+            $.ajax({
+                url: '/pethome/user/sms/' + GetQueryString("openid"),
+                type: 'GET',
+                dataType: 'json',
+                data: {
+                    mobile: app.formData.dutyerPhone
+                },
+                success: function (res) {
+                    if (res.code != 1) {
+                        alert(res.msg);
+                    }
+                }
+            });
+        },
         validate: function () {
-
-            var a = app.formData;
-
 
             $.ajax({
                 url: '/pethome/user/auth',

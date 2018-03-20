@@ -89,13 +89,13 @@ public class UserController {
             throw new PetHomeException(ResultEnum.PARAM_ERROR.getCode(), bindingResult.getFieldError().getDefaultMessage());
         }
 
-        Integer code = userApproveForm.getMessageCode();
+        String code = String.valueOf(userApproveForm.getMessageCode());
         String mobile = userApproveForm.getDutyerPhone();
         String openId = userApproveForm.getUserId();
 
         HttpSession session = request.getSession();
         Map<String, String> userSms = (Map<String, String>) session.getAttribute(openId);
-        if (userSms == null || !code.equals(userSms.get("code")) || mobile.equals(userSms.get("mobile"))) {
+        if (userSms == null || !code.equals(userSms.get("code")) || !mobile.equals(userSms.get("mobile"))) {
             throw new PetHomeException(ResultEnum.RESULT_EMPTY.getCode(), "验证码已过期,请稍后再获取");
         }
 
@@ -106,7 +106,7 @@ public class UserController {
 
         userService.saveOrganization(userApproveForm);
 
-        return null;
+        return ResultVOUtil.success(true);
     }
 
     /**
@@ -145,6 +145,7 @@ public class UserController {
         HttpSession session = request.getSession();
         Map<String, String> userSms = new HashMap<>();
         userSms.put("code", code.toString());
+        userSms.put("mobile", mobile);
         session.setAttribute(openId, userSms);
         session.setMaxInactiveInterval(1 * 60);
         return ResultVOUtil.success(true);
