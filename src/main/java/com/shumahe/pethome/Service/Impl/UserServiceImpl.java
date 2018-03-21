@@ -301,22 +301,32 @@ public class UserServiceImpl implements UserService {
                     onePrivate.put("userIdFrom", userTalk.getUserIdFrom());
                     onePrivate.put("talkTime", userTalk.getTalkTime().toString());
                     onePrivate.put("content", userTalk.getContent());
+                    onePrivate.put("talkId", userTalk.getTalkId());
 
                     themeData.forEach(theme -> {
                         if (theme.getId().equals(userTalk.getPublishId())) {
 
                             onePrivate.put("publisherType", theme.getPublishType().toString());
                             onePrivate.put("publisherId", theme.getPublisherId());
+                            onePrivate.put("publishId", theme.getId());
 
                             onePrivate.put("petName", theme.getPetName());
                             onePrivate.put("petImage", theme.getPetImage());
-                            onePrivate.put("lostTime", theme.getLostTime().toString());
+                            onePrivate.put("lostTime", theme.getLostTime().toString().split(" ")[0]);
                         }
                     });
                     userData.forEach(user -> {
+
+                        //发布人信息
                         if (user.getOpenId().trim().equals(userTalk.getPublisherId().trim())) {
-                            onePrivate.put("publisherId", user.getNickName());
+                            onePrivate.put("publisherName", user.getNickName());
                         }
+                        //来信人信息
+                        if(user.getOpenId().trim().equals(userTalk.getUserIdFrom().trim())){
+                            onePrivate.put("userIdFromName", user.getNickName());
+                            onePrivate.put("userIdFromImage", user.getHeadImgUrl());
+                        }
+
                         userInfoCache.put(user.getOpenId().trim(), user.getNickName());//缓存用户信息
                     });
 

@@ -1,6 +1,8 @@
 var interact = new Vue({
     el: "#chatPage",
-    data: {},
+    data: {
+        showMsgList :[]
+    },
     mounted: function () {
 
         this.privateMsg();
@@ -16,16 +18,15 @@ var interact = new Vue({
                 data: null,
                 success: function (res) {
                     if (res.code) {
-
-                        console.log(res);
+                        interact.showMsgList = res.data;
                     }
                 }
             });
         },
-        reply: function () {
+        reply: function (index, userIdFromName, talkId, publishId) {
             $.modal({
                 title: '回复',
-                afterText: '<div class=""><textarea class="modal-reply-input"></textarea></div>',
+                afterText: '<div class="" ><textarea  id = "replayContent" class="modal-reply-input"></textarea></div>',
                 buttons: [
                     {
                         text: '取消'
@@ -34,11 +35,36 @@ var interact = new Vue({
                         text: '确认',
                         bold: true,
                         onClick: function () {
-                            //发送回复
+
+                            var content = $("#replayContent").val();
+                            if (!content) {
+                                alert("请输入回复内容");
+                                return;
+                            }
+
+                            $.ajax({
+                                url: '/pethome/message/private/' + publishId,
+                                type: 'PUT',
+                                dataType: 'json',
+                                data: {
+                                    talkId: talkId,
+                                    userIdFrom: GetQueryString("openid"),
+                                    userIdAccept: userIdFromName,
+                                    content: content
+                                },
+                                success: function (res) {
+                                    if (res.code === 1) {
+                                        app.showMsgList.detail.push(res.data);
+                                    } else {
+                                        alert(res.msg);
+                                    }
+                                }
+                            });
                         }
-                    },
+                    }
                 ]
             })
         }
     }
 });
+

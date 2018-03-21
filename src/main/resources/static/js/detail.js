@@ -181,7 +181,7 @@ var app = new Vue({
             });
         },
         //回复评论
-        reply: function (index, talkId, replierFrom) {
+        reply: function (index, talkId, replierFrom,publishId) {
             $.modal({
                 title: '回复',
                 text: '',
@@ -201,7 +201,7 @@ var app = new Vue({
                         var data = null;
                         var url = null;
                         if (app.msgListType == "interactMsg") {
-                            url = '/pethome/message/public/' + GetQueryString("id");
+                            url = '/pethome/message/public/' + publishId;
                             data = {
                                 talkId: talkId,
                                 replierFrom: GetQueryString("openid"),
