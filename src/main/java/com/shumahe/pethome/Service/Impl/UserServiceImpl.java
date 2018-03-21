@@ -314,10 +314,10 @@ public class UserServiceImpl implements UserService {
                         }
                     });
                     userData.forEach(user -> {
-                        if (user.getOpenId().trim().equals(userTalk.getPublisherId())) {
+                        if (user.getOpenId().trim().equals(userTalk.getPublisherId().trim())) {
                             onePrivate.put("publisherId", user.getNickName());
-                            userInfoCache.put(user.getOpenId(), user.getNickName());//缓存用户信息
                         }
+                        userInfoCache.put(user.getOpenId().trim(), user.getNickName());//缓存用户信息
                     });
 
                 } else {
@@ -325,9 +325,9 @@ public class UserServiceImpl implements UserService {
                     UserTalk userTalk = e.get(i);
                     Map<String, String> detail = new HashMap<>();
                     detail.put("userIdFrom", userTalk.getUserIdFrom());
-                    detail.put("userIdFromName", userInfoCache.get(userTalk.getUserIdFrom()));
+                    detail.put("userIdFromName", userInfoCache.get(userTalk.getUserIdFrom().trim()));
                     detail.put("userIdAccept", userTalk.getUserIdAccept());
-                    detail.put("userIdAcceptName", userInfoCache.get(userTalk.getUserIdAccept()));
+                    detail.put("userIdAcceptName", userInfoCache.get(userTalk.getUserIdAccept().trim()));
                     detail.put("content", userTalk.getContent());
 
                     detailList.add(detail);
