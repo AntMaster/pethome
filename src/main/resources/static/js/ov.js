@@ -36,10 +36,9 @@ var app = new Vue({
                 success: function (res) {
                     if (res.code === 1) {
                         app.dynamicArr = res.data;
-                        window.location.href = "./index.html?openid=" + GetQueryString("openid");
+                        window.location.href = "./ov-state.html?openid=" + GetQueryString("openid");
                     } else {
                         alert(res.msg);
-
                     }
                 }
             });
