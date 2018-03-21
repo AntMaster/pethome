@@ -3,8 +3,25 @@ var interact = new Vue({
     data: {},
     mounted: function () {
 
+        this.privateMsg();
     },
+
     methods: {
+
+        privateMsg: function () {
+            $.ajax({
+                url: '/pethome/user/private/' + GetQueryString("openid"),
+                type: 'GET',
+                dataType: 'json',
+                data: null,
+                success: function (res) {
+                    if (res.code) {
+
+                        console.log(res);
+                    }
+                }
+            });
+        },
         reply: function () {
             $.modal({
                 title: '回复',

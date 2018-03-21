@@ -50,7 +50,7 @@ public class MessageServiceImpl implements MessageService {
      * @param pageRequest
      * @return
      */
-    @Override
+  /*  @Override
     public List<List<Map<String, String>>> findMyPublicTalk(String openId, PageRequest pageRequest) {
 
 
@@ -62,24 +62,24 @@ public class MessageServiceImpl implements MessageService {
         // 与我有关的交流的主题
         List<Integer> publishIds = talks.stream().map(e -> e.getPublishId()).distinct().collect(Collectors.toList());
 
-        /**
+        *//**
          * step 1 我互动过的发布
-         */
+         *//*
         List<PetPublish> pets = petPublishRepository.findByIdIn(publishIds);
 
 
-        /**
+        *//**
          * step 2 我互动过的发布 所有互动消息
-         */
+         *//*
         List<PublishTalk> talkMessages = publishTalkRepository.findManyPublishTalk(publishIds);
         if (talkMessages.size() == 0) {
             throw new PetHomeException(ResultEnum.RESULT_EMPTY.getCode(), "留言互动消息为空");
         }
 
 
-        /**
+        *//**
          * step 3 与我互动过的人员
-         */
+         *//*
         List<String> userIds = talks.stream()
                 .filter(e -> !e.getReplierFrom().equals(openId))
                 .map(e -> e.getReplierFrom())
@@ -89,17 +89,17 @@ public class MessageServiceImpl implements MessageService {
                 .collect(Collectors.toList());
         List<UserBasic> users = userBasicRepository.findByOpenIdIn(userIds);
 
-        /**
+        *//**
          * step 4 自己的信息
-         */
+         *//*
         UserBasic myself = userBasicRepository.findByOpenId(openId);
 
 
-        /**
+        *//**
          * step 4 扩充我的消息
          * 宠物信息     ： 昵称 头像 发布类型 丢失日期
          * 人员信息    ： 我的昵称 对方昵称   对方头像
-         */
+         *//*
 
         List<Map<String, String>> msgList = new ArrayList<>();
 
@@ -150,7 +150,7 @@ public class MessageServiceImpl implements MessageService {
 
 
         return msgListGroup;
-    }
+    }*/
 
 
     /**
@@ -160,12 +160,12 @@ public class MessageServiceImpl implements MessageService {
      * @param pageRequest
      * @return
      */
-    @Override
+   /* @Override
     public List<List<LinkedHashMap<String, String>>> findMyPrivateTalk(String openId, PageRequest pageRequest) {
 
-        /**
+        *//**
          * 私信列表
-         */
+         *//*
         List<UserTalk> talkMessages = userTalkRepository.findPrivateMyTalk(openId, openId);
 
 
@@ -173,9 +173,9 @@ public class MessageServiceImpl implements MessageService {
             throw new PetHomeException(ResultEnum.RESULT_EMPTY.getCode(), "私信消息为空");
         }
 
-        /**
+        *//**
          * 我的所有私信过的人（key = 用户OpenID ，value =用户发布ID）
-         */
+         *//*
         LinkedHashMap<String, Integer> userMap = new LinkedHashMap<>();
         talkMessages.stream().forEach(user -> {
 
@@ -194,15 +194,15 @@ public class MessageServiceImpl implements MessageService {
             publishIds.add(publishId);
         });
 
-        /**
+        *//**
          * 将字段提取出来 放入另一个集合 用于查询扩展信息
-         */
+         *//*
         List<UserBasic> userBasics = userBasicRepository.findByOpenIdIn(userOpenIds);
 
         List<PetPublish> _tempPublishes = petPublishRepository.findByIdIn(publishIds);
-        /**
+        *//**
          * 调整PetPublish顺序 按userMap顺序
-         */
+         *//*
         List<PetPublish> publishes = new ArrayList<>();
         userMap.forEach((k, v) -> {
             _tempPublishes.forEach(publish -> {
@@ -216,15 +216,15 @@ public class MessageServiceImpl implements MessageService {
         UserBasic myself = userBasicRepository.findByOpenId(openId);
 
 
-        /**
+        *//**
          * 组装私信信息
          * 宠物信息     ： 昵称 头像 发布类型 丢失日期
          * 人员信息    ： 我的昵称 对方昵称   对方头像
          *
-         */
-        /**
+         *//*
+        *//**
          *  私信分组
-         */
+         *//*
         List<List<UserTalk>> msgGroup = new ArrayList<>();
 
         publishes.forEach(publish -> {
@@ -245,9 +245,9 @@ public class MessageServiceImpl implements MessageService {
         });
 
 
-        /**
+        *//**
          * 对分组后的私信进行数据填充
-         */
+         *//*
         List<List<LinkedHashMap<String, String>>> msgResult = new ArrayList<>();
 
         msgGroup.forEach(msgs -> {
@@ -291,7 +291,7 @@ public class MessageServiceImpl implements MessageService {
 
 
         return msgResult;
-    }
+    }*/
 
 
     /**
@@ -382,7 +382,8 @@ public class MessageServiceImpl implements MessageService {
      * @return
      */
     @Override
-    public List<List<PrivateMsgDTO>> petPrivateTalks(PetPublish pet, String openId) {
+    public List<List<PrivateMsgDTO>>
+    petPrivateTalks(PetPublish pet, String openId) {
 
         /**
          * step 1  某个发布全部互动消息
@@ -436,11 +437,16 @@ public class MessageServiceImpl implements MessageService {
             publicMsgDTOS.add(msgDTO);
         });
 
+        //按人分组
+        Map<String, List<PrivateMsgDTO>> collect = publicMsgDTOS.stream().collect(Collectors.groupingBy(e -> e.getUserIdFrom()));
 
         List<List<PrivateMsgDTO>> petTalks = new ArrayList<>();
+        collect.forEach((k,v)-> petTalks.add(v));
+
         /**
          * step 4 VO按评论分组（one comment ---> some talk）
          */
+/*
 
         publicMsgDTOS.stream().map(e -> e.getLastModify().toString()).distinct().forEach(e -> {
 
@@ -454,6 +460,7 @@ public class MessageServiceImpl implements MessageService {
             });
             petTalks.add(sameTalkId);
         });
+*/
 
         return petTalks;
 

@@ -58,7 +58,7 @@ public class MessageController {
      * @param size
      * @return
      */
-    @GetMapping("/my/private/{openId}")
+ /*   @GetMapping("/my/private/{openId}")
     public ResultVO findMyPrivateTalk(@PathVariable("openId") String openId,
                                       @RequestParam(value = "page", defaultValue = "0") Integer page,
                                       @RequestParam(value = "size", defaultValue = "200") Integer size) {
@@ -68,7 +68,7 @@ public class MessageController {
 
         return ResultVOUtil.success(myPrivateTalk);
     }
-
+*/
 
     /**
      * 我的评论列表
@@ -78,7 +78,7 @@ public class MessageController {
      * @param size
      * @return
      */
-    @GetMapping("/my/public/{openId}")
+  /*  @GetMapping("/my/public/{openId}")
     public ResultVO findMyPublicTalk(@PathVariable("openId") String openId,
                                      @RequestParam(value = "page", defaultValue = "0") Integer page,
                                      @RequestParam(value = "size", defaultValue = "200") Integer size) {
@@ -87,7 +87,7 @@ public class MessageController {
         List<List<Map<String, String>>> myPrivateTalk = messageService.findMyPublicTalk(openId, pageRequest);
 
         return ResultVOUtil.success(myPrivateTalk);
-    }
+    }*/
 
 
     /**
@@ -139,7 +139,7 @@ public class MessageController {
 
 
         PublishDTO publishDTO = new PublishDTO();
-        publishDTO.setPublicMsgCount((int) talkCount);
+        publishDTO.setPrivateMsgCount((int) talkCount);
         publishDTO.setPrivateTalk(petPrivateTalks);
         return ResultVOUtil.success(publishDTO);
     }

@@ -22,7 +22,7 @@ public interface MessageService {
      * @param pageRequest
      * @return
      */
-    List<List<LinkedHashMap<String, String>>> findMyPrivateTalk(String openId, PageRequest pageRequest);
+    //List<List<LinkedHashMap<String, String>>> findMyPrivateTalk(String openId, PageRequest pageRequest);
 
 
     /**
@@ -32,7 +32,7 @@ public interface MessageService {
      * @param pageRequest
      * @return
      */
-    List<List<Map<String, String>>> findMyPublicTalk(String openId, PageRequest pageRequest);
+    //List<List<Map<String, String>>> findMyPublicTalk(String openId, PageRequest pageRequest);
 
 
     /**

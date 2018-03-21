@@ -1,10 +1,15 @@
 var app = new Vue({
     el: "#minePage",
     data: {
-        myself: {}
+        myself: {},
+        param: '',
+        privateMsgArr: []
     },
     mounted: function () {
         this.loadMine();
+    },
+    created: function () {
+        this.param = GetQueryString("openid");
     },
     methods: {
         loadMine: function () {
@@ -20,7 +25,6 @@ var app = new Vue({
                     }
                 }
             });
-
         }
     }
 });
@@ -39,7 +43,7 @@ $(document).on("pageInit", function (e, pageId, $page) {
             mounted: function () {
                 //我的未找到
                 $.ajax({
-                    url: '/pethome/publish/task/'+ GetQueryString("openid") ,
+                    url: '/pethome/publish/task/' + GetQueryString("openid"),
                     type: 'GET',
                     dataType: 'json',
                     data: null,
@@ -60,7 +64,7 @@ $(document).on("pageInit", function (e, pageId, $page) {
                     this.isPend = true;
 
                     $.ajax({
-                        url: '/pethome/publish/task/'+GetQueryString("openid"),
+                        url: '/pethome/publish/task/' + GetQueryString("openid"),
                         type: 'GET',
                         dataType: 'json',
                         data: null,
@@ -79,7 +83,7 @@ $(document).on("pageInit", function (e, pageId, $page) {
                     this.isPend = false;
                     //我的未找到
                     $.ajax({
-                        url: '/pethome/publish/'+GetQueryString("openid"),
+                        url: '/pethome/publish/' + GetQueryString("openid"),
                         type: 'GET',
                         dataType: 'json',
                         data: null,
@@ -100,7 +104,7 @@ $(document).on("pageInit", function (e, pageId, $page) {
                     }
 
                     $.ajax({
-                        url: '/pethome/publish/pet/find/'+GetQueryString("openid"),
+                        url: '/pethome/publish/pet/find/' + GetQueryString("openid"),
                         type: 'POST',
                         dataType: 'json',
                         data: {
@@ -188,11 +192,28 @@ $(document).on("pageInit", function (e, pageId, $page) {
     if (pageId == 'chatPage') {
         var interact = new Vue({
             el: "#chatPage",
-            data: {},
+            data: {
+                showMsgList:[]
+            },
             mounted: function () {
-
+                this.privateMsg();
             },
             methods: {
+                privateMsg: function () {
+
+                    $.ajax({
+                        url: '/pethome/user/private/' + GetQueryString("openid"),
+                        type: 'GET',
+                        dataType: 'json',
+                        data: null,
+                        success: function (res) {
+                            if (res.code) {
+                                interact.showMsgList = res.data;
+                            }
+                        }
+                    });
+
+                },
                 reply: function () {
                     $.modal({
                         title: '回复',

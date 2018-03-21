@@ -340,7 +340,6 @@
             },
             entryDetail: function (id) {
                 //认证流程
-
                 //load data
                 $.ajax({
                     url: '/pethome/user/auth/' + GetQueryString("openid"),
@@ -349,6 +348,7 @@
                     data: null,
                     success: function (res) {
                         if (res.code === 1 && res.data === true) {
+
                             window.location.href = "./detail.html?openid=" + GetQueryString("openid") + "&id=" + id;
                         } else {
                             $.modal(goAuthormodal);

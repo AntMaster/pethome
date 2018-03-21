@@ -15,6 +15,7 @@ import com.shumahe.pethome.Util.ResultVOUtil;
 import com.shumahe.pethome.VO.ResultVO;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -26,9 +27,10 @@ import org.springframework.web.client.RestTemplate;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
-import javax.transaction.Transactional;
 import javax.validation.Valid;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 
 @RestController
@@ -55,7 +57,7 @@ public class UserController {
      * @return
      */
     @GetMapping("/{openid}")
-    public ResultVO findMyInfo(@PathVariable("openid") String openId) {
+    public ResultVO findUserCenter(@PathVariable("openid") String openId) {
 
         UserDTO userDTO = userService.findMyInfo(openId);
         return ResultVOUtil.success(userDTO);
@@ -119,7 +121,7 @@ public class UserController {
         userSms.put("code", code.toString());
         userSms.put("mobile", mobile);
         session.setAttribute(openId, userSms);
-        session.setMaxInactiveInterval(1 * 60);
+        session.setMaxInactiveInterval(10 * 60);
         return ResultVOUtil.success(true);
     }
 
@@ -182,6 +184,48 @@ public class UserController {
 
         userService.saveOrganization(userApproveForm);
         return ResultVOUtil.success(true);
+    }
+
+
+
+
+    /**
+     * 我的私信列表
+     *
+     * @param openId
+     * @param page
+     * @param size
+     * @return
+     */
+    @GetMapping("/private/{openId}")
+    public ResultVO findPrivateTalk(@PathVariable("openId") String openId,
+                                      @RequestParam(value = "page", defaultValue = "0") Integer page,
+                                      @RequestParam(value = "size", defaultValue = "200") Integer size) {
+
+        PageRequest pageRequest = new PageRequest(page, size);
+        List<Map<String, Object>> myPrivateTalk = userService.findMyPrivateTalk(openId, pageRequest);
+
+        return ResultVOUtil.success(myPrivateTalk);
+    }
+
+
+    /**
+     * 我的评论列表
+     *
+     * @param openId
+     * @param page
+     * @param size
+     * @return
+     */
+    @GetMapping("/public/{openId}")
+    public ResultVO findPublicTalk(@PathVariable("openId") String openId,
+                                     @RequestParam(value = "page", defaultValue = "0") Integer page,
+                                     @RequestParam(value = "size", defaultValue = "200") Integer size) {
+
+        PageRequest pageRequest = new PageRequest(page, size);
+        List<List<Map<String, String>>> myPrivateTalk = userService.findMyPublicTalk(openId, pageRequest);
+
+        return ResultVOUtil.success(myPrivateTalk);
     }
 }
 
