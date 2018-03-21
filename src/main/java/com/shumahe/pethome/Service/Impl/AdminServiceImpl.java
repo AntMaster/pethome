@@ -44,7 +44,7 @@ public class AdminServiceImpl implements AdminService {
      * 查询寻宠 、 寻主
      */
     @Override
-    public List<PublishDTO> findAll(Integer publishType, PageRequest pageRequest) {
+    public Map<String,Object> findAll(Integer publishType, PageRequest pageRequest) {
 
         Page<PetPublish> pets = petPublishRepository.findByPublishTypeOrderByCreateTimeDesc(publishType, pageRequest);
         List<PetPublish> publishList = pets.getContent();
@@ -53,7 +53,14 @@ public class AdminServiceImpl implements AdminService {
         }
 
         List<PublishDTO> publishDTOS = publishBaseService.findPetExtends(publishList);
-        return publishDTOS;
+        Map<String,Object> res = new HashMap<>() ;
+        res.put("total",pets.getTotalElements());
+        res.put("pages",pets.getTotalPages());
+        res.put("size",pets.getSize());
+        res.put("page",pets.getNumber());
+        res.put("data",publishDTOS);
+
+        return res;
     }
 
     /**

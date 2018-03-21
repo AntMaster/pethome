@@ -26,6 +26,7 @@ import org.springframework.web.client.RestTemplate;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
+import javax.transaction.Transactional;
 import javax.validation.Valid;
 import java.util.HashMap;
 import java.util.Map;
@@ -80,35 +81,6 @@ public class UserController {
     }
 
 
-    @PutMapping("/auth")
-    private ResultVO saveOrganization(HttpServletRequest request,@Valid UserApproveForm userApproveForm, BindingResult bindingResult) {
-
-        //验证表单数据是否正确
-        if (bindingResult.hasErrors()) {
-            log.error("【组织认证】参数不正确,userApproveForm={}", userApproveForm);
-            throw new PetHomeException(ResultEnum.PARAM_ERROR.getCode(), bindingResult.getFieldError().getDefaultMessage());
-        }
-
-        String code = String.valueOf(userApproveForm.getMessageCode());
-        String mobile = userApproveForm.getDutyerPhone();
-        String openId = userApproveForm.getUserId();
-
-        HttpSession session = request.getSession();
-        Map<String, String> userSms = (Map<String, String>) session.getAttribute(openId);
-        if (userSms == null || !code.equals(userSms.get("code")) || !mobile.equals(userSms.get("mobile"))) {
-            throw new PetHomeException(ResultEnum.RESULT_EMPTY.getCode(), "验证码已过期,请稍后再获取");
-        }
-
-        UserBasic user = userBasicRepository.findByOpenId(openId);
-        if (user == null) {
-            throw new PetHomeException(ResultEnum.RESULT_EMPTY.getCode(), "没有该用户");
-        }
-
-        userService.saveOrganization(userApproveForm);
-
-        return ResultVOUtil.success(true);
-    }
-
     /**
      * 获取短信验证码
      */
@@ -162,7 +134,7 @@ public class UserController {
 
         HttpSession session = request.getSession();
         Map<String, String> userSms = (Map<String, String>) session.getAttribute(openId);
-        if (userSms == null || !code.equals(userSms.get("code")) || mobile.equals(userSms.get("mobile"))) {
+        if (userSms == null || !code.equals(userSms.get("code")) || !mobile.equals(userSms.get("mobile"))) {
             throw new PetHomeException(ResultEnum.RESULT_EMPTY.getCode(), "验证码已过期,请稍后再获取");
         }
 
@@ -177,6 +149,40 @@ public class UserController {
         return ResultVOUtil.success(true);
     }
 
+    /**
+     * 组织认证
+     * @param request
+     * @param userApproveForm
+     * @param bindingResult
+     * @return
+     */
+    @PutMapping("/auth")
+    private ResultVO saveOrganization(HttpServletRequest request,@Valid UserApproveForm userApproveForm, BindingResult bindingResult) {
+
+        //验证表单数据是否正确
+        if (bindingResult.hasErrors()) {
+            log.error("【组织认证】参数不正确,userApproveForm={}", userApproveForm);
+            throw new PetHomeException(ResultEnum.PARAM_ERROR.getCode(), bindingResult.getFieldError().getDefaultMessage());
+        }
+
+        String code = String.valueOf(userApproveForm.getMessageCode());
+        String mobile = userApproveForm.getDutyerPhone();
+        String openId = userApproveForm.getUserId();
+
+        HttpSession session = request.getSession();
+        Map<String, String> userSms = (Map<String, String>) session.getAttribute(openId);
+        if (userSms == null || !code.equals(userSms.get("code")) || !mobile.equals(userSms.get("mobile"))) {
+            throw new PetHomeException(ResultEnum.RESULT_EMPTY.getCode(), "验证码已过期,请稍后再获取");
+        }
+
+        UserBasic user = userBasicRepository.findByOpenId(openId);
+        if (user == null) {
+            throw new PetHomeException(ResultEnum.RESULT_EMPTY.getCode(), "没有该用户");
+        }
+
+        userService.saveOrganization(userApproveForm);
+        return ResultVOUtil.success(true);
+    }
 }
 
 

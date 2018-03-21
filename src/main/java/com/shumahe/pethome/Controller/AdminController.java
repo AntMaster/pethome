@@ -48,7 +48,7 @@ public class AdminController {
         }
 
         PageRequest request = new PageRequest(page, size);
-        List<PublishDTO> all = adminService.findAll(publishType, request);
+        Map<String, Object> all = adminService.findAll(publishType, request);
         return ResultVOUtil.success(all);
     }
 

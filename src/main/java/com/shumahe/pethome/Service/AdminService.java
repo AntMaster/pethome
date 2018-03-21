@@ -15,7 +15,7 @@ public interface AdminService {
     /**
      * 查询寻宠 、 寻主
      */
-    List<PublishDTO> findAll(Integer publishType, PageRequest pageRequest);
+    Map<String,Object> findAll(Integer publishType, PageRequest pageRequest);
 
     /**
      * 显示 隐藏

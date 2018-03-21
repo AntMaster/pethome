@@ -11,7 +11,6 @@ var app = new Vue({
         }
     },
     methods: {
-
         getMessageCode: function () {
             $.ajax({
                 url: '/pethome/user/sms/' + GetQueryString("openid"),
@@ -28,7 +27,6 @@ var app = new Vue({
             });
         },
         validate: function () {
-
             $.ajax({
                 url: '/pethome/user/auth',
                 type: 'PUT',
@@ -38,13 +36,13 @@ var app = new Vue({
                 success: function (res) {
                     if (res.code === 1) {
                         app.dynamicArr = res.data;
-                        window.location.href = "./index.html?openId=" + GetQueryString("openid");
+                        window.location.href = "./index.html?openid=" + GetQueryString("openid");
                     } else {
                         alert(res.msg);
+
                     }
                 }
             });
-
         }
     }
 });
