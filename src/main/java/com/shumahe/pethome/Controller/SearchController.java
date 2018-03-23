@@ -10,6 +10,7 @@ import com.shumahe.pethome.VO.ResultVO;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -20,6 +21,7 @@ import java.util.List;
 @RestController
 @Slf4j
 @RequestMapping("/search")
+@CrossOrigin
 public class SearchController {
 
 
@@ -32,7 +34,7 @@ public class SearchController {
      * @param petSearchForm
      * @return
      */
-    @GetMapping("/list")
+    @GetMapping("/")
     public ResultVO petSearch(@Valid PetSearchForm petSearchForm, BindingResult bindingResult) {
 
         //验证表单数据是否正确
@@ -42,6 +44,14 @@ public class SearchController {
         }
 
         List<PublishDTO> publishDTOS = searchService.petSearch(petSearchForm);
+        return ResultVOUtil.success(publishDTOS);
+    }
+
+
+    @GetMapping("/init")
+    public ResultVO searchInit() {
+
+        List<PublishDTO> publishDTOS = searchService.init();
         return ResultVOUtil.success(publishDTOS);
     }
 

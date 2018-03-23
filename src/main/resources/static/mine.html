@@ -50,7 +50,7 @@
             <div class="list-block mine-menu">
                 <ul>
                     <li>
-                        <a class="item-content item-link"  :href="'mine/task.html?openid='+ param">
+                        <a class="item-content item-link"  @click = "goTask">
                             <div class="item-media">
                                 <img class="list-icon" src="img/icon/mine-todo.png" alt="" />
                             </div>
@@ -60,7 +60,7 @@
                         </a>
                     </li>
                     <li>
-                        <a class="item-content item-link" :href="'mine/task.html?openid='+ param">
+                        <a class="item-content item-link"  @click = "goPublish" >
                             <div class="item-media">
                                 <img class="list-icon" src="img/icon/mine-publish.png" alt="" />
                             </div>
@@ -76,7 +76,7 @@
             <div class="list-block mine-menu">
                 <ul>
                     <li>
-                        <a class="item-content item-link" :href="'mine/chat.html?openid='+ param">
+                        <a class="item-content item-link" @click = "goPrivateMsg" >
                             <div class="item-media">
                                 <img class="list-icon" src="img/icon/mine-pmsg.png" alt="" />
                             </div>
@@ -88,7 +88,7 @@
                         </a>
                     </li>
                     <li>
-                        <a class="item-content item-link" href="mine/attention.html">
+                        <a class="item-content item-link" :href="'mine/attention.html?openid='+ param" >
                             <div class="item-media">
                                 <img class="list-icon" src="img/icon/mine-attention.png" alt="" />
                             </div>
@@ -98,7 +98,7 @@
                         </a>
                     </li>
                     <li>
-                        <a class="item-content item-link" :href="'mine/interact.html?openid='+ param" >
+                        <a class="item-content item-link" @click="goPublishMsg">
                             <div class="item-media">
                                 <img class="list-icon" src="img/icon/mine-interact.png" alt="" />
                             </div>
@@ -126,11 +126,11 @@
             <div class="list-block mine-menu">
                 <ul>
                     <li>
-                        <a class="item-content item-link" :href="'mine/ov-state.html?openid='+param">
+                        <a class="item-content item-link external" ><!--:href="'ov-state.html?openid='+param"-->
                             <div class="item-media">
                                 <img class="list-icon" src="img/icon/mine-validate.png" alt="" />
                             </div>
-                            <div class="item-inner">
+                            <div class="item-inner" @click="goApprove">
                                 <div class="item-title">认证主页</div>
                             </div>
                         </a>

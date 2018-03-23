@@ -24,7 +24,8 @@ var app = new Vue({
         petText: "嗷呜~",
         //相册管理
         isManageModel: false,
-        selectedAlbumList: [],
+        selectedAlbumList: []
+
     },
     mounted: function () {
 
@@ -56,8 +57,6 @@ var app = new Vue({
         goPetPhoto: function (id) {
             window.location.href = "./album-info.html?openId="+ GetQueryString("openId") +"&albumId=" + id;
         },
-
-
         play: function (type) {
             //随机播放动画
             var r = parseInt(Math.random() * 10) % 6;

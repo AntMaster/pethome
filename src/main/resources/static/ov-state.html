@@ -52,7 +52,7 @@
 <script type='text/javascript' src='js/vue.js'></script>
 <script type='text/javascript' src='js/common.js'></script>
 <script>
-    var app = new Vue({
+    var ovedPage = new Vue({
         el: "#ovedPage",
         data: {
             validateState: true,
@@ -61,8 +61,58 @@
         created:function () {
             this.param = GetQueryString("openid");
         },
+        mounted: function () {
+            this.init();
+        },
         methods: {
+            init: function () {
 
+                if(GetQueryString("state") == 2 && GetQueryString("type") == 2){
+
+                    this.validateState = true;
+
+                }else if(GetQueryString("state") == 0 && GetQueryString("type") == 2){
+
+                    this.validateState = false;
+                }
+
+                /*$.ajax({
+                    url: '/pethome/user/auth/' + GetQueryString("openid"),
+                    type: 'GET',
+                    dataType: 'json',
+                    data: null,
+                    success: function (res) {
+                        if (res.code === 1) {
+
+                            if (res.data.type == "person") {
+
+                                if (res.data.state == 0) {
+                                    $.modal(goAuthormodal);
+                                } else {
+                                    window.location.href = "./pv.html?openid=" + GetQueryString("openid");
+                                }
+                            } else if (res.data.type == "association") {
+
+                                if (res.data.state == 0) {
+
+                                    window.location.href = "./ov-state.html?openid=" + GetQueryString("openid");
+
+                                } else if (res.data.state == 1) {
+
+                                    window.location.href = "./oved.html?openid=" + GetQueryString("openid");
+
+                                } else if (res.data.state == 2) {
+
+                                    window.location.href = "./oved-state.html?openid=" + GetQueryString("openid");
+                                }
+                            }
+                        } else {
+                            $.modal(goAuthormodal);
+                        }
+                    }
+                });
+                */
+            }
         }
     });
 </script>

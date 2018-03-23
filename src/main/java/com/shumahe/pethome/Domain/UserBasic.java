@@ -30,12 +30,12 @@ public class UserBasic {
     @Column(name = "appid")
     private String appId;
 
-    @Column(name = "approve")
-    private Integer approve = BooleanEnum.FALSE.getCode();//是否认证
+    @Column(name = "approvestate")
+    private Integer approveState = BooleanEnum.FALSE.getCode();//是否认证
 
 
-    @Column(name = "adminentry")
-    private Integer adminEntry = BooleanEnum.FALSE.getCode();//是否为管理员添加
+    @Column(name = "approvetype")
+    private Integer approveType = ApproveTypeEnum.PERSONAGE.getCode();//默认为个人
 
 
     @Column(name = "mobile")

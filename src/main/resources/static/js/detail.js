@@ -130,6 +130,7 @@ var app = new Vue({
         },
         //发送评论
         sendComment: function () {
+
             if (!this.commentContent) {
                 alert("请输入回复内容");
                 return;
@@ -144,7 +145,8 @@ var app = new Vue({
                 url = '/pethome/message/public/' + GetQueryString("id");
                 data = {
                     replierFrom: GetQueryString("openid"),
-                    content: this.commentContent
+                    replierAccept : GetQueryString("openid"),
+                    content: this.commentContent,
                 }
 
             } else {
@@ -180,8 +182,9 @@ var app = new Vue({
                 }
             });
         },
+
         //回复评论
-        reply: function (index, talkId, replierFrom,publishId) {
+        reply: function (index, talkId, replierFrom) {
             $.modal({
                 title: '回复',
                 text: '',
@@ -192,7 +195,6 @@ var app = new Vue({
 
                         var content = $("#replayContent").val();
 
-
                         if (!content) {
                             alert("请输入回复内容");
                             return;
@@ -201,7 +203,7 @@ var app = new Vue({
                         var data = null;
                         var url = null;
                         if (app.msgListType == "interactMsg") {
-                            url = '/pethome/message/public/' + publishId;
+                            url = '/pethome/message/public/' + GetQueryString("id");
                             data = {
                                 talkId: talkId,
                                 replierFrom: GetQueryString("openid"),
@@ -209,6 +211,7 @@ var app = new Vue({
                                 content: content
                             }
                         } else {
+
                             url = '/pethome/message/private/' + GetQueryString("id");
                             data = {
                                 talkId: talkId,

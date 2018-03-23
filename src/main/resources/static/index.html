@@ -253,6 +253,7 @@
                     }
                 });
             },
+            //寻宠
             loadFindPetList: function () {
 
                 $.ajax({
@@ -270,6 +271,7 @@
                     }
                 });
             },
+            //寻主
             loadFindOwnerList: function () {
                 $.ajax({
                     url: '/pethome/publish/index/' + GetQueryString("openid"),
@@ -347,9 +349,30 @@
                     dataType: 'json',
                     data: null,
                     success: function (res) {
-                        if (res.code === 1 && res.data === true) {
+                        if (res.code === 1) {
 
-                            window.location.href = "./detail.html?openid=" + GetQueryString("openid") + "&id=" + id;
+                            if (res.data.type == "person") {
+
+                                if (res.data.state == 0) {
+                                    $.modal(goAuthormodal);
+                                } else {
+                                    window.location.href = "./detail.html?openid=" + GetQueryString("openid") + "&id=" + id;
+                                }
+                            } else if (res.data.type == "association") {
+
+                                if (res.data.state == 0) {
+
+                                    window.location.href = "./ov-state.html?openid=" + GetQueryString("openid") + "&id=" + id;
+
+                                } else if (res.data.state == 1) {
+
+                                    window.location.href = "./ov-state.html?openid=" + GetQueryString("openid") + "&id=" + id;
+
+                                } else if (res.data.state == 2) {
+
+                                    window.location.href = "./ov-state.html?openid=" + GetQueryString("openid") + "&id=" + id;
+                                }
+                            }
                         } else {
                             $.modal(goAuthormodal);
                         }
@@ -402,6 +425,10 @@
         });
     });
 
+
+    /**
+     * 提示认证
+     */
     function closeGoAuthorModal() {
         $.closeModal();
     }

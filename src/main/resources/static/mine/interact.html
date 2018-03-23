@@ -19,44 +19,40 @@
             <!-- list -->
             <div class="">
                 <ul class="messageList">
-                    <li v-for="item in 4">
+                    <li v-for="(item,index) in showMsgList">
                         <div class="card facebook-card">
                             <!-- 回复按钮 -->
-                            <a class="reply-btn open-reply-modal" @click="reply()">回复</a>
+                            <a class="reply-btn open-reply-modal" @click="reply(index,item.userIdFrom,item.talkId,item.publishId)">回复</a>
                             <div class="card-header no-border">
                                 <div class="facebook-avatar">
-                                    <img src="http://gqianniu.alicdn.com/bao/uploaded/i4//tfscom/i3/TB10LfcHFXXXXXKXpXXXXXXXXXX_!!0-item_pic.jpg_250x250q60.jpg"
-                                        width="34" height="34">
+                                    <img :src="item.userIdFromImage" width="34" height="34">
                                 </div>
-                                <div class="facebook-name">夜萧</div>
-                                <div class="facebook-date">星期一 3:47pm</div>
+                                <div class="facebook-name">{{item.userIdFromName}}</div>
+                                <div class="facebook-date">{{item.talkTime}}</div>
                             </div>
                             <div class="card-content">
-                                <div class="card-reply">转发了</div>
+                                <div class="card-reply">{{item.content}}</div>
                                 <div class="quote-box">
                                     <!-- avatar -->
                                     <div class="avatar">
-                                        <img src="../img/test/pet.jpg"/>
+                                        <img :src="item.petImage" />
                                     </div>
                                     <!-- info -->
                                     <div class="info-box">
-                                        <div class="info-item at">@Mocha</div>
-                                        <div class="info-item">宠物昵称：蛋挞</div>
-                                        <div class="info-item">丢失日期：2018-2-20</div>
+                                        <div class="info-item at">@{{item.publisherName}}</div>
+                                        <div class="info-item">宠物昵称：{{item.petName}}</div>
+                                        <div class="info-item">丢失日期：{{item.lostTime}}</div>
                                         <!-- tag -->
                                         <div class="tag flex-center">
-                                            寻宠
+                                            {{item.publishType == 1 ? "寻宠":"寻主"}}
                                         </div>
                                     </div>
                                 </div>
                                 <!-- reply list -->
                                 <div class="reply-list">
                                     <ul>
-                                        <li>
-                                            <span>mocha</span>回复了<span>张宇：</span>好的
-                                        </li>
-                                        <li>
-                                            <span>mocha</span>回复了<span>张宇：</span>好的
+                                        <li  v-for="(aa,index) in item.detail">
+                                            <span>{{aa.userIdFromName}}</span>回复了<span>{{aa.userIdAcceptName}}：</span>{{aa.content}}
                                         </li>
                                     </ul>
                                 </div>

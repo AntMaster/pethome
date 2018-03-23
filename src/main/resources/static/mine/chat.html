@@ -22,7 +22,7 @@
                     <li v-for="(item,index) in showMsgList">
                         <div class="card facebook-card" >
                             <!-- 回复按钮 -->
-                            <a class="reply-btn open-reply-modal" @click="reply(index,item.userIdFromName,item.talkId,item.publishId)">回复</a>
+                            <a class="reply-btn open-reply-modal" @click="reply(index,item.userIdFrom,item.talkId,item.publishId)">回复</a>
                             <div class="card-header no-border">
                                 <div class="facebook-avatar">
                                     <img :src="item.userIdFromImage" width="34" height="34">
@@ -52,10 +52,7 @@
                                 <div class="reply-list" >
                                     <ul>
                                         <li v-for="(aa,index) in item.detail">
-                                            <span>mocha</span>回复了<span>张宇：</span>好的
-                                        </li>
-                                        <li>
-                                            <span>mocha</span>回复了<span>张宇：</span>好的
+                                            <span>{{aa.userIdFromName}}</span>回复了<span>{{aa.userIdAcceptName}}：</span>{{aa.content}}
                                         </li>
                                     </ul>
                                 </div>

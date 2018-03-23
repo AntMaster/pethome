@@ -170,6 +170,7 @@ public class MessageController {
         /**
          * 判断是评论还是互动
          */
+        /*
         boolean talkIdEmpty = StringUtils.isEmpty(replyPublishForm.getTalkId());
         boolean accepterEmpty = StringUtils.isEmpty(replyPublishForm.getReplierAccept());
         if (talkIdEmpty || accepterEmpty) {
@@ -178,6 +179,7 @@ public class MessageController {
                 throw new PetHomeException(ResultEnum.PARAM_ERROR.getCode(), "【回复互动参数不正确】,若为评论,评论ID和接收人都不传;若为互动,则评论ID和接收人都必须传");
             }
         }
+        */
 
         PublicMsgDTO msgDTO = messageService.replyPublic(replyPublishForm, pet);
         return ResultVOUtil.success(msgDTO);

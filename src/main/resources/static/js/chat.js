@@ -11,6 +11,7 @@ var interact = new Vue({
     methods: {
 
         privateMsg: function () {
+
             $.ajax({
                 url: '/pethome/user/private/' + GetQueryString("openid"),
                 type: 'GET',
@@ -23,7 +24,7 @@ var interact = new Vue({
                 }
             });
         },
-        reply: function (index, userIdFromName, talkId, publishId) {
+        reply: function (index, userIdFrom, talkId, publishId) {
             $.modal({
                 title: '回复',
                 afterText: '<div class="" ><textarea  id = "replayContent" class="modal-reply-input"></textarea></div>',
@@ -49,12 +50,19 @@ var interact = new Vue({
                                 data: {
                                     talkId: talkId,
                                     userIdFrom: GetQueryString("openid"),
-                                    userIdAccept: userIdFromName,
+                                    userIdAccept: userIdFrom,
                                     content: content
                                 },
                                 success: function (res) {
                                     if (res.code === 1) {
-                                        app.showMsgList.detail.push(res.data);
+                                        var msg = {
+                                            content : res.data.content,
+                                            userIdAccept : res.data.replierAccept,
+                                            userIdAcceptName : res.data.replierAcceptName,
+                                            userIdFrom : res.data.replierFrom,
+                                            userIdFromName :res.data.replierFromName
+                                        };
+                                        interact.showMsgList[index].detail.push(msg);
                                     } else {
                                         alert(res.msg);
                                     }

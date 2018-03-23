@@ -11,6 +11,7 @@ var app = new Vue({
         }
     },
     methods: {
+
         getMessageCode: function () {
             $.ajax({
                 url: '/pethome/user/sms/' + GetQueryString("openid"),
@@ -36,7 +37,7 @@ var app = new Vue({
                 success: function (res) {
                     if (res.code === 1) {
                         app.dynamicArr = res.data;
-                        window.location.href = "./ov-state.html?openid=" + GetQueryString("openid");
+                        window.location.href = "./ov-state.html?type=2&state=2&openid=" + GetQueryString("openid");
                     } else {
                         alert(res.msg);
                     }

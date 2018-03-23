@@ -13,11 +13,15 @@ public class UserDTO {
 
     private String headImgUrl;
 
-    private Integer approve;
+    private Integer approveType;
+
+    private Integer approveState;
 
     private List<String> tagsName;
 
     private String tagName;
+
+    private String mobile;
 
     private Integer publishCount;
 

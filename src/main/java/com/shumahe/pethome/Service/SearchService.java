@@ -15,4 +15,7 @@ public interface SearchService {
      */
     List<PublishDTO> petSearch(PetSearchForm petSearchForm);
 
+
+
+    List<PublishDTO> init();
 }

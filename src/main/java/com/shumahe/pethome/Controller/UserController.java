@@ -2,11 +2,15 @@ package com.shumahe.pethome.Controller;
 
 import com.shumahe.pethome.Config.SMSConfig;
 import com.shumahe.pethome.DTO.UserDTO;
+import com.shumahe.pethome.Domain.UserApprove;
 import com.shumahe.pethome.Domain.UserBasic;
+import com.shumahe.pethome.Enums.ApproveStateEnum;
+import com.shumahe.pethome.Enums.ApproveTypeEnum;
 import com.shumahe.pethome.Enums.BooleanEnum;
 import com.shumahe.pethome.Enums.ResultEnum;
 import com.shumahe.pethome.Exception.PetHomeException;
 import com.shumahe.pethome.Form.UserApproveForm;
+import com.shumahe.pethome.Repository.UserApproveRepository;
 import com.shumahe.pethome.Repository.UserBasicRepository;
 import com.shumahe.pethome.Service.UserService;
 import com.shumahe.pethome.Util.MathUtil;
@@ -47,6 +51,10 @@ public class UserController {
     @Autowired
     SMSConfig smsConfig;
 
+
+    @Autowired
+    UserApproveRepository userApproveRepository;
+
     @Autowired
     RestTemplate restTemplate;
 
@@ -73,13 +81,46 @@ public class UserController {
     public ResultVO findUserAuto(@PathVariable("openId") String openId) {
 
         UserBasic user = userBasicRepository.findByOpenId(openId);
+
+        Map<String, String> res = new HashMap<>();
         if (user == null) {
             throw new PetHomeException(ResultEnum.RESULT_EMPTY);
         }
-        if (user.getApprove() == 1 || user.getAdminEntry() == 1) {
-            return ResultVOUtil.success(true);
+
+        res.put("mobile", String.valueOf(user.getMobile()));
+
+        if (user.getApproveType() == ApproveTypeEnum.PERSONAGE.getCode()) {
+
+            res.put("type", "person");
+
+            if (user.getApproveState() == ApproveStateEnum.SUCCESS.getCode()) {
+
+                res.put("state", String.valueOf(ApproveStateEnum.SUCCESS.getCode()));
+
+            } else {
+                res.put("state", String.valueOf(ApproveStateEnum.FAILURE.getCode()));
+            }
+
+        } else {
+
+            /**
+             * 协会
+             */
+            res.put("type", "association");
+            if (user.getApproveState() == ApproveStateEnum.WAITING.getCode()) {
+
+                res.put("state", String.valueOf(ApproveStateEnum.WAITING.getCode()));
+
+            } else if (user.getApproveState() == ApproveStateEnum.SUCCESS.getCode()) {
+
+                res.put("state", String.valueOf(ApproveStateEnum.SUCCESS.getCode()));
+
+            } else if (user.getApproveState() == ApproveStateEnum.FAILURE.getCode()) {
+
+                res.put("state", String.valueOf(ApproveStateEnum.FAILURE.getCode()));
+            }
         }
-        return ResultVOUtil.success(false);
+        return ResultVOUtil.success(res);
     }
 
 
@@ -126,7 +167,7 @@ public class UserController {
     }
 
     /**
-     * 验证短信验证码
+     * 个人认证
      */
     @PostMapping("/sms/{openId}")
     private ResultVO checkShortMessage(HttpServletRequest request,
@@ -145,7 +186,8 @@ public class UserController {
             throw new PetHomeException(ResultEnum.RESULT_EMPTY.getCode(), "没有该用户");
         }
         user.setMobile(String.valueOf(mobile));
-        user.setApprove(BooleanEnum.TRUE.getCode());
+        user.setApproveState(ApproveStateEnum.SUCCESS.getCode());
+        user.setApproveType(ApproveTypeEnum.PERSONAGE.getCode());
         userBasicRepository.save(user);
         session.removeAttribute(openId);
         return ResultVOUtil.success(true);
@@ -153,13 +195,14 @@ public class UserController {
 
     /**
      * 组织认证
+     *
      * @param request
      * @param userApproveForm
      * @param bindingResult
      * @return
      */
     @PutMapping("/auth")
-    private ResultVO saveOrganization(HttpServletRequest request,@Valid UserApproveForm userApproveForm, BindingResult bindingResult) {
+    private ResultVO saveOrganization(HttpServletRequest request, @Valid UserApproveForm userApproveForm, BindingResult bindingResult) {
 
         //验证表单数据是否正确
         if (bindingResult.hasErrors()) {
@@ -182,11 +225,9 @@ public class UserController {
             throw new PetHomeException(ResultEnum.RESULT_EMPTY.getCode(), "没有该用户");
         }
 
-        userService.saveOrganization(userApproveForm);
+        userService.saveOrganization(userApproveForm, user);
         return ResultVOUtil.success(true);
     }
-
-
 
 
     /**
@@ -199,8 +240,8 @@ public class UserController {
      */
     @GetMapping("/private/{openId}")
     public ResultVO findPrivateTalk(@PathVariable("openId") String openId,
-                                      @RequestParam(value = "page", defaultValue = "0") Integer page,
-                                      @RequestParam(value = "size", defaultValue = "200") Integer size) {
+                                    @RequestParam(value = "page", defaultValue = "0") Integer page,
+                                    @RequestParam(value = "size", defaultValue = "200") Integer size) {
 
         PageRequest pageRequest = new PageRequest(page, size);
         List<Map<String, Object>> myPrivateTalk = userService.findMyPrivateTalk(openId, pageRequest);
@@ -219,14 +260,65 @@ public class UserController {
      */
     @GetMapping("/public/{openId}")
     public ResultVO findPublicTalk(@PathVariable("openId") String openId,
-                                     @RequestParam(value = "page", defaultValue = "0") Integer page,
-                                     @RequestParam(value = "size", defaultValue = "200") Integer size) {
+                                   @RequestParam(value = "page", defaultValue = "0") Integer page,
+                                   @RequestParam(value = "size", defaultValue = "200") Integer size) {
 
         PageRequest pageRequest = new PageRequest(page, size);
-        List<List<Map<String, String>>> myPrivateTalk = userService.findMyPublicTalk(openId, pageRequest);
+        List<Map<String, Object>> myPrivateTalk = userService.findMyPublicTalk(openId, pageRequest);
 
         return ResultVOUtil.success(myPrivateTalk);
     }
+
+
+    /**
+     * 关注列表(我的关注 + 关注我的)
+     *
+     * @param
+     * @return
+     */
+    @GetMapping("/like/{openid}")
+    public ResultVO<List<Map<String, Object>>> mylikes(@PathVariable(name = "openid") String openid,
+                                                       @RequestParam(value = "type", defaultValue = "1") Integer type) {
+        if (type != 1 && type != 2) {
+            throw new PetHomeException(ResultEnum.PARAM_ERROR.getCode(), "参数不正确,type=1为我的关注,type=2为关注我的");
+        }
+
+        List<Map<String, String>> likeResult = userService.findMyDynamic(openid, type);
+
+        return ResultVOUtil.success(likeResult);
+    }
+
+
+    /**
+     * 转发列表(我的关注 + 关注我的)
+     *
+     * @param
+     * @return
+     */
+    @GetMapping("/share/{openid}")
+    public ResultVO<List<Map<String, Object>>> myshares(@PathVariable(name = "openid") String openid,
+                                                        @RequestParam(value = "type", defaultValue = "7") Integer type) {
+        if (type != 7 && type != 8) {
+            throw new PetHomeException(ResultEnum.PARAM_ERROR.getCode(), "参数不正确,type=7为我的关注,type=8为关注我的");
+        }
+
+        List<Map<String, String>> likeResult = userService.findMyDynamic(openid, type);
+        return ResultVOUtil.success(likeResult);
+    }
+
+
+    /**
+     * 获取认证信息
+     * @param openId
+     * @return
+     */
+    @GetMapping("/organization/{openId}")
+    public ResultVO findOrganization(@PathVariable("openId") String openId) {
+        UserApprove approve = userApproveRepository.findByUserId(openId);
+        return ResultVOUtil.success(approve);
+    }
+
+
 }
 
 

@@ -38,14 +38,17 @@ import static java.util.Arrays.*;
 @RestController
 @Slf4j
 @RequestMapping("/pet")
+@CrossOrigin
 public class PetController {
 
 
     @Autowired
     private PetService petService;
 
+
     @Autowired
     private UserPetAlbumRepository userPetAlbumRepository;
+
 
     @Autowired
     private UserPetPhotoRepository userPetPhotoRepository;
@@ -53,6 +56,7 @@ public class PetController {
 
     @Autowired
     private PetVarietyRepository petVarietyRepository;
+
 
 
     /**

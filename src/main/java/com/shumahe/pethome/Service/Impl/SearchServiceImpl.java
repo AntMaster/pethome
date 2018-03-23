@@ -373,4 +373,13 @@ public class SearchServiceImpl implements SearchService {
     }
 
 
+    @Override
+    public List<PublishDTO> init() {
+
+        Pageable pageable = new PageRequest(0,100);
+
+        Page<PetPublish> pets = petPublishRepository.findByPublishStateOrderByCreateTimeDesc(ShowStateEnum.SHOW.getCode(), pageable);
+        List<PublishDTO> petExtends = publishBaseService.findPetExtends(pets.getContent());
+        return petExtends;
+    }
 }

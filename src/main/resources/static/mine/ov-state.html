@@ -24,7 +24,7 @@
         <!-- 认证中 -->
         <div v-if="validateState" class="validate-remind" style="height: calc(100% - 2.2rem);">
             <div class="icon">
-                <img  src="img/icon/validate-ing.png" alt="">
+                <img src="img/icon/validate-ing.png" alt="">
             </div>
             <div class="remind-text">信息审核中,请耐心等待~</div>
             <div class="remind-subtitle"
@@ -36,7 +36,7 @@
         <!--认证失败-->
         <div v-if="!validateState" class="validate-remind" style="height: calc(100% - 2.2rem);">
             <div class="icon">
-                <img  src="img/icon/validate-error.png" alt="">
+                <img src="img/icon/validate-error.png" alt="">
             </div>
             <div class="remind-text">抱歉,认证失败了</div>
             <div class="remind-subtitle"
@@ -52,17 +52,27 @@
 <script type='text/javascript' src='js/vue.js'></script>
 <script type='text/javascript' src='js/common.js'></script>
 <script>
-    var app = new Vue({
+    var ovedPage = new Vue({
         el: "#ovedPage",
         data: {
             validateState: true,
-            param:"",
+            param: "",
         },
-        created:function () {
+        created: function () {
             this.param = GetQueryString("openid");
         },
+        mounted: function () {
+            this.init();
+        },
         methods: {
+            init: function () {
 
+                if (GetQueryString("state") == 2 && GetQueryString("type") == 2) {
+                    this.validateState = true;
+                } else if (GetQueryString("state") == 0 && GetQueryString("type") == 2) {
+                    this.validateState = false;
+                }
+            }
         }
     });
 </script>

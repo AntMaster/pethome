@@ -69,24 +69,7 @@ public class DynamicController {
     }
 
 
-    /**
-     * 关注列表(我的关注 + 关注我的)
-     *
-     * @param openId
-     * @return
-     */
-    @GetMapping("/like/list")
-    public ResultVO<List<Map<String, Object>>> likeList(@RequestParam("openid") String openId, @RequestParam("type") int type) {
 
-        if (type != 1 && type != 2) {
-            throw new PetHomeException(ResultEnum.PARAM_ERROR.getCode(), "参数不正确,type=1为我的关注,type=2为关注我的");
-        }
-
-
-        List<Map<String, String>> likeResult = dynamicService.findMyLike(openId, type);
-
-        return ResultVOUtil.success(likeResult);
-    }
 
 
     /**

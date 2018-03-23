@@ -1,19 +1,51 @@
 var message = new Vue({
     el: "#attentionPage",
     data: {
-        navActive: true,
-        taskArr: [
-            {classifyID: 2, publishType: 1, petFindState: 2},
-            {classifyID: 3, publishType: 2, petFindState: 2},
-            {classifyID: 2, publishType: 2, petFindState: 1}
-        ]
+        navActive: true,//我的关注,关注我的
+        attentionArr: []
     },
     mounted: function () {
-        $.init();
+        this.init();
     },
     methods: {
-        navChange: function (t) {
-            this.navActive = !this.navActive;
+        init:function () {
+
+            $.ajax({
+                url: '/pethome/user/like/' + GetQueryString("openid"),
+                type: 'GET',
+                dataType: 'json',
+                data: {
+                    type : 2
+                },
+                success: function (res) {
+                    if (res.code) {
+                        message.attentionArr = res.data;
+                    }
+                }
+            });
+        },
+
+        navChange: function (type) {
+            //this.navActive = !this.navActive;
+            if(type==2){
+                message.navActive = true;
+            }else{
+                message.navActive = false;
+            }
+
+            $.ajax({
+                url: '/pethome/user/like/' + GetQueryString("openid"),
+                type: 'GET',
+                dataType: 'json',
+                data: {
+                    type : type
+                },
+                success: function (res) {
+                    if (res.code) {
+                        message.attentionArr = res.data;
+                    }
+                }
+            });
         }
     }
 });

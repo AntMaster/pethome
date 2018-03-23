@@ -19,11 +19,11 @@
         <div class="content msgPage-content">
             <!-- nav -->
             <div class="nav center-block">
-                <div class="nav-item flex-center" :class="{active:navActive}" @click="navChange(1)">
+                <div class="nav-item flex-center" :class="{active:navActive}" @click="navChange(8)">
                     <div class="nav-item-title">转发我的</div>
                     <div class="nav-item-indicator"></div>
                 </div>
-                <div class="nav-item flex-center" :class="{active:!navActive}" @click="navChange(2)">
+                <div class="nav-item flex-center" :class="{active:!navActive}" @click="navChange(7)">
                     <div class="nav-item-title">我转发的</div>
                     <div class="nav-item-indicator"></div>
                 </div>
@@ -31,31 +31,30 @@
             <!-- list -->
             <div class="">
                 <ul class="messageList">
-                    <li v-for="item in 4">
+                    <li v-for="item in attentionArr">
                         <div class="card facebook-card">
                             <div class="card-header no-border">
                                 <div class="facebook-avatar">
-                                    <img src="http://gqianniu.alicdn.com/bao/uploaded/i4//tfscom/i3/TB10LfcHFXXXXXKXpXXXXXXXXXX_!!0-item_pic.jpg_250x250q60.jpg"
-                                        width="34" height="34">
+                                    <img :src="item.userFromImage" width="34" height="34">
                                 </div>
-                                <div class="facebook-name">夜萧</div>
-                                <div class="facebook-date">星期一 3:47pm</div>
+                                <div class="facebook-name">{{item.userFromName}}</div>
+                                <div class="facebook-date">{{item.attentionTime}}</div>
                             </div>
                             <div class="card-content">
                                 <div class="card-action-title">转发了</div>
                                 <div class="quote-box">
                                     <!-- avatar -->
                                     <div class="avatar">
-                                        <img src="../img/test/pet.jpg" />
+                                        <img :src="item.petImage" />
                                     </div>
                                     <!-- info -->
                                     <div class="info-box">
-                                        <div class="info-item at">@Mocha</div>
-                                        <div class="info-item">宠物昵称：蛋挞</div>
-                                        <div class="info-item">丢失日期：2018-2-20</div>
+                                        <div class="info-item at">@{{item.acceptUserName}}</div>
+                                        <div class="info-item">宠物昵称：{{item.petName}}</div>
+                                        <div class="info-item">丢失日期：{{item.lostTime}}</div>
                                         <!-- tag -->
                                         <div class="tag flex-center">
-                                            寻宠
+                                            {{item.publishType == 1 ? "寻宠" : "寻主"}}
                                         </div>
                                     </div>
                                 </div>

@@ -31,13 +31,6 @@ public interface DynamicService {
     List<PublishDTO> MyLikes(String openId);
 
 
-    /**
-     * 我的关注;关注我的
-     * @param openId
-     * @param type
-     * @return
-     */
-    List<Map<String,String>> findMyLike(String openId , int type);
 
 
     /**

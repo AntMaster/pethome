@@ -12,15 +12,19 @@ import java.util.List;
 public interface UserTalkRepository extends JpaRepository<UserTalk, Integer> {
 
 
-    @Query(value = "SELECT * FROM UserTalk WHERE PublishID IN (SELECT  DISTINCT PublishID FROM UserTalk WHERE publisherId = ?1) AND ShowState = 1 ORDER BY LASTModify DESC,TalkTime DESC ", nativeQuery = true)
+    @Query(value = "SELECT * FROM UserTalk WHERE PublishID IN (SELECT  DISTINCT PublishID FROM UserTalk WHERE publisherId = ?1) AND ShowState = 1 ORDER BY LASTModify DESC,Talkid DESC ", nativeQuery = true)
     List<UserTalk> findMyCreate(String publisherId);
 
 
-    @Query(value = "SELECT * FROM UserTalk WHERE PublishID IN (SELECT  DISTINCT PublishID FROM UserTalk WHERE publisherId <> ?1 AND useridfrom = ?2) AND  (useridfrom = ?3 OR UserIDAccept = ?4 ) AND ShowState = 1 ORDER BY LASTModify DESC,TalkTime DESC ", nativeQuery = true)
+    @Query(value = "SELECT * FROM UserTalk WHERE PublishID IN (SELECT  DISTINCT PublishID FROM UserTalk WHERE publisherId <> ?1 AND useridfrom = ?2) AND  (useridfrom = ?3 OR UserIDAccept = ?4 ) AND ShowState = 1 ORDER BY LASTModify DESC,Talkid DESC ", nativeQuery = true)
     List<UserTalk> findMyJoin(String publisherId,String userIdFrom,String userIdFrom2,String userIdAccept);
 
 
     List<UserTalk> findByPublisherIdAndReadState(String publisherId,Integer readState);
+
+
+    List<UserTalk> findByUserIdAcceptAndReadState(String publisherId,Integer readState);
+
 
     List<UserTalk> findByPublishIdOrderByTalkId(Integer publishId);
 
@@ -38,7 +42,7 @@ public interface UserTalkRepository extends JpaRepository<UserTalk, Integer> {
 
 
 
-    @Query(value = "select count(id) from UserTalk  where publisherId = ?1 AND  readstate = ?2", nativeQuery = true)
+    @Query(value = "select count(id) from UserTalk  where useridaccept = ?1 AND  readstate = ?2", nativeQuery = true)
     int notReadTalksCount(String openId,Integer readState);
 
 

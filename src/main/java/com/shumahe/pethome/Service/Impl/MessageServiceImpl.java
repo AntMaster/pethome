@@ -438,7 +438,7 @@ public class MessageServiceImpl implements MessageService {
         });
 
         //按人分组
-        Map<String, List<PrivateMsgDTO>> collect = publicMsgDTOS.stream().collect(Collectors.groupingBy(e -> e.getUserIdFrom()));
+        Map<Integer, List<PrivateMsgDTO>> collect = publicMsgDTOS.stream().collect(Collectors.groupingBy(e -> e.getTalkId()));
 
         List<List<PrivateMsgDTO>> petTalks = new ArrayList<>();
         collect.forEach((k,v)-> petTalks.add(v));
@@ -530,7 +530,7 @@ public class MessageServiceImpl implements MessageService {
 
             if (!StringUtils.isEmpty(msgDTO.getReplierAccept()) && (user.getOpenId().trim()).equals(msgDTO.getReplierAccept().trim())) {
                 msgDTO.setReplierAcceptName(user.getNickName());
-                msgDTO.setReplierAcceptName(user.getHeadImgUrl());
+                msgDTO.setReplierAcceptPhoto(user.getHeadImgUrl());
             }
         });
 

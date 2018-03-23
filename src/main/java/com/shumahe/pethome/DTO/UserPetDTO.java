@@ -9,7 +9,7 @@ import lombok.Data;
 import java.util.Date;
 import java.util.List;
 
-@JsonInclude(JsonInclude.Include.NON_NULL)
+//@JsonInclude(JsonInclude.Include.NON_NULL)
 @Data
 public class UserPetDTO {
 

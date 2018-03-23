@@ -43,7 +43,7 @@ public interface PublishTalkRepository extends JpaRepository<PublishTalk, Intege
      * @param publishIds
      * @return
      */
-    @Query(value = "SELECT * FROM PublishTalk WHERE PublishID IN ?1 AND ShowState = 1 ORDER BY LASTModify DESC,talkId ASC,ReplyDate ASC", nativeQuery = true)
+    @Query(value = "SELECT * FROM PublishTalk WHERE PublishID IN ?1 AND ShowState = 1 ORDER BY LASTModify DESC,talkId ASC,ReplyDate ASC ", nativeQuery = true)
     List<PublishTalk> findManyPublishTalk(List<Integer> publishIds);
 
 
@@ -78,16 +78,22 @@ public interface PublishTalkRepository extends JpaRepository<PublishTalk, Intege
 
     /**
      * 我的   互动未读条数
-     * @param PublisherID
-     * @param ReplierFrom
      * @param ReplierAccept
      * @return
      */
-    @Query(value = "SELECT count(id) FROM PublishTalk WHERE PublishID in (SELECT DISTINCT PublishID FROM PublishTalk WHERE PublisherID = ?1 OR ReplierFrom = ?2 OR ReplierAccept = ?3 ) AND ReadState = ?4 ", nativeQuery = true)
+   /* @Query(value = "SELECT count(id) FROM PublishTalk WHERE PublishID in (SELECT DISTINCT PublishID FROM PublishTalk WHERE PublisherID = ?1 OR ReplierFrom = ?2 OR ReplierAccept = ?3 ) AND ReadState = ?4 ", nativeQuery = true)
     int notReadTalksCount(String PublisherID, String ReplierFrom, String ReplierAccept,Integer readCount);
-
+*/
+    @Query(value = "SELECT count(id) FROM PublishTalk  WHERE ReplierAccept = ?1 AND ReadState = ?2 ", nativeQuery = true)
+    int notReadTalksCount(String ReplierAccept,Integer readCount);
 
 
     List<PublishTalk> findByPublishIdOrderByReplyDateDesc(Integer id, Pageable pageRequest);
+
+
+    List<PublishTalk>  findByPublisherIdAndReadState(String publisherId,Integer readState);
+
+
+    List<PublishTalk>  findByReplierAcceptAndReadState(String publisherId,Integer readState);
 
 }
