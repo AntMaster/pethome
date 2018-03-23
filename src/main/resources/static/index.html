@@ -362,11 +362,11 @@
 
                                 if (res.data.state == 0) {
 
-                                    window.location.href = "./ov-state.html?openid=" + GetQueryString("openid") + "&id=" + id;
+                                    $.modal(goAuthormodal);
 
                                 } else if (res.data.state == 1) {
 
-                                    window.location.href = "./ov-state.html?openid=" + GetQueryString("openid") + "&id=" + id;
+                                    window.location.href = "./detail.html?openid=" + GetQueryString("openid") + "&id=" + id;
 
                                 } else if (res.data.state == 2) {
 
