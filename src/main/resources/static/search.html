@@ -14,154 +14,116 @@
 </head>
 
 <body>
-    <!-- 你的html代码 -->
-    <div class="page" id="searchPage">
-        <!-- tabbar -->
-        <mc-tabbar page="search"></mc-tabbar>
-        <!-- mask -->
-        <div class="mask"></div>
-        <!-- 抽屉 -->
-        <div class="panel panel-right panel-cover filter-draw">
-            <div class="title-box">筛选</div>
-            <div class="filter-item-box">
-                <!-- 频道 -->
-                <div class="filter-item">
-                    <div class="item-title">频道</div>
-                    <div class="item-tags">
-                        <ul class="commonList-row">
-                            <li class="active">寻主</li>
-                            <li>寻宠</li>
-                        </ul>
-                    </div>
-                </div>
-                <!-- 类别 -->
-                <div class="filter-item">
-                    <div class="item-title">类别</div>
-                    <div class="item-tags">
-                        <ul class="commonList-row">
-                            <li class="active">汪</li>
-                            <li>喵</li>
-                        </ul>
-                    </div>
-                </div>
-                <!-- 品种 -->
-                <div class="filter-item">
-                    <div class="item-title">品种</div>
-                    <div class="item-tags">
-                        <ul class="commonList-row">
-                            <li class="active">田园犬</li>
-                            <li>金毛</li>
-                        </ul>
-                    </div>
-                </div>
-                <!-- 性别 -->
-                <div class="filter-item">
-                    <div class="item-title">性别</div>
-                    <div class="item-tags">
-                        <ul class="commonList-row">
-                            <li class="active">公</li>
-                            <li>母</li>
-                        </ul>
-                    </div>
+<!-- 你的html代码 -->
+<div class="page" id="searchPage">
+    <!-- tabbar -->
+    <mc-tabbar page="search"></mc-tabbar>
+    <!-- mask -->
+    <div class="mask"></div>
+    <!-- 抽屉 -->
+    <div class="panel panel-right panel-cover filter-draw">
+        <div class="title-box">筛选</div>
+        <div class="filter-item-box">
+            <!-- 频道 -->
+            <div class="filter-item">
+                <div class="item-title">频道</div>
+                <div class="item-tags">
+                    <ul class="commonList-row">
+                        <li :class="{active:publishType==2}" @click="changePublishType(1)">寻主</li>
+                        <li :class="{active:publishType==1}" @click="changePublishType(2)">寻宠</li>
+                    </ul>
                 </div>
             </div>
-            <!-- 重置 确定 -->
-            <div class="action-box">
-                <div class="reset">重置</div>
-                <div class="ok close-panel">确认</div>
+            <!-- 类别 -->
+            <div class="filter-item">
+                <div class="item-title">类别</div>
+                <div class="item-tags">
+                    <ul class="commonList-row">
+                        <li :class="{active:classifyID==3}" @click="changePetClass(3)">汪</li>
+                        <li :class="{active:classifyID==2}" @click="changePetClass(2)">喵</li>
+                    </ul>
+                </div>
+            </div>
+            <!-- 品种 -->
+            <div class="filter-item">
+                <div class="item-title">品种</div>
+                <div class="item-tags">
+                    <ul class="commonList-row">
+                        <li @click="selectVariety(index,item.id)" :class="{active:svIndex==index}" v-for="(item,index) in showVarietyArr">{{item.name}}</li>
+                    </ul>
+                </div>
+            </div>
+            <!-- 性别 -->
+            <div class="filter-item">
+                <div class="item-title">性别</div>
+                <div class="item-tags">
+                    <ul class="commonList-row">
+                        <li :class="{active:petSex}" @click="changePetSex(1)">公</li>
+                        <li :class="{active:!petSex}" @click="changePetSex(0)">母</li>
+                    </ul>
+                </div>
             </div>
         </div>
-        <div class="content searchPage-content">
-            <!-- 搜索框 -->
-            <div class="search-box">
-                <input placeholder="输入关键字搜索" />
-                <div class="search-btn" @click="search('keywords')">搜索</div>
-            </div>
-            <!-- 筛选按钮 -->
-            <div class="filter open-panel" @click="draw">
-                <img src="img/icon/icon-filter.png" />
-            </div>
-            <!-- pet card -->
-            <div class="marker-card">
-                <div class="card-info">
-                    <div class="tag flex-center">寻宠</div>
-                    <div class="nickname">宠物昵称：咪咪</div>
-                    <div class="date">丢失日期：2018-02-10</div>
-                    <div class="user-info">
-                        <div class="avatar flex-center">
-                            <img src="img/test/avatar.jpg"/>
-                        </div>
-                        <div class="info">
-                            <div class="nickname">猫大王的幸福生活</div>
-                            <div class="date">2018-02-10</div>
-                        </div>
-                    </div>
-                </div>
-                <div class="card-img-location">
-                    <div class="img-box">
-                        <img class="tag" src="img/icon/icon-miao.png" />
-                        <img class="pet-img" src="img/test/pet2.jpg" />
-                    </div>
-                    <div class="location-box">
-                        <img src="img/icon/icon-card-location.png"/>
-                        <span>当代花园</span>
-                    </div>
-                </div>
-            </div>
-            <baidu-map class="bm-view" mapType="BMAP_NORMAL_MAP" :zoom="12" :scroll-wheel-zoom="true" center="武汉">
-                <!-- 定位 -->
-                <bm-geolocation anchor="BMAP_ANCHOR_BOTTOM_RIGHT" :showaddressbar="true" :autolocation="true"></bm-geolocation>
-                <!-- 缩放Btn -->
-                <!-- <bm-navigation anchor="BMAP_ANCHOR_TOP_RIGHT"></bm-navigation> -->
-                <bm-marker @click="showCard" :position="{lng: 114.426, lat: 30.466}" :dragging="true" animation="BMAP_ANIMATION_BOUNCE" :icon="{url: 'http://developer.baidu.com/map/jsdemo/img/fox.gif', size: {width: 300, height: 157}}"></bm-marker>
-            </baidu-map>
+        <!-- 重置 确定 -->
+        <div class="action-box">
+            <div class="reset">重置</div>
+            <div class="ok close-panel">确认</div>
         </div>
     </div>
-    <script src="https://cdn.bootcss.com/jquery/1.12.4/jquery.min.js"></script>
-    <script type='text/javascript' src='libs/l7/light7.min.js'></script>
-    <script type='text/javascript' src='js/vue.js'></script>
-    <script type='text/javascript' src='js/common.js'></script>
-    <script type='text/javascript' src='js/components.js'></script>
-    <script src="https://unpkg.com/vue-baidu-map"></script>
-    <script>
-        //地图组件初始化
-        Vue.use(VueBaiduMap.default, {
-            ak: 'LOnzr56cOpw0LoZ5dt8GSGdej9YRjGrn',
-            methods: {
-                locationSuccess() {
-                    alert("locate success");
-                },
-                locationError() {
-                    alert("locate error");
-                }
-            }
-        });
-        //搜索页面
-        var app = new Vue({
-            el: "#searchPage",
-            data: {
-                testPoint: "{lng: 30.4660040000, lat: 114.4239750000}"
-            },
-            methods: {
-                search(w) {
-                    alert(w);
-                },
-                draw() {
-
-                },
-                showCard(){
-                    $(".marker-card").fadeIn().css("diplay","flex");
-                }
-            }
-        });
-        //抽屉监听
-        $(document).on("open", ".panel", function () {
-            $(".mask").fadeIn(500);
-        });
-        $(document).on("close", ".panel", function () {
-            $(".mask").fadeOut();
-        });
-    </script>
+    <div class="content searchPage-content">
+        <!-- 搜索框 -->
+        <div class="search-box">
+            <input v-model="keyword" placeholder="输入关键字搜索" />
+            <div class="search-btn" @click="search('keywords')">搜索</div>
+        </div>
+        <!-- 筛选按钮 -->
+        <div class="filter open-panel" @click="draw">
+            <img src="img/icon/icon-filter.png" />
+        </div>
+        <!-- pet card -->
+        <div class="marker-card">
+            <div class="card-info">
+                <div class="tag flex-center" :class="{tagFowner:tempActiveCard.publishType == 1}">{{tempActiveCard.publishType == 0 ? "寻宠" : "寻主"}}</div>
+                <div class="nickname">宠物昵称：{{tempActiveCard.name}}</div>
+                <div class="date">丢失日期：{{tempActiveCard.lostTime}}</div>
+                <div class="user-info">
+                    <div class="avatar flex-center">
+                        <img :src="tempActiveCard.publisherPhoto" />
+                    </div>
+                    <div class="info">
+                        <div class="nickname">{{tempActiveCard.publisherName}}</div>
+                        <div class="date">{{tempActiveCard.createTime}}</div>
+                    </div>
+                </div>
+            </div>
+            <div class="card-img-location">
+                <div class="img-box">
+                    <img class="tag" :src="tempActiveCard.classifyId == 2 ? 'img/icon/icon-miao.png':'img/icon/icon-wang.png'" />
+                    <img class="pet-img" :src="tempActiveCard.petImage" />
+                </div>
+                <div class="location-box">
+                    <img src="img/icon/icon-card-location.png" />
+                    <span>{{tempActiveCard.lostLocation}}</span>
+                </div>
+            </div>
+        </div>
+        <baidu-map class="bm-view" mapType="BMAP_NORMAL_MAP" :zoom="12" :scroll-wheel-zoom="true" center="武汉">
+            <!-- 定位 -->
+            <bm-geolocation anchor="BMAP_ANCHOR_BOTTOM_RIGHT" :showaddressbar="true" :autolocation="true"></bm-geolocation>
+            <!-- 缩放Btn -->
+            <!-- <bm-navigation anchor="BMAP_ANCHOR_TOP_RIGHT"></bm-navigation> -->
+            <bm-marker ref="marker" @click="openDetail(item,index)" v-for="(item,index) in annotationList" :position="{lng: item.longitude, lat: item.latitude}" :icon="annotationConfArr[index]" animation="BMAP_ANIMATION_BOUNCE">
+            </bm-marker>
+        </baidu-map>
+    </div>
+</div>
+<script src="https://cdn.bootcss.com/jquery/1.12.4/jquery.min.js"></script>
+<script type='text/javascript' src='libs/l7/light7.min.js'></script>
+<script type='text/javascript' src='js/vue.js'></script>
+<script type='text/javascript' src='js/common.js'></script>
+<script type='text/javascript' src='js/components.js'></script>
+<script src="https://unpkg.com/vue-baidu-map"></script>
+<script type="text/javascript" src="js/search.js"></script>
 </body>
 
 </html>

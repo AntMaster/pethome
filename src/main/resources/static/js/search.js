@@ -1,0 +1,168 @@
+//地图组件初始化
+Vue.use(VueBaiduMap.default, {
+    ak: 'LOnzr56cOpw0LoZ5dt8GSGdej9YRjGrn',
+    methods: {
+        locationSuccess: function () {
+            alert("locate success");
+        },
+        locationError: function () {
+            alert("locate error");
+        }
+    }
+});
+//搜索页面
+var app = new Vue({
+    el: "#searchPage",
+    data: {
+        testPoint: "{lng: 30.4660040000, lat: 114.4239750000}",
+        //1：寻宠，2：寻主
+        publishType: '',
+        //2：猫  3：狗
+        classifyID: 3,
+        varietyID: '',
+        petSex: true,
+        catVarietyArr: [
+            {name: "橘猫", id: "39"},
+            {name: "波斯猫", id: "19"},
+            {name: "英短", id: "13"},
+            {name: "美短", id: "14"},
+            {name: "加菲猫", id: "15"},
+            {name: "蓝猫", id: "16"},
+            {name: "田园猫", id: "3"},
+            {name: "其他", id: ""}
+        ],
+        dogVarietyArr: [
+            {name: "田园犬", id: "9"},
+            {name: "金毛", id: "5"},
+            {name: "哈士奇", id: "6"},
+            {name: "萨摩耶", id: "20"},
+            {name: "泰迪", id: "10"},
+            {name: "拉布拉多", id: "7"},
+            {name: "雪纳瑞", id: "25"},
+            {name: "阿拉斯加", id: "18"},
+            {name: "比熊", id: "22"},
+            {name: "边牧", id: "29"},
+            {name: "博美", id: "21"},
+            {name: "其他", id: ""}
+        ],
+        showVarietyArr: [],
+        //选中的宠物的品种序号，用于控制active状态
+        svIndex: 0,
+        //搜索关键字
+        keyword: '',
+        //初始化坐标点
+        annotationList: [],
+        //大头针配置
+        annotationConf: {
+            icon_fpet: {url: 'img/icon/pin_fpet.png', size: {width: 42, height: 46}},
+            icon_fpet_big: {url: 'img/icon/pin_fpet_big.png', size: {width: 42, height: 46}},
+            icon_fowner: {url: 'img/icon/pin_fowner.png', size: {width: 42, height: 46}},
+            icon_fowner_big: {url: 'img/icon/pin_fowner_big.png', size: {width: 42, height: 46}}
+        },
+        //大头针配置数组
+        annotationConfArr: [],
+        //当前处于点开状态的大头针
+        tempActivePin: {
+            index: '',
+            publishType: ''
+        },
+        //当前处于展示状态的卡片
+        tempActiveCard: '',
+    },
+    mounted: function () {
+        this.init();
+    },
+    created: function () {
+        this.fitFilterItem();
+    },
+    methods: {
+        init: function () {
+            $.ajax({
+                url: "/pethome/search/init",
+                dataType: "json",
+                type: "GET",
+                success: function (res) {
+                    if (res.code == 1) {
+                        app.annotationList = res.data;
+                        app.confPinIcon();
+                    }
+                }
+            });
+            this.laodPetVariety();
+            //配置一个数组用于控制大头针的图片显示
+        },
+        laodPetVariety: function () {
+            this.showVarietyArr = this.dogVarietyArr;
+        },
+        confPinIcon: function () {
+            //初始化大头针
+            for (var i = 0; i < this.annotationList.length; i++) {
+                this.annotationList[i].publishType == 0 ? this.annotationConfArr.push(this.annotationConf.icon_fpet) : this.annotationConfArr.push(this.annotationConf.icon_fowner);
+            }
+        },
+        search: function () {
+
+        },
+        draw: function () {
+
+        },
+        showCard: function () {
+            $(".marker-card").fadeIn().css("diplay", "flex");
+        },
+        //发布类别
+        changePublishType: function (type) {
+            type == 1 ? this.publishType = 2 : this.publishType = 1;
+        },
+        //宠物类别
+        changePetClass: function (type) {
+            type == 2 ? this.classifyID = 2 : this.classifyID = 3;
+        },
+        //宠物性别
+        changePetSex: function (sex) {
+            console.log(sex);
+            sex == 1 ? this.petSex = true : this.petSex = false;
+        },
+        fitFilterItem: function () {
+            var ScreenWidth = document.body.clientWidth;
+            if (ScreenWidth < 350) {
+                $(".filter-item").css("margin-bottom", "1rem");
+            }
+        },
+        selectVariety: function (index, vid) {
+            this.svIndex = index;
+            this.varietyID = vid;
+        },
+        //打开详情
+        openDetail: function (item, index) {
+            //重置上一次点击状态
+            if (this.tempActivePin.publishType != 0 || this.tempActivePin.publishType != 1) {
+                if (this.tempActivePin.publishType == 0) {
+                    this.annotationConfArr.splice(this.tempActivePin.index, 1, this.annotationConf.icon_fpet);
+                } else {
+                    this.annotationConfArr.splice(this.tempActivePin.index, 1, this.annotationConf.icon_fowner);
+                }
+            }
+            //设置此次点击状态
+            item.publishType == 0 ? this.annotationConfArr.splice(index, 1, this.annotationConf.icon_fpet_big) : this.annotationConfArr.splice(index, 1, this.annotationConf.icon_fowner_big);
+            //设置tempActivePin
+            this.tempActivePin = {
+                index: index,
+                publishType: item.publishType
+            };
+            //展示卡片
+            this.openCard(item);
+        },
+        //打开卡片
+        openCard: function (item) {
+            this.tempActiveCard = item;
+            $(".marker-card").fadeIn();
+        }
+    }
+});
+//抽屉监听
+$(document).on("open", ".panel", function () {
+    $(".mask").fadeIn(500);
+});
+$(document).on("close", ".panel", function () {
+    $(".mask").fadeOut();
+});
