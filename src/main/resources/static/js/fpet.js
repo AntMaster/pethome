@@ -58,12 +58,12 @@ var app = new Vue({
                 //公
                 this.maleActive = !this.maleActive;
                 this.femaleActive = false;
-                this.maleActive ? this.formData.petSex = 1 : this.formData.petSex = 2;
+                this.maleActive ? this.formData.petSex = 1 : this.formData.petSex = 0;
             } else {
                 //母
                 this.femaleActive = !this.femaleActive;
                 this.maleActive = false;
-                this.femaleActive ? this.formData.petSex = 2 : this.formData.petSex = 1;
+                this.femaleActive ? this.formData.petSex = 0 : this.formData.petSex = 1;
             }
         },
         submitRelease: function () {
@@ -76,24 +76,25 @@ var app = new Vue({
                 alert("宠物照片必填");
                 return;
             }
+
+
             this.formData.petImage = this.petImageArr.join(";");
 
-
-            $.ajax({
-                url: '/pethome/publish/pet/'+GetQueryString("openid"),
-                type: 'PUT',
-                contentType: "application/x-www-form-urlencoded",
-                dataType: 'json',
-                data: app.formData,
-                success: function (res) {
-                    if (res.code === 1) {
-                        app.dynamicArr = res.data;
-                        window.location.href = "./index.html?openid=" + GetQueryString("openid");
-                    } else {
-                        alert(res.msg);
+                $.ajax({
+                    url: '/pethome/publish/pet/'+GetQueryString("openid"),
+                    type: 'PUT',
+                    contentType: "application/x-www-form-urlencoded",
+                    dataType: 'json',
+                    data: app.formData,
+                    success: function (res) {
+                        if (res.code === 1) {
+                            app.dynamicArr = res.data;
+                            window.location.href = "./index.html?openid=" + GetQueryString("openid");
+                        } else {
+                            alert(res.msg);
+                        }
                     }
-                }
-            });
+                });
         },
         removePetImg: function (index) {
 
@@ -148,6 +149,7 @@ $("#datetime-picker").datetimePicker({
         app.formData.lostTime = $("#datetime-picker").val()
     }
 });
+
 $(document).on("pageInit", function (e, pageId, $page) {
     if (pageId == 'locationPage') {
         //地图组件初始化

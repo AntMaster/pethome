@@ -3,6 +3,7 @@ package com.shumahe.pethome.Service.Impl;
 import com.shumahe.pethome.DTO.PrivateMsgDTO;
 import com.shumahe.pethome.DTO.PublicMsgDTO;
 import com.shumahe.pethome.DTO.PublishDTO;
+import com.shumahe.pethome.DTO.UserApproveDTO;
 import com.shumahe.pethome.Domain.*;
 import com.shumahe.pethome.Enums.ResultEnum;
 import com.shumahe.pethome.Exception.PetHomeException;
@@ -13,9 +14,11 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 @Service
@@ -40,11 +43,15 @@ public class AdminServiceImpl implements AdminService {
     @Autowired
     PublishTalkRepository publishTalkRepository;
 
+
+    @Autowired
+    UserApproveRepository userApproveRepository;
+
     /**
      * 查询寻宠 、 寻主
      */
     @Override
-    public Map<String,Object> findAll(Integer publishType, PageRequest pageRequest) {
+    public Map<String, Object> findAll(Integer publishType, PageRequest pageRequest) {
 
         Page<PetPublish> pets = petPublishRepository.findByPublishTypeOrderByCreateTimeDesc(publishType, pageRequest);
         List<PetPublish> publishList = pets.getContent();
@@ -53,12 +60,13 @@ public class AdminServiceImpl implements AdminService {
         }
 
         List<PublishDTO> publishDTOS = publishBaseService.findPetExtends(publishList);
-        Map<String,Object> res = new HashMap<>() ;
-        res.put("total",pets.getTotalElements());
-        res.put("pages",pets.getTotalPages());
-        res.put("size",pets.getSize());
-        res.put("page",pets.getNumber());
-        res.put("data",publishDTOS);
+
+        Map<String, Object> res = new HashMap<>();
+        res.put("total", pets.getTotalElements());
+        res.put("pages", pets.getTotalPages());
+        res.put("size", pets.getSize());
+        res.put("page", pets.getNumber());
+        res.put("data", publishDTOS);
 
         return res;
     }
@@ -244,6 +252,53 @@ public class AdminServiceImpl implements AdminService {
         msg.setShowState(showState);
         PublishTalk save = publishTalkRepository.save(msg);
         return save;
+    }
+
+    /**
+     * 企业认证
+     *
+     * @param approveState
+     * @param request
+     * @return
+     */
+    @Override
+    public Map<String, Object> findApprove(Integer approveState, PageRequest request) {
+
+        Page<UserApprove> all;
+        if (approveState == 0) {
+            all = userApproveRepository.findAll(request);
+        } else {
+            all = userApproveRepository.findByApproveState(approveState, request);
+        }
+
+        Map<String, Object> res = new HashMap<>();
+        res.put("last", all.isLast());
+        res.put("totalPages", all.getTotalPages());
+        res.put("totalElements", all.getNumberOfElements());
+        res.put("number", all.getNumber());
+        res.put("size", all.getSize());
+        res.put("first", all.isFirst());
+        res.put("numberOfElements", all.getNumberOfElements());
+        List<UserApprove> approves = all.getContent();
+        if (approves.isEmpty()) {
+            return res;
+        }
+
+        List<String> userId = approves.stream().map(UserApprove::getUserId).distinct().collect(Collectors.toList());
+        List<UserBasic> users = userBasicRepository.findByOpenIdIn(userId);
+        Map<String, UserBasic> userMap = users.stream().collect(Collectors.toMap(e -> e.getOpenId().trim(), Function.identity()));
+
+        List<UserApproveDTO> userApprove = approves.stream().map(e -> {
+
+            UserApproveDTO userApproveDTO = new UserApproveDTO();
+            BeanUtils.copyProperties(e, userApproveDTO);
+            userApproveDTO.setUserImage(userMap.get(e.getUserId()).getHeadImgUrl());
+            return userApproveDTO;
+
+        }).collect(Collectors.toList());
+
+        res.put("content", userApprove);
+        return res;
     }
 
 }

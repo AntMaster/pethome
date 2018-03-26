@@ -17,11 +17,14 @@ public class UserApprove {
     @GeneratedValue
     private Integer id;
 
+
     @Column(name = "userid")
     private String userId;
 
+
     @Column(name = "approvetype")
     private Integer approveType = ApproveTypeEnum.ASSOCIATION.getCode();
+
 
     @Column(name = "organizationname")
     private String organizationName;
@@ -42,14 +45,18 @@ public class UserApprove {
     @Column(name = "dutyerno")
     private String dutyerNo;
 
+
     @Column(name = "credentials")
     private String credentials;
+
 
     @Column(name = "approvestate")
     private Integer approveState = ApproveStateEnum.WAITING.getCode();
 
+
     @Column(name = "description")
     private String description;
+
 
 
 }

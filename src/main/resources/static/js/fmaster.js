@@ -4,23 +4,51 @@ var app = new Vue({
         petType: '',
         maleActive: false,
         femaleActive: false,
+        petImageArr: [],
+        //控制显示
+        classifyName:'喵',
+        varietyName:'田园猫',
+        //控制品种
+        varietyArrDataSource:[],
+        varietyArr:[],
         formData: {
-            PublishType: '',
-            ClassifyID: '',
-            VarietyID: '',
-            PetName: '',
-            PetSex: '',
-            PetDescription: '',
-            PetImage: '',
-            LostTime: '',
-            LostLocation: '',
-            Latitude: '',
-            Longitude: '',
-            OwnerName: '',
-            OwnerContact: ''
+            publishType: 2,
+            classifyId: 2,
+            varietyId: 0,
+            petSex: 1,
+            petDescription: '',
+            petImage: '',
+            lostTime: '',
+            lostLocation: '',
+            latitude: 0.0,
+            longitude: 0.0,
+            ownerName: '',
+            ownerContact: '',
+            publisherId : GetQueryString("openid")
         }
     },
+    mounted: function () {
+        this.init();
+    },
     methods: {
+        init: function () {
+            //加载宠物类别
+            $.ajax({
+                url: '/pethome/pet/variety',
+                type: 'GET',
+                dataType: 'json',
+                data: null,
+
+                success: function (res) {
+                    if (res.code === 1) {
+                        app.varietyArrDataSource = res.data;
+                        //默认猫子品种
+                        app.varietyArr = app.varietyArrDataSource["2"];
+                        app.varietyName = app.varietyArr[0].name;
+                    }
+                }
+            });
+        },
         selectSex: function (sex) {
             if (sex == 1) {
                 //公
@@ -31,11 +59,40 @@ var app = new Vue({
                 //母
                 this.femaleActive = !this.femaleActive;
                 this.maleActive = false;
-                this.femaleActive ? this.formData.PetSex = 2 : this.formData.PetSex = '';
+                this.femaleActive ? this.formData.PetSex = 0 : this.formData.PetSex = '';
             }
         },
-        selectVariety: function () {
+        //选择品种
+        selectVarietyArr: function (id, name) {
+            //id用于上传，name用于绑定model显示中文
+            app.formData.varietyId = id;
+            app.varietyName = name;
+        },
+        submitRelease: function () {
+            if (this.petImageArr.length == 0) {
+                $.alert("请上传宠物照片哟~");
+                return;
+            }
+            this.formData.petImage = this.petImageArr.join(";");
 
+            $.ajax({
+                url: '/pethome/publish/master/'+GetQueryString("openid"),
+                type: 'PUT',
+                contentType: "application/x-www-form-urlencoded",
+                dataType: 'json',
+                data: app.formData,
+                success: function (res) {
+                    if (res.code === 1) {
+                        app.dynamicArr = res.data;
+                        window.location.href = "./index.html?openid=" + GetQueryString("openid");
+                    } else {
+                        $.alert(res.msg);
+                    }
+                }
+            });
+        },
+        removePetImg: function (index) {
+            this.petImageArr.splice(index, 1);
         }
     }
 });
@@ -49,15 +106,19 @@ $(document).on('click', '.create-actions', function () {
         {
             text: '喵',
             onClick: function () {
-                app.formData.ClassifyID = 2;
-                app.petType = '喵';
+                app.formData.classifyId = 2;
+                app.classifyName = '喵';
+                app.varietyArr = app.varietyArrDataSource['2'];
+                app.varietyName = app.varietyArr[0].name;
             }
         },
         {
             text: '汪',
             onClick: function () {
-                app.formData.ClassifyID = 3;
-                app.petType = '汪';
+                app.formData.classifyId = 3;
+                app.classifyName = '汪';
+                app.varietyArr = app.varietyArrDataSource['3'];
+                app.varietyName = app.varietyArr[0].name;
             }
         }
     ];
@@ -80,10 +141,66 @@ $("#datetime-picker").datetimePicker({
     </header>',
     onClose: function () {
         console.log($("#datetime-picker").val());
-        app.formData.LostTime = $("#datetime-picker").val()
+        app.formData.lostTime = $("#datetime-picker").val()
     }
 });
+
 $(document).on("pageInit", function (e, pageId, $page) {
+    if (pageId == 'locationPage') {
+        //地图组件初始化
+        Vue.use(VueBaiduMap.default, {
+            ak: 'LOnzr56cOpw0LoZ5dt8GSGdej9YRjGrn'
+        });
+        //选择地址页面
+        var locationPage = new Vue({
+            el: "#locationPage",
+            data: {
+                testPoint: "{lng: 30.4660040000, lat: 114.4239750000}",
+                scrollWheelOpen: true,
+                keyword: '',
+                maskShow: false,
+                resultShow: false,
+                location: "武汉",
+                resList: []
+            },
+            methods: {
+                search: function (w) {
+                    //alert(w);
+                },
+                handleSearchComplete: function (res) {
+                    //获取检索结果
+                    if (res == undefined) return false;
+                    if (res.zr.length > 0) {
+                        this.resList = res.zr;
+                    }
+                },
+                selectAddress: function (address, point) {
+                    $.router.back("fpet.html");
+                    app.formData.lostLocation = address;
+                    app.formData.latitude = point.lat;
+                    app.formData.longitude = point.lng;
+                }
+            },
+            watch: {
+                keyword: function (newStr, oldStr) {
+                    if (newStr.length != 0) {
+                        this.maskShow = true;
+                        this.resultShow = true;
+                    } else {
+                        this.maskShow = false;
+                        this.resultShow = false;
+                    }
+                }
+            },
+        });
+    }
+});
+
+
+/**
+ *
+ *
+ $(document).on("pageInit", function (e, pageId, $page) {
     if (pageId == 'locationPage') {
         //地图组件初始化
         Vue.use(VueBaiduMap.default, {
@@ -124,4 +241,28 @@ $(document).on("pageInit", function (e, pageId, $page) {
             },
         });
     }
+});
+ *
+ *
+ */
+
+$(".petImg-upload").change(function (e) {
+
+    //var type = $(this).data().type;
+    var data = new FormData();
+    $.each(e.target.files, function (i, file) {
+        data.append("file", file);
+    });
+
+    $.ajax({
+        url: "/pethome/upload/publish",
+        type: 'PUT',
+        data: data,
+        cache: false,
+        contentType: false,
+        processData: false,
+        success: function (respond) {
+            app.petImageArr.push(respond.data);
+        }
+    });
 });

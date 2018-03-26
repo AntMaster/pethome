@@ -3,12 +3,22 @@ var app = new Vue({
     data: {
         //1：猫  2：狗
         //默认 猫
-        petType: 1,
+        petType: 2,
         maleActive: false,
         femaleActive: false,
+        //未选中icon
+        album_unselect: {
+            icon: 'img/icon/album_unselect.png',
+            state: 0
+        },
+        album_selected: {
+            icon: 'img/icon/album_selected.png',
+            state: 1
+        },
         pet: {},
+        //相册列表
         petAlbums: [],
-        formData: {},
+        //选中相册
         animateArr: ["shake", "pulse", "bounce", "wobble", "rubberBand", "bounceIn"],
         catTextArr: ["嗷呜~", "有点饿...", "囧...", "别摸了...", "要秃了！", "=´ω｀=", "ㄒoㄒ",
             "放肆！", "大胆！", "困...", "发呆ing", "想吃肉...", "小鱼干...", "233",
@@ -24,8 +34,13 @@ var app = new Vue({
         petText: "嗷呜~",
         //相册管理
         isManageModel: false,
-        selectedAlbumList: []
-
+        //管理按钮
+        manageButtonText: "管理相册",
+        //已经选中的相册数组
+        selectedAlbumList: [],
+        selectedAlbumListIndex: [],
+        //相册配置列表 用于控制选中状态
+        albumConfArr: []
     },
     mounted: function () {
 
@@ -33,29 +48,39 @@ var app = new Vue({
 
     },
     updated: function () {
+        //适配宠卡
         petCardAdaptive();
-
+        //自适应相册item
+        fitAlbumItem();
     },
     methods: {
-
         loadAlbumList: function () {
             $.ajax({
-                url: '/pethome/pet/album/' + GetQueryString("openId"),
+                url: '/pethome/pet/album/' + GetQueryString("openid"),
                 type: 'GET',
                 dataType: 'json',
                 data: {
-                    petId: GetQueryString("petId")
+                    petId: GetQueryString("petid")
                 },
                 success: function (res) {
+                    console.log(res);
                     if (res.code === 1) {
                         app.pet = res.data;
                         app.petAlbums = res.data.petAlbumDTOS;
+                        //配置相册状态控制数组
+                        app.configAlbumList();
                     }
                 }
             });
         },
         goPetPhoto: function (id) {
-            window.location.href = "./album-info.html?openId="+ GetQueryString("openId") +"&albumId=" + id;
+            window.location.href = "./album-info.html?openId=" + GetQueryString("openId") + "&albumId=" + id;
+        },
+        configAlbumList: function () {
+            //初始化控制相册选中状态的数组，默认未选中
+            for (var index = 0; index < this.petAlbums.length; index++) {
+                this.albumConfArr.push(this.album_unselect);
+            }
         },
         play: function (type) {
             //随机播放动画
@@ -82,10 +107,46 @@ var app = new Vue({
         openManageModel: function () {
             this.isManageModel = true;
         },
-        isManageModel: function (index) {
-            if (!this.isManageModel) return false;
-            this.selectedAlbumList.push(indx);
-        }
+        clickAlbum: function (index, albumId) {
+            if (!this.isManageModel) {
+                //非管理状态下直接进入相册详情
+                window.location.href = "album-info.html?openid=" + GetQueryString("openid") + "&albumid=" + albumId;
+                return false;
+            }
+            //判断选中的相册是否是选中状态 0未选中 1选中
+            if (this.albumConfArr[index].state == 0) {
+                //如果处于未选中状态 进行选中操作
+                this.albumConfArr.splice(index, 1, this.album_selected);
+                this.selectedAlbumList.push(albumId);
+                this.selectedAlbumListIndex.push(index);
+            } else {
+                //选中处于选中状态 进行取消选中操作
+                this.albumConfArr.splice(index, 1, this.album_unselect);
+                //拿到需要删除的相册id
+                for (var i = 0; i < this.selectedAlbumList.length; i++) {
+                    if (albumId == this.selectedAlbumList[i]) {
+                        //移除此相册
+                        this.selectedAlbumList.splice(i, 1);
+                        this.selectedAlbumListIndex.splice(i, 1);
+                    }
+                }
+            }
+        },
+        //管理相册
+        manageAlbum: function () {
+            //如果是取消操作
+            if (this.isManageModel) {
+                //清空选中项
+                this.selectedAlbumList = new Array();
+                //清空配置
+                this.configAlbumList = new Array();
+                this.manageButtonText = "管理相册";
+                this.isManageModel = false;
+            } else {
+                this.manageButtonText = "取消";
+                this.isManageModel = true;
+            }
+        },
     }
 });
 //新建相册
@@ -109,11 +170,11 @@ $(document).on('click', '.album-new', function () {
                     return;
                 }
                 $.ajax({
-                    url: '/pethome/pet/album/'+GetQueryString("openId"),
+                    url: '/pethome/pet/album/' + GetQueryString("openid"),
                     type: 'PUT',
                     dataType: 'json',
                     data: {
-                        petId: GetQueryString("petId"),
+                        petId: GetQueryString("petid"),
                         name: albumName
                     },
                     success: function (res) {
@@ -123,6 +184,7 @@ $(document).on('click', '.album-new', function () {
                                 name: res.data.name,
                                 photoCount: 0
                             }
+                            app.albumConfArr.push(app.album_unselect);
                             app.petAlbums.push(album);
                         }
                     }
@@ -148,33 +210,29 @@ $(document).on('click', '.del-mask', function () {
             bold: true,
             onClick: function () {
 
+                if(app.selectedAlbumListIndex.length == 0){
+                    $.alert("请选中要删除的相册哟~")
+                    return;
+                }
                 $.ajax({
-                    url: '/pethome/pet/album/'+GetQueryString("oepnId"),
-                    type: 'PUT',
+                    url: '/pethome/pet/album/' + GetQueryString("openid"),
+                    type: 'DELETE',
                     dataType: 'json',
-                    data: {
-                        petId: GetQueryString("petId"),
-                        name: albumName
-                    },
+                    contentType: 'application/json',
+                    data: JSON.stringify(app.selectedAlbumList),
                     success: function (res) {
                         if (res.code === 1) {
-                            app.petAlbums = res.data.petAlbumDTOS;
+                            for (var i = 0; i < app.selectedAlbumListIndex.length; i++) {
+                                app.petAlbums.splice(app.petAlbums[app.selectedAlbumListIndex[i]], 1);
+                                app.albumConfArr.splice(app.albumConfArr[app.selectedAlbumListIndex[i]], 1)
+                            }
+                            $.alert('删除成功')
                         }
                     }
                 });
-
-                $.alert('删除成功')
             }
         },]
     })
-});
-
-$(function () {
-    //初始化一些样式
-    var awidth = $(".album-pic").width();
-    $(".album-pic").css("height", awidth);
-    $(".album-new").css("height", awidth);
-    petCardAdaptive();
 });
 
 function playSound(petType) {
@@ -197,10 +255,23 @@ function playSound(petType) {
         if ($("body").find("audio").length <= 0)
             $("body").append(strAudio);
         var audio = document.getElementById("audioPlay");
-
         //浏览器支持 audion
         audio.play();
     }
 }
+
+function fitAlbumItem() {
+    var awidth = $(".album-pic").width();
+    $(".album-pic").css("height", awidth);
+    $(".album-new").css("height", awidth);
+}
+
+$(function () {
+    //适配宠卡
+    petCardAdaptive();
+    //自适应相册item
+    fitAlbumItem();
+});
+
 
 

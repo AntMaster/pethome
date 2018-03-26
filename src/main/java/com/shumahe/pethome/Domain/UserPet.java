@@ -1,5 +1,6 @@
 package com.shumahe.pethome.Domain;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.shumahe.pethome.Enums.ContraceptionStateEnum;
 import lombok.Data;
 import org.springframework.data.annotation.CreatedDate;
@@ -64,6 +65,7 @@ public class UserPet {
      * 生日
      */
     @Column(name = "birthday")
+    @JsonFormat(timezone = "GMT+8", pattern = "yyyy-MM-dd HH:mm:ss")
     private Date birthday;
 
     /**

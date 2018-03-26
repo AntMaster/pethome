@@ -46,7 +46,7 @@ public class PublishBaseServiceImpl implements PublishBaseService {
         List<String> userIds = publishes.stream().map(e -> e.getPublisherId()).distinct().collect(Collectors.toList());
 
         /**
-         * step 1  发布ID查询评论数量
+         * step 1  评论数量
          */
         List<Object[]> commentCount = publishTalkRepository.findPublishCommentCount(publishIds);
 
@@ -66,7 +66,7 @@ public class PublishBaseServiceImpl implements PublishBaseService {
 
 
         /**
-         * step 2  发布ID查询浏览数量
+         * step 2  浏览数量
          */
         List<Integer[]> viewObject = publishViewRepository.findViewCount(publishIds);
         //Map<publishId,msgCount>
@@ -82,7 +82,6 @@ public class PublishBaseServiceImpl implements PublishBaseService {
 
             });
         }
-
 
         /**
          *  step 3 发布人ID查询发布人基本信息
@@ -127,8 +126,6 @@ public class PublishBaseServiceImpl implements PublishBaseService {
         });
 
         return publishDTOS;
-
-
     }
 
 

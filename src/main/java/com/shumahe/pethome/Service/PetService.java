@@ -65,7 +65,7 @@ public interface PetService {
      * @param albumId
      * @return
      */
-    boolean albumDelete(Integer albumId);
+    boolean albumDelete(List<Integer> albumId);
 
     /**
      * 删除相片

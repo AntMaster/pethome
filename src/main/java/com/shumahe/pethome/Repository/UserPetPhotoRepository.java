@@ -16,4 +16,6 @@ public interface UserPetPhotoRepository  extends JpaRepository<UserPetPhoto,Inte
     List<UserPetPhoto> findByAlbumIdInAndShowOrderByPetId(int[] albumId,Integer show);
 
     List<UserPetPhoto> findByAlbumId(Integer albumId);
+
+    List<UserPetPhoto> findByAlbumIdIn(List<Integer> albumId);
 }

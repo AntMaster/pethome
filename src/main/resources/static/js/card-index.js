@@ -34,7 +34,7 @@ var app = new Vue({
         submit: function () {
 
             $.ajax({
-                url: '/pethome/pet/'+GetQueryString("openId"),
+                url: '/pethome/pet/'+GetQueryString("openid"),
                 type: 'PUT',
                 contentType: "application/x-www-form-urlencoded",
                 dataType: 'json',
@@ -42,9 +42,9 @@ var app = new Vue({
                 success: function (res) {
                     if (res.code === 1) {
                         //app.dynamicArr = res.data;
-                        window.location.href = "./card-list.html"
+                        window.location.href = "./card-list.html?openid="+GetQueryString("openid")
                     } else {
-                        alert(res.msg);
+                        $.alert(res.msg);
                     }
                 }
             });

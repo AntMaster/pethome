@@ -61,15 +61,9 @@ public class DynamicController {
     @PutMapping("/like/{openId}")
     public ResultVO likePublish(@PathVariable("openId") String openId, @RequestBody UserDynamic userDynamic) {
 
-
         boolean state = dynamicService.likePublish(openId, userDynamic);
-
-
         return ResultVOUtil.success(state);
     }
-
-
-
 
 
     /**
@@ -119,5 +113,7 @@ public class DynamicController {
     /**
      * 被分享列表(我的)
      */
+
+
 
 }

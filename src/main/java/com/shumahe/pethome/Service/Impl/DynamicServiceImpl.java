@@ -128,7 +128,7 @@ public class DynamicServiceImpl implements DynamicService {
          * BaseService查关联信息
          */
         List<PublishDTO> list = publishBaseService.findPetExtends(pets);
-        list.forEach(e -> e.setLikeState(true));
+        //list.forEach(e -> e.setLikeState(true));
 
         return list;
 

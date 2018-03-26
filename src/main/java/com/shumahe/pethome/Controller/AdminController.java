@@ -3,22 +3,23 @@ package com.shumahe.pethome.Controller;
 import com.shumahe.pethome.DTO.PrivateMsgDTO;
 import com.shumahe.pethome.DTO.PublicMsgDTO;
 import com.shumahe.pethome.DTO.PublishDTO;
-import com.shumahe.pethome.Domain.PetPublish;
-import com.shumahe.pethome.Domain.PublishTalk;
-import com.shumahe.pethome.Domain.UserTalk;
+import com.shumahe.pethome.Domain.*;
 import com.shumahe.pethome.Enums.ResultEnum;
 import com.shumahe.pethome.Exception.PetHomeException;
+import com.shumahe.pethome.Repository.PetVarietyRepository;
 import com.shumahe.pethome.Service.AdminService;
 import com.shumahe.pethome.Util.ResultVOUtil;
 import com.shumahe.pethome.VO.ResultVO;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @RestController
 @Slf4j
@@ -29,6 +30,9 @@ public class AdminController {
 
     @Autowired
     AdminService adminService;
+
+    @Autowired
+    PetVarietyRepository petVarietyRepository;
 
     /**
      * 寻宠 寻主 列表
@@ -138,4 +142,37 @@ public class AdminController {
 
     }
 
+
+    /**
+     * 获取宠物品种
+     *
+     * @return
+     */
+    @GetMapping("/variety")
+    public ResultVO petVariety() {
+
+        List<PetVariety> petVarieties = petVarietyRepository.findAll();
+        if (petVarieties.isEmpty()) {
+            throw new PetHomeException(ResultEnum.RESULT_EMPTY);
+        }
+
+        Map<Integer, List<PetVariety>> varietyMap = petVarieties.stream().collect(Collectors.groupingBy(variety -> variety.getClassifyId()));
+        return ResultVOUtil.success(varietyMap);
+
+    }
+
+    /**
+     * 获取企业认证
+     *
+     * @return
+     */
+    @GetMapping("/approve")
+    public ResultVO approveList(@RequestParam(value = "approveState", defaultValue = "0") Integer approveState,
+                                @RequestParam(value = "number", defaultValue = "0") Integer number,
+                                @RequestParam(value = "size", defaultValue = "10") Integer size) {
+
+        PageRequest request = new PageRequest(number, size);
+        Map<String, Object> approve = adminService.findApprove(approveState, request);
+        return ResultVOUtil.success(approve);
+    }
 }

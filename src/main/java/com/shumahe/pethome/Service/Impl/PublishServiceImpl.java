@@ -106,7 +106,7 @@ public class PublishServiceImpl implements PublishService {
 
         publishDTOS.forEach(a -> Arrays.stream(publishIds).forEach(e -> {
             if (a.getId() == e) {
-                a.setLikeState(true);
+                //a.setLikeState(true);
             }
         }));
 
@@ -151,9 +151,9 @@ public class PublishServiceImpl implements PublishService {
         copyProperties(masterForm, petPublish);
 
         //未转换成功的字段
-        petPublish.setPublisherId(masterForm.getOpenId());
+        //petPublish.setPublisherId(masterForm.getOpenId());
         petPublish.setPublishType(PublishTypeEnum.SEARCH_MASTER.getCode());
-        petPublish.setLostTime(new DateStringConverter().fromString(masterForm.getFindTime()));
+        petPublish.setLostTime(new DateStringConverter().fromString(masterForm.getLostTime()));
 
         return petPublishRepository.save(petPublish);
     }

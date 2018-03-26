@@ -16,10 +16,10 @@ var app = new Vue({
     data: {
         testPoint: "{lng: 30.4660040000, lat: 114.4239750000}",
         //1：寻宠，2：寻主
-        publishType: '',
+        publishType: 1,
         //2：猫  3：狗
         classifyID: 3,
-        varietyID: '',
+        varietyID: -1,
         petSex: true,
         catVarietyArr: [
             {name: "橘猫", id: "39"},
@@ -29,7 +29,7 @@ var app = new Vue({
             {name: "加菲猫", id: "15"},
             {name: "蓝猫", id: "16"},
             {name: "田园猫", id: "3"},
-            {name: "其他", id: ""}
+            {name: "其他", id: -1}
         ],
         dogVarietyArr: [
             {name: "田园犬", id: "9"},
@@ -84,12 +84,12 @@ var app = new Vue({
                 success: function (res) {
                     if (res.code == 1) {
                         app.annotationList = res.data;
+                        //配置一个数组用于控制大头针状态
                         app.confPinIcon();
                     }
                 }
             });
             this.laodPetVariety();
-            //配置一个数组用于控制大头针的图片显示
         },
         laodPetVariety: function () {
             this.showVarietyArr = this.dogVarietyArr;
@@ -97,11 +97,41 @@ var app = new Vue({
         confPinIcon: function () {
             //初始化大头针
             for (var i = 0; i < this.annotationList.length; i++) {
-                this.annotationList[i].publishType == 0 ? this.annotationConfArr.push(this.annotationConf.icon_fpet) : this.annotationConfArr.push(this.annotationConf.icon_fowner);
+                this.annotationList[i].publishType == 1 ? this.annotationConfArr.push(this.annotationConf.icon_fpet) : this.annotationConfArr.push(this.annotationConf.icon_fowner);
             }
         },
         search: function () {
+            if(!this.keyword){
+                $.alert("搜索内容不能为空~");
+            }
 
+            var sex = null;
+            if(app.petSex){
+                sex = 1;
+            }else {
+                sex = 0;
+            }
+            $.ajax({
+                url: "/pethome/search/",
+                dataType: "json",
+                type: "GET",
+                data:{
+                    publishType : app.publishType-0,
+                    classifyId : app.classifyID-0,
+                    varietyId : app.varietyID-0,
+                    petSex : sex,
+                    keyWord : app.keyword
+                },
+                success: function (res) {
+                    console.log(res);
+                    if (res.code == 1) {
+                        app.annotationList = res.data;
+                        //配置一个数组用于控制大头针状态
+                        app.confPinIcon();
+                        //$(".marker-card").fadeIn().css("diplay", "none");
+                    }
+                }
+            });
         },
         draw: function () {
 
@@ -116,7 +146,9 @@ var app = new Vue({
         //宠物类别
         changePetClass: function (type) {
             type == 2 ? this.classifyID = 2 : this.classifyID = 3;
-        },
+            this.classifyID == 2 ? this.showVarietyArr = this.catVarietyArr : this.showVarietyArr = this.dogVarietyArr;
+        }
+        ,
         //宠物性别
         changePetSex: function (sex) {
             console.log(sex);
@@ -135,15 +167,15 @@ var app = new Vue({
         //打开详情
         openDetail: function (item, index) {
             //重置上一次点击状态
-            if (this.tempActivePin.publishType != 0 || this.tempActivePin.publishType != 1) {
-                if (this.tempActivePin.publishType == 0) {
+            if (this.tempActivePin.publishType == 2 || this.tempActivePin.publishType == 1) {
+                if (this.tempActivePin.publishType == 1) {
                     this.annotationConfArr.splice(this.tempActivePin.index, 1, this.annotationConf.icon_fpet);
                 } else {
                     this.annotationConfArr.splice(this.tempActivePin.index, 1, this.annotationConf.icon_fowner);
                 }
             }
             //设置此次点击状态
-            item.publishType == 0 ? this.annotationConfArr.splice(index, 1, this.annotationConf.icon_fpet_big) : this.annotationConfArr.splice(index, 1, this.annotationConf.icon_fowner_big);
+            item.publishType == 1 ? this.annotationConfArr.splice(index, 1, this.annotationConf.icon_fpet_big) : this.annotationConfArr.splice(index, 1, this.annotationConf.icon_fowner_big);
             //设置tempActivePin
             this.tempActivePin = {
                 index: index,
@@ -156,6 +188,45 @@ var app = new Vue({
         openCard: function (item) {
             this.tempActiveCard = item;
             $(".marker-card").fadeIn();
+        },
+        goDetail :function (tempActiveCard) {
+
+            //认证流程
+            $.ajax({
+                url: '/pethome/user/auth/' + GetQueryString("openid"),
+                type: 'GET',
+                dataType: 'json',
+                data: null,
+                success: function (res) {
+                    if (res.code === 1) {
+
+                        if (res.data.type == "person") {
+
+                            if (res.data.state == 0) {
+                                $.modal(goAuthormodal);
+                            } else {
+                                window.location.href = "./detail.html?openid=" + GetQueryString("openid") + "&id=" + tempActiveCard.id;
+                            }
+                        } else if (res.data.type == "association") {
+
+                            if (res.data.state == 0) {
+
+                                $.modal(goAuthormodal);
+
+                            } else if (res.data.state == 1) {
+
+                                window.location.href = "./detail.html?openid=" + GetQueryString("openid") + "&id=" + tempActiveCard.id;
+
+                            } else if (res.data.state == 2) {
+
+                                window.location.href = "./ov-state.html?openid=" + GetQueryString("openid") + "&id=" + tempActiveCard.id;
+                            }
+                        }
+                    } else {
+                        $.modal(goAuthormodal);
+                    }
+                }
+            });
         }
     }
 });
@@ -166,3 +237,51 @@ $(document).on("open", ".panel", function () {
 $(document).on("close", ".panel", function () {
     $(".mask").fadeOut();
 });
+
+
+/**
+ * 提示认证
+ */
+function closeGoAuthorModal() {
+    $.closeModal();
+}
+
+//选择认证类型
+function goAuthor() {
+    $.modal(selectAuthorTypeModal);
+}
+
+function toAuthorPage(type) {
+
+    type == 0 ? window.location.href = "pv.html?openid=" + GetQueryString("openid") : window.location.href = "ov.html?openid=" + GetQueryString("openid");
+}
+
+//提示需要认证modal
+var goAuthormodal = {
+    title: '',
+    afterText: '<div class="author-modal">' +
+    '<div class="close" onClick="closeGoAuthorModal()"><img src="img/icon/icon-modal-close.png"/></div>' +
+    '<div class="avatar"><img src="img/icon/goValidate.png"/></div>' +
+    '<div class="modal-msg">实名认证后可以解锁更多走丢宠物信息</div>' +
+    '<a class="modal-btn" onClick="goAuthor()">去认证</a>' +
+    '</div>',
+};
+//选择认证类型modal
+var selectAuthorTypeModal = {
+    title: '',
+    afterText: '<div class="author-modal">' +
+    '<div class="close" onClick="closeGoAuthorModal()"><img src="img/icon/icon-modal-close.png"/></div>' +
+    //个人认证
+    '<div class="author-item" onClick="toAuthorPage(0)" style="margin-top:1.5rem;">' +
+    '<div class="author-item-inner">' +
+    '<img src="img/icon/pv.png"/><span>个人认证</span>' +
+    '</div>' +
+    '</div>' +
+    '<div class="author-item" onClick="toAuthorPage(1)" style="margin-bottom:1.3rem;">' +
+    '<div class="author-item-inner">' +
+    '<img src="img/icon/ov.png"><span>组织或协会认证</span>' +
+    '</div>' +
+    '</div>' +
+    //组织或协会认证
+    '</div>'
+};

@@ -19,5 +19,4 @@ public class UserPetAlbumForm {
 
     private String description;
 
-
 }

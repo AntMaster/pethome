@@ -76,4 +76,10 @@ public class PublicMsgDTO {
      */
     private Integer readState;
 
+
+    /**
+     * 删除状态
+     */
+    private Integer showState;
+
 }

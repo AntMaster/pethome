@@ -4,9 +4,12 @@ package com.shumahe.pethome.Controller;
 import com.google.gson.JsonObject;
 import com.shumahe.pethome.Config.ProjectUrlConfig;
 import com.shumahe.pethome.Config.WechatAccountConfig;
+import com.shumahe.pethome.Domain.MemberTagsMapping;
 import com.shumahe.pethome.Domain.UserBasic;
+import com.shumahe.pethome.Enums.MemberTagsEnum;
 import com.shumahe.pethome.Enums.ResultEnum;
 import com.shumahe.pethome.Exception.PetHomeException;
+import com.shumahe.pethome.Repository.MemberTagsMappingRepository;
 import com.shumahe.pethome.Repository.UserBasicRepository;
 import com.shumahe.pethome.Util.ResultVOUtil;
 import com.shumahe.pethome.VO.ResultVO;
@@ -25,6 +28,7 @@ import net.minidev.json.JSONObject;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.UnsupportedEncodingException;
@@ -54,6 +58,9 @@ public class WechatController {
     @Autowired
     private WechatAccountConfig wechatAccountConfig;
 
+
+    @Autowired
+    private  MemberTagsMappingRepository memberTagsMappingRepository;
 
     /**
      * 服务器配置
@@ -158,7 +165,8 @@ public class WechatController {
         return "redirect:" + returnUrl + "?openid=" + wxMpOAuth2AccessToken.getOpenId();
     }
 
-    private void saveUser(WxMpUser user) {
+    @Transactional
+    protected  void saveUser(WxMpUser user) {
 
         UserBasic userBasic = userBasicRepository.findByAppIdAndOpenId(wechatAccountConfig.getMpAppId(), user.getOpenId());
         if (userBasic == null) {
@@ -170,9 +178,14 @@ public class WechatController {
         userBasic.setNickName(user.getNickname());
         userBasic.setHeadImgUrl(user.getHeadImgUrl());
         userBasic.setSex(user.getSexId());
-        userBasicRepository.save(userBasic);
-    }
+        UserBasic save = userBasicRepository.save(userBasic);
 
+        MemberTagsMapping tagsMapping = new MemberTagsMapping();
+        tagsMapping.setMemberId(save.getId());
+        tagsMapping.setTagId(MemberTagsEnum.Volunteer.getCode());
+        memberTagsMappingRepository.save(tagsMapping);
+
+    }
 
     @GetMapping("/menu")
     @ResponseBody

@@ -8,8 +8,10 @@ import java.util.List;
 
 public interface UserPetAlbumRepository extends JpaRepository<UserPetAlbum,Integer> {
 
-    List<UserPetAlbum> findByPetIdAndShowOrderByCreateTime(Integer petId,Integer show);
+    List<UserPetAlbum> findByPetIdAndShowOrderByCreateTime(Integer petId, Integer show);
 
 
+    List<UserPetAlbum> findByIdIn(List<Integer> ids);
 
 }
+

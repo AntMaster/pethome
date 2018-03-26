@@ -26,6 +26,7 @@ public class UserPetDTO {
     private Integer sex;
 
 
+    @JsonFormat(timezone = "GMT+8", pattern = "yyyy-MM-dd")
     private Date birthday;
 
     private Integer contraception;

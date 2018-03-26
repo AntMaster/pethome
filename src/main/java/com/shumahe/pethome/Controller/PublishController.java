@@ -87,7 +87,7 @@ public class PublishController {
      * @param bindingResult
      * @return
      */
-    @PostMapping("/master/{openId}")
+    @PutMapping("/master/{openId}")
     public ResultVO<Map<String, String>> create(@Valid PublishMasterForm masterForm, BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
             log.error("【发布寻主】参数不正确,petForm={}", masterForm);
@@ -151,7 +151,6 @@ public class PublishController {
         if (id == 0) {
             throw new PetHomeException(ResultEnum.PARAM_ERROR);
         }
-
         PublishDTO petDetail = publishService.findPetDetail(id, openId);
         return ResultVOUtil.success(petDetail);
     }
@@ -169,7 +168,5 @@ public class PublishController {
 
         PetPublish petPublish = publishService.petFound(openId, id);
         return ResultVOUtil.success(petPublish);
-
     }
-
 }

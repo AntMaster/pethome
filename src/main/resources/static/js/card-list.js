@@ -15,7 +15,7 @@ var app = new Vue({
         loadPetList: function () {
             //load data
             $.ajax({
-                url: '/pethome/pet/' + GetQueryString("openId"),
+                url: '/pethome/pet/' + GetQueryString("openid"),
                 type: 'GET',
                 dataType: 'json',
                 data: null,
@@ -27,7 +27,7 @@ var app = new Vue({
             });
         },
         goPetAlbum: function (index) {
-            window.location.href = "./card-album.html?openId=" + GetQueryString("openId") + "&petId=" + index;
+            window.location.href = "./card-album.html?openid=" + GetQueryString("openid") + "&petid=" + index;
         }
     }
 });

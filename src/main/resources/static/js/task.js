@@ -8,7 +8,7 @@ var task = new Vue({
     mounted: function () {
         //我的未找到
         $.ajax({
-            url: '/pethome/publish/task/' + GetQueryString("openId"),
+            url: '/pethome/publish/task/' + GetQueryString("openid"),
             type: 'GET',
             dataType: 'json',
             data: null,
@@ -28,7 +28,7 @@ var task = new Vue({
 
             this.isPend = true;
             $.ajax({
-                url: '/pethome/publish/task/' + GetQueryString("openId"),
+                url: '/pethome/publish/task/' + GetQueryString("openid"),
                 type: 'GET',
                 dataType: 'json',
                 data: null,
@@ -46,7 +46,7 @@ var task = new Vue({
             this.isPend = false;
             //我的未找到
             $.ajax({
-                url: '/pethome/publish/' + GetQueryString("openId"),
+                url: '/pethome/publish/' + GetQueryString("openid"),
                 type: 'GET',
                 dataType: 'json',
                 data: null,
@@ -67,7 +67,7 @@ var task = new Vue({
             }
 
             $.ajax({
-                url: '/pethome/publish/pet/find/' + GetQueryString("openId"),
+                url: '/pethome/publish/pet/find/' + GetQueryString("openid"),
                 type: 'POST',
                 dataType: 'json',
                 data: {

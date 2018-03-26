@@ -81,10 +81,10 @@
             <img src="img/icon/icon-filter.png" />
         </div>
         <!-- pet card -->
-        <div class="marker-card">
+        <div class="marker-card" @click="goDetail(tempActiveCard)">
             <div class="card-info">
-                <div class="tag flex-center" :class="{tagFowner:tempActiveCard.publishType == 1}">{{tempActiveCard.publishType == 0 ? "寻宠" : "寻主"}}</div>
-                <div class="nickname">宠物昵称：{{tempActiveCard.name}}</div>
+                <div class="tag flex-center" :class="{tagFowner:tempActiveCard.publishType == 2}">{{tempActiveCard.publishType == 1 ? "寻宠" : "寻主"}}</div>
+                <div class="nickname">宠物昵称：{{tempActiveCard.petName}}</div>
                 <div class="date">丢失日期：{{tempActiveCard.lostTime}}</div>
                 <div class="user-info">
                     <div class="avatar flex-center">

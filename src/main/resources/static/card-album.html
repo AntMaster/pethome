@@ -50,7 +50,7 @@
                     <img :src="pet.headImgUrl" />
                 </div>
                 <!-- 文字 -->
-                <div class="petText animated" style="display:none;"></div>
+                <div class="petText animated" style="display:none;">{{petText}}</div>
                 <!-- 芯片号 -->
                 <div class="chip-num chip-num-dog">
                     芯片号：{{pet.chipNo}}
@@ -65,26 +65,28 @@
             <div class="pet-album">
                 <div class="album-title">
                     <span class="album-title-name">{{pet.nickName}}的相册</span>
-                    <span class="album-title-btn" @click="openManageModel">管理相册</span>
+                    <span class="album-title-btn"  @click="manageAlbum">{{manageButtonText}}</span>
                 </div>
             </div>
             <!--相册列表-->
             <div class="album-list">
                 <div class="album-body">
-                    <div class="album-pic">
+                    <div class="album-pic" style="background-image:none;">
 
                     </div>
                     <div class="album-new">
                         <p>+</p>
                         <p>新建相册</p>
                     </div>
-
                 </div>
                 <!--下面是重复的相册-->
-                <div v-for="(item ,index) in petAlbums " @click="goPetPhoto(item.id)"  class="album-body"><!--">
+                <div v-for="(item,index) in petAlbums" class="album-body">
                     <!--这是封面图-->
-                    <div class="album-pic">
-                        <span class="album-del"  v-if="isManageModel"></span>
+                    <div class="album-pic" v-on:click="clickAlbum(index,item.id)" >
+                        <img src="" alt="">
+                        <div class="album-del" v-show="isManageModel">
+                            <img :src="albumConfArr[index].icon" alt="" />
+                        </div>
                     </div>
                     <!--这是名字和张数-->
                     <div class="album-info">
@@ -94,7 +96,7 @@
                 </div>
             </div>
         </div>
-        <div class="del-mask">
+        <div class="del-mask" :class="{delActive:selectedAlbumList.length != 0}">
             删除相册
         </div>
     </div>

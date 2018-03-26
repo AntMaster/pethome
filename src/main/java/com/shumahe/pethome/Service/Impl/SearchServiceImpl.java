@@ -62,7 +62,6 @@ public class SearchServiceImpl implements SearchService {
          *
          */
 
-
         /**  define search parameters
          /**
          * 查询模糊查询 （宠物名称  like 宠物描述 like 丢失地点 like 发布人 in  发布类型 in  宠物性别 in 宠物分类  in 宠物品种  in 丢失状态 in ）
@@ -83,15 +82,15 @@ public class SearchServiceImpl implements SearchService {
          *
          * final sort parameter
          */
-        String petName = petSearchForm.getKeyWord();
-        String petDescription = petSearchForm.getKeyWord();
-        String lostLocation = petSearchForm.getKeyWord();
-        List<String> publisher;
+        //String petName = petSearchForm.getKeyWord();
+        //String petDescription = petSearchForm.getKeyWord();
+        //String lostLocation = petSearchForm.getKeyWord();
+        //List<String> publisher;
         List<Integer> publishType = new ArrayList<>();
         List<Integer> petSex = new ArrayList<>();
         List<Integer> petClassify = new ArrayList<>();
         List<Integer> petVariety = new ArrayList<>();
-        List<Integer> lostState = new ArrayList<>();
+        //List<Integer> lostState = new ArrayList<>();
 
         /**
          *  if choose detail
@@ -135,7 +134,7 @@ public class SearchServiceImpl implements SearchService {
         Map<Integer, List<String>> classifyMap = new HashMap<>();
         classifyMap.put(PetClassifyEnum.CAT.getCode(), keyWords_Cat);
         classifyMap.put(PetClassifyEnum.DOG.getCode(), keyWords_Dog);
-        classifyMap.put(PetClassifyEnum.DOG.getCode(), keyWords_Rabbit);
+        classifyMap.put(PetClassifyEnum.RABBIT.getCode(), keyWords_Rabbit);
 
 
         Map<Integer, List<String>> SexMap = new HashMap<>();
@@ -236,7 +235,6 @@ public class SearchServiceImpl implements SearchService {
         /**
          * 性别匹配
          */
-
         if (petSearchForm.getPetSex() == SearchEnum.NONE_VALUE.getCode()) {
 
             SexMap.forEach((k, v) -> {
@@ -273,16 +271,15 @@ public class SearchServiceImpl implements SearchService {
             }
 
         } else {
-            petClassify.add(petSearchForm.getVarietyId());
+            petVariety.add(petSearchForm.getVarietyId());
             checkChoose.put("chooseVariety", true);
         }
 
 
-        List<UserBasic> userBasics = userBasicRepository.findByNickNameContains(petSearchForm.getKeyWord());
-        publisher = userBasics.stream().map(userBasic -> userBasic.getOpenId()).collect(Collectors.toList());
+        //List<UserBasic> userBasics = userBasicRepository.findByNickNameContains(petSearchForm.getKeyWord());
+        //publisher = userBasics.stream().map(userBasic -> userBasic.getOpenId()).collect(Collectors.toList());
 
         /***********************************************search result  by  choose state  use sorted parameters *********************************************************************************/
-
 
 
         /**
@@ -290,14 +287,14 @@ public class SearchServiceImpl implements SearchService {
          */
         Specification<PetPublish> tSpecification = (Root<PetPublish> root, CriteriaQuery<?> query, CriteriaBuilder cb) -> {
 
-
             /**
              * basePredicate--->typePredicate---->sexPredicate---->classifyPredicate---->varietyPredicate（final）
              */
+
             // petName like "%%"    petDescription like "%%"   lostLocation like "%%"
-            Predicate petNamePredicate = cb.like(root.get("petName").as(String.class), " %" + petSearchForm.getKeyWord() + "% ");
-            Predicate descriPredicate = cb.like(root.get("petDescription").as(String.class), " %" + petSearchForm.getKeyWord() + "% ");
-            Predicate lostPredicate = cb.like(root.get("lostLocation").as(String.class), " %" + petSearchForm.getKeyWord() + "% ");
+            Predicate petNamePredicate = cb.like(root.get("petName").as(String.class), "%" + petSearchForm.getKeyWord().trim() + "%");
+            Predicate descriPredicate = cb.like(root.get("petDescription").as(String.class), "%" + petSearchForm.getKeyWord().trim() + "%");
+            Predicate lostPredicate = cb.like(root.get("lostLocation").as(String.class), "%" + petSearchForm.getKeyWord().trim() + "%");
             Predicate basePredicate = cb.or(petNamePredicate, descriPredicate, lostPredicate);
 
             Predicate typePredicate;
@@ -318,12 +315,12 @@ public class SearchServiceImpl implements SearchService {
 
             //classifyId in (?,?,?)
             CriteriaBuilder.In<Integer> classifyIdIn = cb.in(root.get("classifyId").as(Integer.class));
-            petSex.stream().forEach(classify -> classifyIdIn.value(classify));
+            petClassify.stream().forEach(classify -> classifyIdIn.value(classify));
 
 
             //varietyId in (?,?,?)
             CriteriaBuilder.In<Integer> varietyIdIn = cb.in(root.get("varietyId").as(Integer.class));
-            petSex.stream().forEach(variety -> varietyIdIn.value(variety));
+            petVariety.stream().forEach(variety -> varietyIdIn.value(variety));
 
 
             if (checkChoose.get("chooseChannel")) {

@@ -3,6 +3,7 @@ package com.shumahe.pethome.Service.Impl;
 
 import com.shumahe.pethome.DTO.UserPetAlbumDTO;
 import com.shumahe.pethome.DTO.UserPetDTO;
+import com.shumahe.pethome.DTO.UserPetPhotoDTO;
 import com.shumahe.pethome.Domain.*;
 import com.shumahe.pethome.Enums.ResultEnum;
 import com.shumahe.pethome.Enums.ShowStateEnum;
@@ -185,9 +186,9 @@ public class PetServiceImpl implements PetService {
             throw new PetHomeException(ResultEnum.FAILURE.getCode(), "该相册中不存在相片");
         }
 
-        photos.stream().map(e -> {
+        List<UserPetPhotoDTO> collect = photos.stream().map(e -> {
 
-            UserPetPhoto photoDTO = new UserPetPhoto();
+            UserPetPhotoDTO photoDTO = new UserPetPhotoDTO();
             BeanUtils.copyProperties(e, photoDTO);
             return photoDTO;
 
@@ -196,7 +197,7 @@ public class PetServiceImpl implements PetService {
         UserPetAlbumDTO albumDTO = new UserPetAlbumDTO();
         BeanUtils.copyProperties(album, albumDTO);
         albumDTO.setPhotoCount(photos.size());
-
+        albumDTO.setPetPhotoDTOS(collect);
         return albumDTO;
     }
 
@@ -208,17 +209,21 @@ public class PetServiceImpl implements PetService {
      */
     @Override
     @Transactional
-    public boolean albumDelete(Integer albumId) {
+    public boolean albumDelete(List<Integer> albumId) {
 
 
-        UserPetAlbum album = userPetAlbumRepository.findOne(albumId);
-        if (album == null) {
+        //UserPetAlbum album = userPetAlbumRepository.findOne(albumId);
+
+        List<UserPetAlbum> albums = userPetAlbumRepository.findByIdIn(albumId);
+
+        if (albums == null) {
             throw new PetHomeException(ResultEnum.RESULT_EMPTY);
         }
-        album.setShow(ShowStateEnum.HIDE.getCode());
-        userPetAlbumRepository.save(album);
+        albums.forEach(e-> e.setShow(ShowStateEnum.HIDE.getCode()));
 
-        List<UserPetPhoto> photos = userPetPhotoRepository.findByAlbumId(albumId);
+        userPetAlbumRepository.save(albums);
+
+        List<UserPetPhoto> photos = userPetPhotoRepository.findByAlbumIdIn(albumId);
         if (photos == null)
             return true;
 

@@ -1,5 +1,6 @@
 package com.shumahe.pethome.Domain;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.shumahe.pethome.Enums.BooleanEnum;
 import com.shumahe.pethome.Enums.ShowStateEnum;
 import lombok.Data;
@@ -43,6 +44,7 @@ public class UserPetPhoto {
 
     @CreatedDate
     @Column(name = "createtime")
+    @JsonFormat(timezone = "GMT+8", pattern = "yyyy-MM-dd HH:mm:ss")
     private Date createTime;
 
 }

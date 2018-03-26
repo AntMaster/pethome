@@ -185,6 +185,7 @@ public class UserController {
         if (user == null) {
             throw new PetHomeException(ResultEnum.RESULT_EMPTY.getCode(), "没有该用户");
         }
+
         user.setMobile(String.valueOf(mobile));
         user.setApproveState(ApproveStateEnum.SUCCESS.getCode());
         user.setApproveType(ApproveTypeEnum.PERSONAGE.getCode());

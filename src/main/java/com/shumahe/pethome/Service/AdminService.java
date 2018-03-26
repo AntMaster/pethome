@@ -5,7 +5,9 @@ import com.shumahe.pethome.DTO.PublicMsgDTO;
 import com.shumahe.pethome.DTO.PublishDTO;
 import com.shumahe.pethome.Domain.PetPublish;
 import com.shumahe.pethome.Domain.PublishTalk;
+import com.shumahe.pethome.Domain.UserApprove;
 import com.shumahe.pethome.Domain.UserTalk;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 
 import java.util.List;
@@ -22,6 +24,7 @@ public interface AdminService {
      */
     PetPublish modifyShowState(Integer id, Integer publishState);
 
+    
     /**
      * 转发 关注
      */
@@ -49,4 +52,10 @@ public interface AdminService {
      * 显示 隐藏 互动
      */
     PublishTalk modifyPublicShow(Integer id, Integer showState);
+
+    /**
+     * 认证
+     *
+     */
+    Map<String,Object> findApprove(Integer approveState, PageRequest request);
 }

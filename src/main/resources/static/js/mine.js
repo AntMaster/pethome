@@ -28,32 +28,30 @@ var app = new Vue({
         },
         goTask: function () {
 
+            /*
             if (!app.myself.approveState) {//未认证 && 认证失败
                 $.modal(goAuthormodal);
             }else if (app.myself.approveState == 2) { //认证中
-
                 window.location.href = "./ov-state.html?state=2&type=2&openid=" + this.param;
-
             } else if (app.myself.approveState == 1) { //认证成功
-
                 $.router.loadPage("./mine/task.html?openid=" + this.param);
             }
+            */
+            $.router.loadPage("./mine/task.html?openid=" + this.param);
+
         },
         goPublish: function () {
 
+            /*
             if (!app.myself.approveState) {//未认证 && 认证失败
-
                 $.modal(goAuthormodal);
-
             }else if (app.myself.approveState == 2) { //认证中
-
                 window.location.href = "./ov-state.html?state=2&type=2&openid=" + this.param;
-
             } else if (app.myself.approveState == 1) { //认证成功
-
                 $.router.loadPage("./mine/task.html?openid=" + this.param);
-            }
+            }*/
 
+            $.router.loadPage("./mine/task.html?openid=" + this.param);
         },
         goPrivateMsg: function () {
 
@@ -489,7 +487,6 @@ $(document).on("pageInit", function (e, pageId, $page) {
             }
         });
     }
-
 
     /**
      * 认证

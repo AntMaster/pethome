@@ -23,6 +23,7 @@ import net.minidev.json.JSONObject;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
+import org.springframework.util.StringUtils;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
@@ -37,8 +38,8 @@ import static java.util.Arrays.*;
 
 @RestController
 @Slf4j
-@RequestMapping("/pet")
 @CrossOrigin
+@RequestMapping("/pet")
 public class PetController {
 
 
@@ -112,7 +113,6 @@ public class PetController {
 
 
         if (name.equals("EMPTY") && description.equals("EMPTY")) {
-
             throw new PetHomeException(ResultEnum.PARAM_ERROR.getCode(), "相册名称和相册描述不能同时为空");
         }
 
@@ -166,7 +166,7 @@ public class PetController {
      * 删除相册
      */
     @DeleteMapping("/album/{openId}")
-    public ResultVO albumDelete(@RequestParam("albumId") Integer albumId) {
+    public ResultVO albumDelete(@RequestBody List<Integer> albumId) {
 
         boolean delete = petService.albumDelete(albumId);
         return ResultVOUtil.success(delete);
@@ -246,6 +246,9 @@ public class PetController {
     @GetMapping("/{openId}")
     public ResultVO petList(@PathVariable("openId") String openId) {
 
+        if(StringUtils.isEmpty(openId) || openId.equals("null")){
+            throw new PetHomeException(ResultEnum.PARAM_ERROR);
+        }
         List<UserPet> userPets = petService.petList(openId);
         return ResultVOUtil.success(userPets);
     }
@@ -259,7 +262,6 @@ public class PetController {
      */
     @GetMapping("/album/{openId}")
     public ResultVO albumList(@RequestParam("petId") Integer petId) {
-
 
         UserPetDTO userPets = petService.albumList(petId);
         return ResultVOUtil.success(userPets);
@@ -293,12 +295,8 @@ public class PetController {
         }
 
         Map<Integer, List<PetVariety>> varietyMap = petVarieties.stream().collect(Collectors.groupingBy(variety -> variety.getClassifyId()));
-
         return ResultVOUtil.success(varietyMap);
 
     }
-
-
-
 
 }

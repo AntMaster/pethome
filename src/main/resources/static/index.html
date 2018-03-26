@@ -69,7 +69,7 @@
                                 <div class="facebook-name">{{item.publisherName}}</div>
                                 <div class="facebook-date">{{item.lostTime}}</div>
                             </div>
-                            <div class="card-content" @click="entryDetail(item.id)">
+                            <div class="card-content" @click="entryDetail(item.id,item.publisherId)">
                                 {{item.petDescription}}
                                 <div class="card-content-img">
                                     <img :src="item.petImage"/>
@@ -340,9 +340,15 @@
                     }
                 });
             },
-            entryDetail: function (id) {
+            entryDetail: function (id, publisherId) {
                 //认证流程
                 //load data
+
+                if (GetQueryString("openid") == publisherId) {
+                    window.location.href = "./detail.html?openid=" + GetQueryString("openid") + "&id=" + id;
+                    return;
+                }
+
                 $.ajax({
                     url: '/pethome/user/auth/' + GetQueryString("openid"),
                     type: 'GET',
@@ -358,6 +364,7 @@
                                 } else {
                                     window.location.href = "./detail.html?openid=" + GetQueryString("openid") + "&id=" + id;
                                 }
+
                             } else if (res.data.type == "association") {
 
                                 if (res.data.state == 0) {
@@ -374,6 +381,7 @@
                                 }
                             }
                         } else {
+
                             $.modal(goAuthormodal);
                         }
                     }
