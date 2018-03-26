@@ -262,7 +262,7 @@ public class AdminServiceImpl implements AdminService {
      * @return
      */
     @Override
-    public Map<String, Object> findApprove(Integer approveState, PageRequest request) {
+    public Map<String, Object>  findApprove(Integer approveState, PageRequest request) {
 
         Page<UserApprove> all;
         if (approveState == 0) {
