@@ -50,17 +50,17 @@
                             <!-- 标签，寻宠/寻主 -->
                             <div class="card-tag">
                                 <div class="tag-title flex-center"
-                                     :class="[{xunzhu:item.publishType == 2},{found:item.petFindState == 1}]">
+                                     :class="[{xunzhu:item.publishType == 2},{found:item.findState == 1}]">
                                     {{item.publishType == 1 ? "寻宠":"寻主"}}
                                 </div>
-                                <img class="tag-img" v-if="item.classifyId == 2 && item.petFindState == 2"
+                                <img class="tag-img" v-if="item.classifyId == 2 && item.findState == 0"
                                      src="img/icon/icon-miao.png"/>
-                                <img class="tag-img" v-if="item.classifyId == 2 && item.petFindState == 1"
+                                <img class="tag-img" v-if="item.classifyId == 2 && item.findState == 1"
                                      src="img/icon/icon-miao-found.png"/>
-                                <img class="tag-img" v-if="item.classifyId == 3 && item.petFindState == 2"
+                                <img class="tag-img" v-if="item.classifyId == 3 && item.findState == 0"
                                      src="img/icon/icon-wang.png"/>
-                                <img class="tag-img" v-if="item.classifyId == 3 && item.petFindState == 1"
-                                     src="img/icon/icon-wang.png"/>
+                                <img class="tag-img" v-if="item.classifyId == 3 && item.findState == 1"
+                                     src="img/icon/icon-wang-found.png"/>
                             </div>
                             <div class="card-header no-border">
                                 <div class="facebook-avatar">
@@ -70,7 +70,16 @@
                                 <div class="facebook-date">{{item.lostTime}}</div>
                             </div>
                             <div class="card-content" @click="entryDetail(item.id,item.publisherId)">
-                                {{item.petDescription}}
+                                <!--寻宠-->
+                                <div v-show="item.publishType == 1">
+                                    宠物昵称：{{item.petName}}<br>
+                                    丢失日期：{{item.lostTime}}
+                                </div>
+                                <!--寻主-->
+                                <div v-show="item.publishType == 2">
+                                    宠物品种：{{item.varietyId}}<br>
+                                    发现日期：{{item.lostTime}}
+                                </div>
                                 <div class="card-content-img">
                                     <img :src="item.petImage"/>
                                 </div>

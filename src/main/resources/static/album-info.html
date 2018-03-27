@@ -14,73 +14,70 @@
     <link rel="stylesheet" href="dest/all.min.css">
     <link rel="stylesheet" type="text/css" href="dest/album-info.css" />
 </head>
-<!-- width:28%; margin:4%;-->
 
 <body>
-    <div class="page" id="album-info">
-        <div class="mask"></div>
-        <div class="content albumPage-content">
-            <!--封面-->
-            <div class="album-cover">
-                <div class="album-name">
-                    我家有宠初长成<img src="" alt="" class="editAlbumName" />
-                </div>
-                <div class="album-num">
-                    5张
-                </div>
-                <div class="pic-control album-btn">
-                    照片管理
-                </div>
-                <div class="cover-set album-btn">
-                    设置封面
-                </div>
+<div class="page" id="album-info">
+    <div class="mask"></div>
+    <div class="content albumPage-content">
+        <!--封面-->
+        <div class="album-cover">
+            <div class="album-name">
+                {{albumData.name}}
+                <img src="" alt="" class="editAlbumName" />
             </div>
-            <div class="photo-list">
-                <div class="photo">
-                    <div class="album-new">
-                        <input type="file" id = "upPic" name = "file"/>
-                        <p class="plus">+</p>
-                        <p class="upPic">上传照片</p>
+            <div class="album-num">
+                {{albumData.photoCount}}张
+            </div>
+            <div class="pic-control album-btn" @click="photoManage">
+                照片管理
+            </div>
+            <div class="cover-set album-btn" @click="coverManage">
+                设置封面
+            </div>
+        </div>
+        <div class="photoList-box">
+            <ul>
+                <li>
+                    <div class="item-new">
+                        <input type="file" />
+                        <div class="new-center">
+                            <div class="item-new-add">+</div>
+                            <div class="item-new-title">上传图片</div>
+                        </div>
                     </div>
-                </div>
-                <div class="photo">
-                    <span class="pic-del"></span>
-                </div>
-                <div class="photo">
-                    <span class="pic-del"></span>
-                </div>
-                <div class="photo">
-                    <span class="pic-del"></span>
-                </div>
-                <div class="photo">
-                    <span class="pic-del"></span>
-                </div>
-                <div class="photo">
-                    <span class="pic-del"></span>
-                </div>
-            </div>
-        </div>
-        <div class="cover-mask">
-            设为封面
-        </div>
-        <div class="del-mask">
-            删除照片
+                </li>
+                <li :class="{centerItem:index%3 == 0}" v-for="(item, index) in photoList">
+                    <div class="item-photo" @click="clickPhoto(index,item.id)">
+                        <img :src="'http://girl.nat300.top/pethome/'+item.path">
+                        <div class="album-del" v-show="manager.open">
+                            <img :src="photoConfArr[index].icon" alt="" />
+                        </div>
+                    </div>
+                </li>
+            </ul>
         </div>
     </div>
-    <script src="https://cdn.bootcss.com/jquery/1.12.4/jquery.min.js"></script>
-    <script type='text/javascript' src='libs/l7/light7.min.js'></script>
-    <script type='text/javascript' src='js/vue.js'></script>
-    <script type='text/javascript' src='js/common.js'></script>
-    <script type='text/javascript' src='js/album-info.js'></script>
-    <script>
-        $(function() {
-            //初始化一些样式
-            var pwidth = $(".photo").width();
-            $(".photo").css("height", pwidth);
-            var pmargin = window.innerWidth * 4 / 100;
-            $(".photo").css("margin-bottom", pmargin);
-        })
-    </script>
+    <div class="cover-mask" v-show="manager.open && manager.type == 1" @click="setCover">
+        设为封面
+    </div>
+    <div class="del-mask" v-show="manager.open && manager.type == 0" @click="delPhoto">
+        删除照片
+    </div>
+</div>
+<script src="https://cdn.bootcss.com/jquery/1.12.4/jquery.min.js"></script>
+<script type='text/javascript' src='libs/l7/light7.min.js'></script>
+<script type='text/javascript' src='js/vue.js'></script>
+<script type='text/javascript' src='js/common.js'></script>
+<script type='text/javascript' src='js/album-info.js'></script>
+<script>
+    $(function () {
+        //初始化一些样式
+        var pwidth = $(".photo").width();
+        $(".photo").css("height", pwidth);
+        var pmargin = window.innerWidth * 4 / 100;
+        $(".photo").css("margin-bottom", pmargin);
+    })
+</script>
 </body>
 
 </html>

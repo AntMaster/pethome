@@ -12,6 +12,10 @@ public interface PublishViewRepository extends JpaRepository<PublishView,Integer
 
     PublishView findTopByViewerAndPublishIdAndViewTimeBetweenOrderByViewTimeDesc(String viewer,Integer publishId,Date todayBegin,Date todayEnd);
 
+
+    List<PublishView> findByPublishIdAndViewTimeBetweenOrderByViewTimeDesc(Integer publishId, Date begin, Date end);
+
+
     /**
      * 一个发布的浏览数
      * @param publishId

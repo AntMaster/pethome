@@ -175,4 +175,14 @@ public class AdminController {
         Map<String, Object> approve = adminService.findApprove(approveState, request);
         return ResultVOUtil.success(approve);
     }
+
+
+    @GetMapping("/view/{id}")
+    public ResultVO findView(@PathVariable("id") Integer id,
+                             @RequestParam(value = "day",defaultValue = "0")Integer day){
+
+        Map<String,Object> view = adminService.findView(id,day);
+        return null;
+    }
+
 }

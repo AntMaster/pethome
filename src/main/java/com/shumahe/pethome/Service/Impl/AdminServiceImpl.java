@@ -10,6 +10,7 @@ import com.shumahe.pethome.Exception.PetHomeException;
 import com.shumahe.pethome.Repository.*;
 import com.shumahe.pethome.Service.AdminService;
 import com.shumahe.pethome.Service.BaseService.PublishBaseService;
+import com.shumahe.pethome.Util.DateUtil;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -46,6 +47,10 @@ public class AdminServiceImpl implements AdminService {
 
     @Autowired
     UserApproveRepository userApproveRepository;
+
+    @Autowired
+    PublishViewRepository publishViewRepository;
+
 
     /**
      * 查询寻宠 、 寻主
@@ -262,7 +267,7 @@ public class AdminServiceImpl implements AdminService {
      * @return
      */
     @Override
-    public Map<String, Object>    findApprove(Integer approveState, PageRequest request) {
+    public Map<String, Object>  findApprove(Integer approveState, PageRequest request) {
 
         Page<UserApprove> all;
         if (approveState == 0) {
@@ -299,6 +304,27 @@ public class AdminServiceImpl implements AdminService {
 
         res.put("content", userApprove);
         return res;
+    }
+
+    /**
+     * 浏览记录
+     * @param id
+     * @return
+     */
+    @Override
+    public Map<String, Object> findView(Integer id,Integer day) {
+
+        Calendar now = Calendar.getInstance();
+        now.set(Calendar.DATE,now.get(Calendar.DATE) - day);
+
+        Date startTime = DateUtil.getStartTime(now.getTime());
+        Date endTime = DateUtil.getEndTime(now.getTime());
+        List<PublishView> viewers = publishViewRepository.findByPublishIdAndViewTimeBetweenOrderByViewTimeDesc(id, startTime, endTime);
+
+        if(viewers.isEmpty()){
+
+        }
+        return null;
     }
 
 }

@@ -58,4 +58,11 @@ public interface AdminService {
      *
      */
     Map<String,Object> findApprove(Integer approveState, PageRequest request);
+
+    /**
+     * 浏览记录
+     * @param id
+     * @return
+     */
+    Map<String,Object> findView(Integer id,Integer day);
 }

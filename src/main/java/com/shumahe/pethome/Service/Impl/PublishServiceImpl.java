@@ -65,7 +65,6 @@ public class PublishServiceImpl implements PublishService {
     private UserDynamicRepository userDynamicRepository;
 
 
-
     /**
      * 主页列表(动态+寻主+寻宠)
      *
@@ -225,16 +224,20 @@ public class PublishServiceImpl implements PublishService {
         /**
          * 品种名称
          */
-        PetVariety petVariety = petVarietyRepository.findOne(pet.getVarietyId());
-        if(petVariety != null)
-            publishDTO.setVarietyName(petVariety.getName());
+        publishDTO.setVarietyName("不告诉你哟~");
+        if (pet.getVarietyId() != null) {
+
+            PetVariety petVariety = petVarietyRepository.findOne(pet.getVarietyId());
+            if (petVariety != null)
+                publishDTO.setVarietyName(petVariety.getName());
+        }
 
 
         /**
          * 互动信息
          */
         List<List<PublicMsgDTO>> msgDTOS = messageService.petPublicTalks(pet);
-        if (msgDTOS != null){
+        if (msgDTOS != null) {
             publishDTO.setPublicMsgCount((int) msgDTOS.stream().mapToInt(List::size).summaryStatistics().getSum());
         }
 
@@ -278,7 +281,7 @@ public class PublishServiceImpl implements PublishService {
      * @return
      */
     @Override
-    public PetPublish petFound(String openId,Integer id) {
+    public PetPublish petFound(String openId, Integer id) {
 
         PetPublish pet = petPublishRepository.findByIdAndPublisherId(id, openId);
         if (pet == null) {
