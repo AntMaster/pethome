@@ -20,7 +20,7 @@ Vue.component('mc-tabbar', {
     '</a>' +
     '</div>' +
     '<div class="center">' +
-    '<a :href="toPublish()" class="action external" :class="{active:publish}"><img :src="tabbarIcon(3)" /><span>发布</span></a>' +
+    '<a href="javascript:;" @click="openMenu" class="action external" :class="{active:publish}"><img :src="tabbarIcon(3)" /><span>发布</span></a>' +
     '</div>' +
     '<div class="right">' +
     '<a href="javacript:;" @click="toCard" class="item external" :class="{active:card}">' +
@@ -53,6 +53,9 @@ Vue.component('mc-tabbar', {
         }
     },
     methods: {
+        openMenu:function(){
+            openMenu();
+        },
         toIndex: function () {
 
             if (this.lv == 2) return "../index.html?openid=" + GetQueryString("openid");
@@ -62,10 +65,10 @@ Vue.component('mc-tabbar', {
             if (this.lv == 2) return "../search.html?openid=" + GetQueryString("openid");
             return "search.html?openid=" + GetQueryString("openid");
         },
-        toPublish: function () {
-            if (this.lv == 2) return "../fpet.html?openid=" + GetQueryString("openid");
-            return "fpet.html?openid=" + GetQueryString("openid");
-        },
+        // toPublish: function () {
+        //     if (this.lv == 2) return "../fpet.html?openid=" + GetQueryString("openid");
+        //     return "fpet.html?openid=" + GetQueryString("openid");
+        // },
         toCard: function () {
             //load data
 
