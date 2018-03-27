@@ -28,7 +28,7 @@
                         <img src="img/icon/validate-success.png" alt="">
                     </div>
                     <div class="remind-text">恭喜您，认证成功啦</div>
-                    <a class="remind-btn" @click="goIndex">去首页看看</a>
+                    <a class="remind-btn" @click="goIndex">去看看</a>
                 </div>
                 <!-- 表单 -->
                 <div class="list-block">
@@ -57,7 +57,7 @@
                     </ul>
                 </div>
                 <!-- 认证 -->
-                <div class="submit-btn"  @click="submit" >认证</div>
+                <div class="submit-btn" :class="{active:mobile && messageCode}"  @click="submit" >认证</div>
             </div>
         </div>
     </div>

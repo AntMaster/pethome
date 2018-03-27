@@ -279,7 +279,7 @@ public class AdminServiceImpl implements AdminService {
         Map<String, Object> res = new HashMap<>();
         res.put("last", all.isLast());
         res.put("totalPages", all.getTotalPages());
-        res.put("totalElements", all.getNumberOfElements());
+        res.put("totalElements", all.getTotalElements());
         res.put("number", all.getNumber());
         res.put("size", all.getSize());
         res.put("first", all.isFirst());

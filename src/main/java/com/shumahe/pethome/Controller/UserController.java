@@ -230,7 +230,6 @@ public class UserController {
         return ResultVOUtil.success(true);
     }
 
-
     /**
      * 我的私信列表
      *

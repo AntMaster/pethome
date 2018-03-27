@@ -77,7 +77,7 @@
         </div>
         <!-- 按钮 找到了 -->
         <div class="action-box" >
-            <a  href="javascript:;" @click="found(detailData.publisherId)">找到了</a>
+            <a  href="javascript:;" v-show = "isAuthority" @click="found(detailData.publisherId)">{{detailData.findState ? "已找到" : "找到了" }}</a>
         </div>
         <div class="msg-box">
             <!-- 分页 -->
@@ -96,6 +96,8 @@
             <div class="remind">
                 为保障宠物安全，请使用私信提供线索
             </div>
+            <!--消息为空提示文字-->
+            <!--<div v-show="msgListType == 'privateMsg' && privateMsgListNull" style="margin-top:1rem;text-align: center;font-size: .7rem;color: rgb(168, 168, 168);width: 100%;">空的,还没有私信</div>-->
             <!-- 消息列表 -->
             <ul class="messageList" >
                 <li v-for="(items,index) in showMsgList">
@@ -119,7 +121,7 @@
         </div>
         <!-- 回复栏 -->
         <div class="comment-box">
-            <input type="text" v-model="commentContent"/>
+            <input type="text" v-model="commentContent" :placeholder="placeholderText"/>
             <a class="send" @click="sendComment">发送</a>
         </div>
     </div>

@@ -22,7 +22,7 @@
         <div class="mask"></div>
         <div class="content cardPage-content">
             <!--card预留-->
-            <a class="petCard-item" style="background-color: #5adacd;">
+            <a class="petCard-item" :class="{dogCardItem:classifyId == 3}" style="background-color: #5adacd;">
                 <!-- 昵称 -->
                 <div class="name">
                     {{pet.nickName}}
@@ -33,15 +33,15 @@
                 </div>
                 <div class="info-box">
                     <div class="info-item">
-                        <img src="" class="icon" />
+                        <img src="img/icon/card-jueyu.png" class="icon" />
                         <span>{{pet.contraception ==  1 ? "已节育" : "未节育" }}</span>
                     </div>
                     <div class="info-item">
-                        <img src="" class="icon" />
+                        <img src="img/icon/card-birth.png" class="icon" />
                         <span>{{pet.birthday}}</span>
                     </div>
                     <div class="info-item">
-                        <img src="" class="icon" />
+                        <img :src="classifyId == 2 ? 'img/icon/card-info-cat.png' : 'img/icon/card-info-dog.png'" class="icon" />
                         <span>{{pet.description}}</span>
                     </div>
                 </div>
@@ -56,10 +56,19 @@
                     芯片号：{{pet.chipNo}}
                 </div>
                 <!-- icon x 4 -->
-                <div class="petCard-icon petCard-icon-1"></div>
-                <div class="petCard-icon petCard-icon-2"></div>
-                <div class="petCard-icon petCard-icon-3"></div>
-                <div class="petCard-icon petCard-icon-4"></div>
+                <!-- icon x 4 -->
+                <div class="petCard-icon petCard-icon-1">
+                    <img :src="classifyId == 2 ? 'img/icon/card-cat-1.png' : 'img/icon/card-dog-1.png'">
+                </div>
+                <div class="petCard-icon petCard-icon-2">
+                    <img :src="classifyId == 2 ? 'img/icon/card-cat-2.png' : 'img/icon/card-dog-2.png'">
+                </div>
+                <div class="petCard-icon petCard-icon-3">
+                    <img :src="classifyId == 2 ? 'img/icon/card-cat-3.png' : 'img/icon/card-dog-3.png'">
+                </div>
+                <div class="petCard-icon petCard-icon-4">
+                    <img :src="classifyId == 2 ? 'img/icon/card-cat-4.png' : 'img/icon/card-dog-4.png'">
+                </div>
             </a>
             <!--按钮标题-->
             <div class="pet-album">

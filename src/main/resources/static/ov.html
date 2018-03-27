@@ -56,7 +56,7 @@
                             <div class="item-content">
                                 <div class="item-inner">
                                     <div class="item-input">
-                                        <input type="number"  v-model ="formData.dutyerPhone" placeholder="请输入负责人联系方式">
+                                        <input type="number"  v-model ="formData.dutyerPhone" placeholder="输入负责人联系方式">
                                     </div>
                                 </div>
                             </div>
@@ -65,7 +65,7 @@
                             <div class="item-content">
                                 <div class="item-inner">
                                     <div class="item-input">
-                                        <input type="text" v-model ="formData.messageCode" placeholder="请输入6位数验证码">
+                                        <input type="text" v-model ="formData.messageCode" placeholder="输入6位数验证码">
                                     </div>
                                     <!-- 验证码按钮 -->
                                     <a class="verify-btn" @click="getMessageCode">点击获取</a>
@@ -93,7 +93,7 @@
                         </li>
                     </ul>
                 </div>
-                <div class="submit-btn verify-btn-disabled" @click="validate" >提交审核</div>
+                <div class="submit-btn" :class="{active:formData.organizationName && formData.organizationImage && formData.dutyer && formData.dutyerPhone && formData.messageCode}" @click="validate" >提交审核</div>
             </div>
         </div>
     </div>

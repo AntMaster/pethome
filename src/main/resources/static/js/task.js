@@ -6,24 +6,36 @@ var task = new Vue({
         taskArr: []
     },
     mounted: function () {
-        //我的未找到
-        $.ajax({
-            url: '/pethome/publish/task/' + GetQueryString("openid"),
-            type: 'GET',
-            dataType: 'json',
-            data: null,
-            success: function (res) {
-                if (res.code === 1) {
-                    task.taskArr = res.data;
-                    for (var i = 0; i < task.taskArr.length; i++) {
-                        task.taskArr[i].petImage = task.taskArr[i].petImage.split(";")[0];
-                    }
-                }
-            }
-        });
+        //初始化
+        this.init(GetQueryString("type"));
     },
     methods: {
 
+        init:function (type) {
+
+            var url = null;
+            //待处理
+            if(type == 1){
+                url= '/pethome/publish/task/' + GetQueryString("openid");
+            }else {
+                url= '/pethome/publish/' + GetQueryString("openid");
+            }
+
+            $.ajax({
+                url: url,
+                type: 'GET',
+                dataType: 'json',
+                data: null,
+                success: function (res) {
+                    if (res.code === 1) {
+                        task.taskArr = res.data;
+                        for (var i = 0; i < task.taskArr.length; i++) {
+                            task.taskArr[i].petImage = task.taskArr[i].petImage.split(";")[0];
+                        }
+                    }
+                }
+            });
+        },
         waitDeal: function () {
 
             this.isPend = true;

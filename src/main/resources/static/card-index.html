@@ -32,8 +32,8 @@
                         <div class="card-cover">
                             <img src="img/card_cover.png" />
                         </div>
-                        <div class="card-title">为爱宠创建身份证</div>
-                        <div class="card-subtitle">让Ta成为一个有身份的主子</div>
+                        <div class="card-title">为爱宠创建云端ID</div>
+                        <div class="card-subtitle">完善云端信息为TA定制专属身份</div>
                         <button class="card-btn center-block" @click="create()">创建宠卡</button>
                     </div>
                     <!-- 反面 -->
@@ -58,15 +58,15 @@
                             <div class="card-form-item">
                                 <div class="item-title">生日</div>
                                 <div class="item-input">
-                                    <input :model="cardFormModel.birthday" id="datetime-picker" value="2018-03-05 08:30" id="datetime-picker" class="date-picker" placeholder="还记得爱宠的生日吗" />
+                                    <input :model="cardFormModel.birthday" id="datetime-picker" value="2018-03-05 08:30" id="datetime-picker" class="date-picker" placeholder="填写主子诞辰" />
                                 </div>
                             </div>
                             <!-- 性别 -->
                             <div class="card-form-item">
                                 <div class="item-title">性别</div>
                                 <div class="item-input sex-input">
-                                    <span :class="{active:cardFormModel.sex}" @click="selectSex(1)">公</span>
-                                    <span :class="{active:!cardFormModel.sex}" @click="selectSex(0)">母</span>
+                                    <span :class="{active:cardFormModel.sex}" @click="selectSex(1)">男</span>
+                                    <span :class="{active:!cardFormModel.sex}" @click="selectSex(0)">女</span>
                                 </div>
                             </div>
                             <!-- 是否绝育 -->
@@ -81,7 +81,7 @@
                             <div class="card-form-item">
                                 <div class="item-title">小特点</div>
                                 <div class="item-input">
-                                    <input v-model="cardFormModel.description" placeholder="一句话描述下爱宠" />
+                                    <input v-model="cardFormModel.description" placeholder="主子有啥特点，比如爱吃肉..." />
                                 </div>
                             </div>
                             <!-- 芯片号 -->

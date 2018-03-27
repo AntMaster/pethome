@@ -1,7 +1,6 @@
 var app = new Vue({
     el: "#detailPage",
     data: {
-
         //消息类型：互动/私信
         msgListType: "interactMsg",
         //是否认证
@@ -10,17 +9,19 @@ var app = new Vue({
         imgList: [],
         //当前展示列表
         showMsgList: [],
+        //私信列表数据是否为空
+        privateMsgListNull:true,
         detailData: {},
-        commentContent: ''
+        commentContent: '',
+        placeholderText:'说点什么'
 
     },
     mounted: function () {
-        //初始化
         this.init();
     },
     methods: {
         init: function () {
-
+            this.showMsgList = new Array();
             $.ajax({
                 url: '/pethome/publish/detail/' + GetQueryString("openid"),
                 type: 'GET',
@@ -35,6 +36,10 @@ var app = new Vue({
                         app.detailData = res.data;
                         app.showMsgList = res.data.publicTalk;
 
+                        if(app.detailData.publisherId == GetQueryString("openid")){
+                            app.isAuthority =true;
+                        }
+
                     } else {
                         alert(res.msg);
                     }
@@ -48,6 +53,10 @@ var app = new Vue({
                 alert("您不是主题发布者,不能操作此选项");
             }
 
+            if(app.detailData.findState){
+                $.toast("已经找到了");
+            }
+
             $.ajax({
                 url: '/pethome/publish/pet/find/' + GetQueryString("openid"),
                 type: 'POST',
@@ -57,7 +66,7 @@ var app = new Vue({
                 },
                 success: function (res) {
                     if (res.code) {
-                        console.log(res)
+                        app.isAuthority =true;
                     }
                 }
             });
@@ -79,11 +88,12 @@ var app = new Vue({
             var data = null;
             var url = null;
             if (type == 0) {
+                this.placeholderText = '说点什么';
                 this.msgListType = "interactMsg"
                 url = '/pethome/message/public/' + GetQueryString("id");
 
             } else {
-
+                this.placeholderText = '我有新线索';
                 this.msgListType = "privateMsg"
                 url = '/pethome/message/private/' + GetQueryString("id");
                 data = {openId: GetQueryString("openid")}//私信

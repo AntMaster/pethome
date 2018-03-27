@@ -27,7 +27,7 @@
                         <div class="item-inner">
                             <div class="item-title label">宠物昵称</div>
                             <div class="item-input">
-                                <input v-model="formData.petName" type="text" placeholder="请输入宠物昵称">
+                                <input v-model="formData.petName" type="text" placeholder="输入宠物昵称">
                             </div>
                         </div>
                     </div>
@@ -38,8 +38,8 @@
                         <div class="item-inner">
                             <div class="item-title label">宠物性别</div>
                             <div class="item-input sex-input">
-                                <span @click="selectSex(1)" :class="{active:maleActive}">公</span>
-                                <span @click="selectSex(2)" :class="{active:femaleActive}">母</span>
+                                <span @click="selectSex(1)" :class="{active:maleActive}">男</span>
+                                <span @click="selectSex(2)" :class="{active:femaleActive}">女</span>
                             </div>
                         </div>
                     </div>
@@ -49,7 +49,7 @@
                         <div class="item-inner">
                             <div class="item-title label">宠物类别</div>
                             <div class="item-input">
-                                <input v-model="petType" class="create-actions" placeholder="请选择宠物类别">
+                                <input v-model="petType" class="create-actions" placeholder="选择宠物类别">
                             </div>
                         </div>
                     </div>
@@ -60,7 +60,7 @@
                             <div class="item-title label">宠物品种</div>
                             <div class="item-input">
                                 <input v-model="varietyName" class="open-popup" data-popup=".popup-petVariety"
-                                       placeholder="请选择宠物品种">
+                                       placeholder="选择宠物品种">
                             </div>
                         </div>
                     </div>
@@ -75,7 +75,7 @@
                         <div class="item-inner">
                             <div class="item-title label">丢失日期</div>
                             <div class="item-input">
-                                <input value="2018-03-05 08:30" id="datetime-picker" placeholder="请选择丢失日期">
+                                <input value="2018-03-05 08:30" id="datetime-picker" placeholder="填写丢失日期">
                             </div>
                         </div>
                     </div>
@@ -86,7 +86,7 @@
                         <div class="item-inner">
                             <div class="item-title label">丢失地点</div>
                             <div class="item-input">
-                                <input v-model="formData.lostLocation" type="text" placeholder="请填写丢失地点">
+                                <input v-model="formData.lostLocation" type="text" placeholder="填写丢失地点">
                             </div>
                         </div>
                     </a>
@@ -96,7 +96,7 @@
                         <div class="item-inner">
                             <div class="item-title label">主人姓名</div>
                             <div class="item-input">
-                                <input v-model="formData.ownerName" placeholder="请填写主人姓名">
+                                <input v-model="formData.ownerName" placeholder="填写主人姓名">
                             </div>
                         </div>
                     </div>
@@ -106,7 +106,7 @@
                         <div class="item-inner">
                             <div class="item-title label">联系方式</div>
                             <div class="item-input">
-                                <input v-model="formData.ownerContact" type="number" placeholder="请填写常用手机号码">
+                                <input v-model="formData.ownerContact" type="number" placeholder="填写常用手机号码">
                             </div>
                         </div>
                     </div>
@@ -120,7 +120,7 @@
                         <div class="item-inner">
                             <div class="item-title label">描述</div>
                             <div class="item-input">
-                                <input v-model="formData.petDescription" type="text" placeholder="请描述宠物特点（选填）">
+                                <input v-model="formData.petDescription" type="text" placeholder="描述宠物特点200字（选填）">
                             </div>
                         </div>
                     </div>

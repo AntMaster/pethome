@@ -105,7 +105,7 @@ public class PublishServiceImpl implements PublishService {
 
         publishDTOS.forEach(a -> Arrays.stream(publishIds).forEach(e -> {
             if (a.getId() == e) {
-                //a.setLikeState(true);
+                a.setLikeState(true);
             }
         }));
 
@@ -265,7 +265,7 @@ public class PublishServiceImpl implements PublishService {
         /**
          * 浏览条数
          */
-        Integer publishView = publishBaseService.getPublishView(openId, pet);
+        Integer publishView = publishBaseService.findPublishView(openId, pet);
         publishDTO.setViewCount(publishView);
 
 

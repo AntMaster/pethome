@@ -41,7 +41,7 @@ public class PublishDTO {
     private Integer varietyId;
 
     //品种名称
-    private String varietyName;
+    private String varietyName = "不告诉你哟~";
 
     private String petName;
 
@@ -67,7 +67,7 @@ public class PublishDTO {
 
     private String petDescription;
 
-    private Integer likeState ;
+    private boolean likeState ;//关注状态
 
     //状态
     private Integer findState ;

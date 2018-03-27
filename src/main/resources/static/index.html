@@ -24,9 +24,18 @@
         <div class="index-banner">
             <div class="swiper-container">
                 <div class="swiper-wrapper">
-                    <div class="swiper-slide"></div>
-                    <div class="swiper-slide"></div>
-                    <div class="swiper-slide"></div>
+                    <div class="swiper-slide banner1">
+                        <img src="img/banner/banner1.jpg">
+                        <div class="slide-shadow"></div>
+                    </div>
+                    <div class="swiper-slide banner2">
+                        <img src="img/banner/banner2.jpg">
+                        <div class="slide-shadow"></div>
+                    </div>
+                    <div class="swiper-slide banner3">
+                        <img src="img/banner/banner3.jpg">
+                        <div class="slide-shadow"></div>
+                    </div>
                 </div>
                 <!-- 如果需要分页器 -->
                 <div class="swiper-pagination"></div>
@@ -77,13 +86,12 @@
                                 </div>
                                 <!--寻主-->
                                 <div v-show="item.publishType == 2">
-                                    宠物品种：{{item.varietyId}}<br>
+                                    宠物品种：{{item.varietyName}}<br>
                                     发现日期：{{item.lostTime}}
                                 </div>
                                 <div class="card-content-img">
                                     <img :src="item.petImage"/>
                                 </div>
-
                             </div>
                             <div class="card-footer no-border">
                                 <div href="#" class="link">
@@ -343,7 +351,11 @@
                     data: JSON.stringify(params),
                     success: function (res) {
                         if (res.data === true) {
-                            //app.dynamicArr = res.data;
+                            if(likeState){
+                                $.alert("取关啦~");
+                            }else {
+                                $.alert("关注成功~");
+                            }
                             app.dynamicArr[index].likeState = !likeState;
                         }
                     }

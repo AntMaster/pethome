@@ -7,6 +7,16 @@ var app = new Vue({
     methods: {
         getMessageCode: function () {
 
+            if (!app.mobile){
+                $.alert("请填写手机号码~");
+                return;
+            }
+
+            if(onOff){
+                $.alert("验证码已发送,请稍后再获取~");
+                return;
+            }
+
             $.ajax({
                 url: '/pethome/user/sms/' + GetQueryString("openid"),
                 type: 'GET',
@@ -22,6 +32,11 @@ var app = new Vue({
             });
         },
         submit: function () {
+
+            if(!(this.mobile && this.messageCode)){
+                $.alert("请输入认证信息哟~");
+                return;
+            }
 
             $.ajax({
                 url: '/pethome/user/sms/' + GetQueryString("openid"),
@@ -68,13 +83,15 @@ function verify() {
         var html = $(this).html();
         var time = 60;
         $(that).html(time + "秒").addClass("verify-btn-disabled");
-        var timer = setInterval(function () {
+        $(that).disabled = true;
+        var timer = setInterval(function() {
             time--;
             if (time == 0) {
                 clearInterval(timer);
                 $(that).html(html).removeClass("disabled");
                 $(that).html("重新获取");
                 onOff = true;
+                $(that).disabled = false;
             } else {
                 $(that).html(time + "秒");
             }

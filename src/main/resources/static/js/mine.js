@@ -37,7 +37,7 @@ var app = new Vue({
                 $.router.loadPage("./mine/task.html?openid=" + this.param);
             }
             */
-            $.router.loadPage("./mine/task.html?openid=" + this.param);
+            $.router.loadPage("./mine/task.html?type=1&openid=" + this.param);
 
         },
         goPublish: function () {
@@ -51,7 +51,7 @@ var app = new Vue({
                 $.router.loadPage("./mine/task.html?openid=" + this.param);
             }*/
 
-            $.router.loadPage("./mine/task.html?openid=" + this.param);
+            $.router.loadPage("./mine/task.html?type=2&openid=" + this.param);
         },
         goPrivateMsg: function () {
 
@@ -120,7 +120,6 @@ $(document).on("pageInit", function (e, pageId, $page) {
      */
     if (pageId == "taskPage") {
 
-
         var task = new Vue({
             el: "#taskPage",
             data: {
@@ -128,9 +127,19 @@ $(document).on("pageInit", function (e, pageId, $page) {
                 taskArr: []
             },
             mounted: function () {
-                //我的未找到
+                var type = GetQueryString("type");
+                var url = null;
+                //待处理
+                if(type == 1){
+                    url= '/pethome/publish/task/' + GetQueryString("openid");
+                    this.isPend = true;
+                }else {
+                    this.isPend = false;
+                    url= '/pethome/publish/' + GetQueryString("openid");
+                }
+
                 $.ajax({
-                    url: '/pethome/publish/task/' + GetQueryString("openid"),
+                    url: url,
                     type: 'GET',
                     dataType: 'json',
                     data: null,
@@ -168,7 +177,7 @@ $(document).on("pageInit", function (e, pageId, $page) {
                 myPublish: function () {
 
                     this.isPend = false;
-                    //我的未找到
+                    //我的发布
                     $.ajax({
                         url: '/pethome/publish/' + GetQueryString("openid"),
                         type: 'GET',

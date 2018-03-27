@@ -3,11 +3,13 @@ package com.shumahe.pethome.Controller;
 
 import com.shumahe.pethome.DTO.PublishDTO;
 import com.shumahe.pethome.Domain.PetPublish;
+import com.shumahe.pethome.Domain.PetVariety;
 import com.shumahe.pethome.Enums.ResultEnum;
 import com.shumahe.pethome.Exception.PetHomeException;
 import com.shumahe.pethome.Form.PublishMasterForm;
 import com.shumahe.pethome.Form.PublishPetForm;
 import com.shumahe.pethome.Repository.PetPublishRepository;
+import com.shumahe.pethome.Service.BaseService.PublishBaseService;
 import com.shumahe.pethome.Service.PublishService;
 import com.shumahe.pethome.Util.ResultVOUtil;
 import com.shumahe.pethome.VO.PublishVO;
@@ -169,4 +171,15 @@ public class PublishController {
         PetPublish petPublish = publishService.petFound(openId, id);
         return ResultVOUtil.success(petPublish);
     }
+
+    @Autowired
+    PublishBaseService publishBaseService;
+    @GetMapping("test")
+    public ResultVO test() {
+
+        Map<Integer,Map<Integer,PetVariety>>  petVariety = publishBaseService.findPetVariety();
+        return  ResultVOUtil.success(petVariety);
+
+    }
+
 }

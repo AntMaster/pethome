@@ -4,6 +4,7 @@ var app = new Vue({
         //1：猫  2：狗
         //默认 猫
         petType: 2,
+        classifyId:2,
         maleActive: false,
         femaleActive: false,
         //未选中icon
@@ -67,6 +68,7 @@ var app = new Vue({
                     if (res.code === 1) {
                         app.pet = res.data;
                         app.petAlbums = res.data.petAlbumDTOS;
+                        app.classifyId = app.pet.classifyId;
                         //配置相册状态控制数组
                         app.configAlbumList();
                     }
@@ -153,7 +155,7 @@ var app = new Vue({
 $(document).on('click', '.album-new', function () {
     $.modal({
         title: '新建相册',
-        text: '<input type="" class="album-create" placeholder="请添加相册名称"/>',
+        text: '<input type="" class="album-create" placeholder="添加相册名称"/>',
         buttons: [{
             text: '取消',
             bold: true,
@@ -196,11 +198,16 @@ $(document).on('click', '.album-new', function () {
 
 //删除相册
 $(document).on('click', '.del-mask', function () {
+
+    if(!app.isManageModel){
+        return;
+    }
+
     $.modal({
         title: '删除相册',
-        text: '确定删除本相册，并清空里面的所有照片',
+        text: '确定要删除人家嘛~删除的内容无法恢复哦',
         buttons: [{
-            text: '取消',
+            text: '再想想',
             bold: true,
             onClick: function () {
                 //$.alert('取消了')
@@ -211,7 +218,7 @@ $(document).on('click', '.del-mask', function () {
             onClick: function () {
 
                 if(app.selectedAlbumListIndex.length == 0){
-                    $.alert("请选中要删除的相册哟~")
+                    $.alert("选中要删除的相册哟~")
                     return;
                 }
                 $.ajax({
@@ -221,12 +228,12 @@ $(document).on('click', '.del-mask', function () {
                     contentType: 'application/json',
                     data: JSON.stringify(app.selectedAlbumList),
                     success: function (res) {
+                        $.toast('删除成功');
                         if (res.code === 1) {
                             for (var i = 0; i < app.selectedAlbumListIndex.length; i++) {
                                 app.petAlbums.splice(app.petAlbums[app.selectedAlbumListIndex[i]], 1);
                                 app.albumConfArr.splice(app.albumConfArr[app.selectedAlbumListIndex[i]], 1)
                             }
-                            $.alert('删除成功')
                         }
                     }
                 });
