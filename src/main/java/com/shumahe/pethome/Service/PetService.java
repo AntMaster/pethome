@@ -74,6 +74,9 @@ public interface PetService {
      */
     boolean photoDelete(List<Integer> albumId);
 
+
+    boolean albumCover(Integer albumId, Integer photoId);
+
     /**
      * 用户宠卡列表
      */

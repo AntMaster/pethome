@@ -136,7 +136,6 @@ public class FileController {
             throw new PetHomeException(ResultEnum.FAILURE.getCode(), "文件上传失败");
         }
 
-
         UserPetAlbum album = userPetAlbumRepository.findOne(albumid);
         if (album == null) {
             throw new PetHomeException(ResultEnum.FAILURE.getCode(), "宠物相册不存在");

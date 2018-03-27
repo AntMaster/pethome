@@ -7,7 +7,6 @@ var app = new Vue({
         photo_unselect: {
             icon: 'img/icon/album_unselect.png',
             state: 0
-
         },
         photo_selected: {
             icon: 'img/icon/album_selected.png',
@@ -30,12 +29,12 @@ var app = new Vue({
         //已选中 未确定的封面照片
         // tempCover:'',
         //照片控制数组
-        photoConfArr: [],
+        photoConfArr: []
     },
     mounted: function () {
         this.loadPhotoList();
     },
-    updated:function () {
+    updated: function () {
         setPhotoBoxStyle();
     },
     methods: {
@@ -48,8 +47,7 @@ var app = new Vue({
                     albumId: GetQueryString("albumid")
                 },
                 success: function (res) {
-                    console.log(res);
-                    if(res.code == 1){
+                    if (res.code == 1) {
                         app.albumData = res.data;
                         app.photoList = res.data.petPhotoDTOS;
                         app.confPhotoList();
@@ -111,10 +109,50 @@ var app = new Vue({
         },
         delPhoto: function () {
             //删除相片
-
+            if (app.selectPhotos.length == 0) {
+                $.alert("请选中要删除的图片哟~");
+                return
+            }
+            $.ajax({
+                url: "/pethome/pet/photo/" + GetQueryString("openid"),
+                type: 'DELETE',
+                cache: false,
+                processData: false,
+                contentType: 'application/json',
+                data: JSON.stringify(app.selectPhotos),
+                success: function (res) {
+                    if (res.code) {
+                        for (var i = 0; i < app.photoConfArr.length; i++) {
+                            if(app.photoConfArr[i].state){
+                                app.photoConfArr.splice(i,1);
+                                app.photoList.splice(i,1);
+                            }
+                        }
+                    }
+                }
+            });
         },
         setCover: function () {
-            //设置封面
+
+            //删除相片
+            if (app.coverImage == '') {
+                $.alert("请选中要设为封面的图片哟~");
+                return
+            }
+            $.ajax({
+                url: "/pethome/pet/album/"+ GetQueryString("albumid") + "/"+app.coverImage ,
+                type: 'POST',
+                cache: false,
+                processData: false,
+                data: null,
+                success: function (res) {
+                  if(res.code){
+                      $.alert("设置成功~");
+                  }
+                }
+            });
+
+
         },
         confPhotoList: function () {
             //照片配置数组(icon,选中和状态)
@@ -197,17 +235,19 @@ $("#upPic").change(function (e) {
         cache: false,
         contentType: false,
         processData: false,
-        success: function (respond) {
-            console.log(respond)
+        success: function (res) {
+            app.photoConfArr.push(app.photo_unselect);
+            app.photoList.push(res.data);
         }
     });
 });
 
 //设置照片框样式
-function setPhotoBoxStyle(){
+function setPhotoBoxStyle() {
     var photoWidth = $(".photoList-box li").width();
-    $(".photoList-box li").css('height',photoWidth);
+    $(".photoList-box li").css('height', photoWidth);
 }
-$(function(){
+
+$(function () {
     setPhotoBoxStyle();
 })

@@ -254,4 +254,22 @@ public class PetServiceImpl implements PetService {
 
         return true;
     }
+
+    @Override
+    public boolean albumCover(Integer albumId, Integer photoId) {
+
+        UserPetPhoto photo = userPetPhotoRepository.findOne(photoId);
+        if (photo == null){
+            throw  new PetHomeException(ResultEnum.RESULT_EMPTY);
+        }
+
+        UserPetAlbum album = userPetAlbumRepository.findOne(albumId);
+        if (album == null){
+            throw  new PetHomeException(ResultEnum.RESULT_EMPTY);
+        }
+
+        album.setCoverPath(photo.getPath());
+        userPetAlbumRepository.save(album);
+        return true;
+    }
 }

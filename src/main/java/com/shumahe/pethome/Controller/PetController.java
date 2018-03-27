@@ -59,7 +59,6 @@ public class PetController {
     private PetVarietyRepository petVarietyRepository;
 
 
-
     /**
      * 新增宠卡
      *
@@ -133,34 +132,17 @@ public class PetController {
 
 
     /**
-     * 删除所有相册
+     * 设为封面
      */
-//    @DeleteMapping("/album/{openId}")
-//    public ResultVO albumDeleteAll(@RequestParam("albumId") Integer albumId,
-//                                @RequestParam(value = "name", defaultValue = "EMPTY") String name,
-//                                @RequestParam(value = "description", defaultValue = "EMPTY") String description) {
-//
-//
-//        if (name.equals("EMPTY") && description.equals("EMPTY")) {
-//
-//            throw new PetHomeException(ResultEnum.PARAM_ERROR.getCode(), "相册名称和相册描述不能同时为空");
-//        }
-//
-//        UserPetAlbum album = userPetAlbumRepository.findOne(albumId);
-//        if (album == null) {
-//            throw new PetHomeException(ResultEnum.RESULT_EMPTY);
-//        }
-//
-//        if (!name.equals("EMPTY"))
-//            album.setName(name);
-//
-//        if (!description.equals("EMPTY"))
-//            album.setDescription(description);
-//
-//        UserPetAlbum save = userPetAlbumRepository.save(album);
-//        return ResultVOUtil.success(save);
-//    }
+    @PostMapping(value = "/album/{albumId}/{photoId}")
+    public ResultVO albumCover(@PathVariable("albumId") Integer albumId, @PathVariable("photoId") Integer photoId) {
 
+        if (photoId == null || albumId ==null) {
+            throw new PetHomeException(ResultEnum.PARAM_ERROR);
+        }
+        boolean res = petService.albumCover(albumId,photoId);
+        return ResultVOUtil.success(res);
+    }
 
     /**
      * 删除相册
@@ -226,14 +208,13 @@ public class PetController {
      * 删除相片
      */
     @DeleteMapping(value = "/photo/{openId}")
-    public ResultVO photoDelete(@RequestBody Map map) {
+    public ResultVO photoDelete(@RequestBody List<Integer> photoIds) {
 
-        List<Integer> photoIds = (ArrayList<Integer>) map.get("photoId");
         if (photoIds.isEmpty()) {
             throw new PetHomeException(ResultEnum.PARAM_ERROR);
         }
         boolean delete = petService.photoDelete(photoIds);
-        return ResultVOUtil.success(123);
+        return ResultVOUtil.success(delete);
     }
 
 
@@ -246,7 +227,7 @@ public class PetController {
     @GetMapping("/{openId}")
     public ResultVO petList(@PathVariable("openId") String openId) {
 
-        if(StringUtils.isEmpty(openId) || openId.equals("null")){
+        if (StringUtils.isEmpty(openId) || openId.equals("null")) {
             throw new PetHomeException(ResultEnum.PARAM_ERROR);
         }
         List<UserPet> userPets = petService.petList(openId);

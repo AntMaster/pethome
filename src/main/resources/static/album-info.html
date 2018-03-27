@@ -39,7 +39,7 @@
             <ul>
                 <li>
                     <div class="item-new">
-                        <input type="file" />
+                        <input style="z-index: 10;" type="file" id = "upPic" name = "file" accept="image/*"/>
                         <div class="new-center">
                             <div class="item-new-add">+</div>
                             <div class="item-new-title">上传图片</div>
@@ -48,7 +48,7 @@
                 </li>
                 <li :class="{centerItem:index%3 == 0}" v-for="(item, index) in photoList">
                     <div class="item-photo" @click="clickPhoto(index,item.id)">
-                        <img :src="'http://girl.nat300.top/pethome/'+item.path">
+                        <img :src="item.path">
                         <div class="album-del" v-show="manager.open">
                             <img :src="photoConfArr[index].icon" alt="" />
                         </div>
