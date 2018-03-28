@@ -3,9 +3,11 @@ package com.shumahe.pethome.Domain;
 import com.shumahe.pethome.Enums.ApproveStateEnum;
 import com.shumahe.pethome.Enums.ApproveTypeEnum;
 import lombok.Data;
+import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.*;
+import java.util.Date;
 
 @Entity
 @Data
@@ -57,6 +59,7 @@ public class UserApprove {
     @Column(name = "description")
     private String description;
 
-
-
+    @CreatedDate
+    @Column(name = "createtime")
+    private Date createTime;
 }

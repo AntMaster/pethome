@@ -314,7 +314,7 @@ public class AdminServiceImpl implements AdminService {
      * @return
      */
     @Override
-    public Map<String, Object> findView(Integer id, Integer day) {
+    public List<Map<String,String>> findView(Integer id, Integer day) {
 
         Calendar now = Calendar.getInstance();
         now.set(Calendar.DATE, now.get(Calendar.DATE) - day);
@@ -323,10 +323,25 @@ public class AdminServiceImpl implements AdminService {
         Date endTime = DateUtil.getEndTime(now.getTime());
         List<PublishView> viewers = publishViewRepository.findByPublishIdAndViewTimeBetweenOrderByViewTimeDesc(id, startTime, endTime);
 
-        if (viewers.isEmpty()) {
+        List<String> userIds = viewers.stream().map(PublishView::getViewer).distinct().collect(Collectors.toList());
+        List<UserBasic> users = userBasicRepository.findByOpenIdIn(userIds);
+        Map<String, UserBasic> usersMap = users.stream().collect(Collectors.toMap(e -> e.getOpenId().trim(), Function.identity()));
 
-        }
-        return null;
+        List<Map<String,String>> res = new ArrayList<>();
+       if (viewers.isEmpty())
+            return res;
+
+        viewers.forEach(e->{
+            UserBasic curUser = usersMap.get(e.getViewer());
+            Map<String,String> _temp = new HashMap<>();
+            _temp.put("viewerId",curUser.getOpenId());
+            _temp.put("viewerName",curUser.getNickName());
+            _temp.put("viewerImage",curUser.getHeadImgUrl());
+            _temp.put("viewTime",e.getViewTime().toString());
+            res.add(_temp);
+        });
+
+        return res;
     }
 
     /**

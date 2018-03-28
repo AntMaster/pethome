@@ -13,6 +13,16 @@ var app = new Vue({
     methods: {
 
         getMessageCode: function () {
+
+            if (!this.formData.dutyerPhone){
+                $.toast("请填写手机号码~");
+                return;
+            }
+
+            if(!onOff){
+                $.toast("验证码已发送,请稍后再获取~");
+            }
+
             $.ajax({
                 url: '/pethome/user/sms/' + GetQueryString("openid"),
                 type: 'GET',
@@ -22,7 +32,9 @@ var app = new Vue({
                 },
                 success: function (res) {
                     if (res.code != 1) {
-                        alert(res.msg);
+                        $.toast('请求服务器后'+res.msg);
+                    }else {
+                        verify();
                     }
                 }
             });
@@ -39,7 +51,7 @@ var app = new Vue({
                         app.dynamicArr = res.data;
                         window.location.href = "./ov-state.html?type=2&state=2&openid=" + GetQueryString("openid");
                     } else {
-                        alert(res.msg);
+                        $.toast(res.msg);
                     }
                 }
             });
@@ -50,7 +62,7 @@ var app = new Vue({
 $(function () {
     /*发送验证码间隔*/
     $(".verify-btn").click(function () {
-        verify();
+        //verify();
     });
 });
 

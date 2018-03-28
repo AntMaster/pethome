@@ -5,6 +5,7 @@ var app = new Vue({
         messageCode: ''
     },
     methods: {
+
         getMessageCode: function () {
             if (!this.mobile){
                 $.toast("请填写手机号码~");

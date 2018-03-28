@@ -203,8 +203,8 @@ public class AdminController {
     public ResultVO findView(@PathVariable("id") Integer id,
                              @RequestParam(value = "day",defaultValue = "0")Integer day){
 
-        Map<String,Object> view = adminService.findView(id,day);
-        return null;
+        List<Map<String,String>> view = adminService.findView(id,day);
+        return ResultVOUtil.success(view);
     }
 
 }

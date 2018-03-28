@@ -16,11 +16,11 @@ var app = new Vue({
     data: {
         testPoint: "{lng: 30.4660040000, lat: 114.4239750000}",
         //1：寻宠，2：寻主
-        publishType: 1,
+        publishType: -1,
         //2：猫  3：狗
-        classifyID: 3,
+        classifyID: -1,
         varietyID: -1,
-        petSex: true,
+        petSex: -1,
         catVarietyArr: [
             {name: "橘猫", id: "39"},
             {name: "波斯猫", id: "19"},
@@ -47,7 +47,7 @@ var app = new Vue({
         ],
         showVarietyArr: [],
         //选中的宠物的品种序号，用于控制active状态
-        svIndex: 0,
+        svIndex: -1,
         //搜索关键字
         keyword: '',
         //初始化坐标点
@@ -101,29 +101,24 @@ var app = new Vue({
             }
         },
         search: function () {
-            if(!this.keyword){
-                $.alert("搜索内容不能为空~");
-            }
 
-            var sex = null;
-            if(app.petSex){
-                sex = 1;
-            }else {
-                sex = 0;
+            if(!this.keyword){
+                $.toast("搜索关键字不能为空~");
+                return;
             }
             $.ajax({
                 url: "/pethome/search/",
                 dataType: "json",
                 type: "GET",
                 data:{
-                    publishType : app.publishType-0,
-                    classifyId : app.classifyID-0,
-                    varietyId : app.varietyID-0,
-                    petSex : sex,
+                    publishType : app.publishType,
+                    classifyId : app.classifyID,
+                    varietyId : app.varietyID,
+                    petSex : app.petSex,
                     keyWord : app.keyword
                 },
                 success: function (res) {
-                    console.log(res);
+
                     if (res.code == 1) {
                         app.annotationList = res.data;
                         //配置一个数组用于控制大头针状态
@@ -135,6 +130,14 @@ var app = new Vue({
         },
         draw: function () {
 
+        },
+        reset:function () {
+          //重置筛选信息
+            this.publishType = -1;
+            this.classifyID = -1;
+            this.varietyID = -1;
+            this.svIndex = -1;
+            this.petSex = -1;
         },
         showCard: function () {
             $(".marker-card").fadeIn().css("diplay", "flex");
@@ -152,7 +155,7 @@ var app = new Vue({
         //宠物性别
         changePetSex: function (sex) {
             console.log(sex);
-            sex == 1 ? this.petSex = true : this.petSex = false;
+            sex == 1 ? this.petSex = 1 : this.petSex = 0;
         },
         fitFilterItem: function () {
             var ScreenWidth = document.body.clientWidth;

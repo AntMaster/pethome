@@ -64,7 +64,7 @@ public interface AdminService {
      * @param id
      * @return
      */
-    Map<String,Object> findView(Integer id,Integer day);
+    List<Map<String,String>> findView(Integer id,Integer day);
 
     /**
      * 认证审核
