@@ -11,7 +11,7 @@ var app = new Vue({
         formData: {
             publishType: 1,
             classifyId: 2,
-            varietyId: 0,
+            varietyId: 3,
             petName: null,
             petSex: 1,
             petDescription: null,
@@ -50,12 +50,14 @@ var app = new Vue({
                 }
             });
             //初始化时间
-            var date = new Date();
-            this.formData.lostTime = date.toLocaleString();
+            var date = new Date().Format("yyyy-MM-dd HH:mm:ss");
+            this.formData.lostTime = date;
+                //date.toLocaleString();
         },
         //选择品种
         selectVarietyArr: function (id, name) {
             //id用于上传，name用于绑定model显示中文
+            console.log(id);
             app.formData.varietyId = id;
             app.varietyName = name;
         },
@@ -115,6 +117,8 @@ $(document).on('click', '.create-actions', function () {
             text: '喵',
             onClick: function () {
                 app.formData.classifyId = 2;
+                //改变类别id同时需要一个默认品种
+                app.formData.varietyId = 3;
                 app.petType = '喵';
                 app.varietyArr = app.varietyArrDataSource['2'];
                 app.varietyName = app.varietyArr[0].name;
@@ -124,6 +128,8 @@ $(document).on('click', '.create-actions', function () {
             text: '汪',
             onClick: function () {
                 app.formData.classifyId = 3;
+                //改变类别id同时需要一个默认品种
+                app.formData.varietyId = 4;
                 app.petType = '汪';
                 app.varietyArr = app.varietyArrDataSource['3'];
                 app.varietyName = app.varietyArr[0].name;
