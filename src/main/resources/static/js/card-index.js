@@ -41,10 +41,9 @@ var app = new Vue({
                 data: app.cardFormModel,
                 success: function (res) {
                     if (res.code === 1) {
-                        //app.dynamicArr = res.data;
                         window.location.href = "./card-list.html?openid="+GetQueryString("openid")
                     } else {
-                        $.alert(res.msg);
+                        $.toast(res.msg);
                     }
                 }
             });
@@ -55,6 +54,16 @@ $(function () {
     //set ui
     var cardWidth = $(".card-create").width();
     $(".card-create").css("height", cardWidth * 1.3);
+
+    var date = new Date();
+    var year = date.getFullYear();
+    var month = date.getMonth() +1 ;
+    var day = date.getDate();
+    var today = year + "-" + month + "-" + day;
+    //初始化组件
+    $("#datetime-picker").calendar({
+        maxDate: today
+    });
     //判断设备宽度
     var ScreenWidth = document.body.clientWidth;
     var ScreenHeight = document.body.clientHeight;
@@ -74,15 +83,15 @@ $(function () {
     }
 })
 
-$("#datetime-picker").datetimePicker({
-    toolbarTemplate: '<header class="bar bar-nav">\
-    <button class="button button-link pull-right close-picker">确定</button>\
-    <h1 class="title">选择日期和时间</h1>\
-    </header>',
-    onClose: function () {
-        app.cardFormModel.birthday = $("#datetime-picker").val()
-    }
-});
+// $("#datetime-picker").datetimePicker({
+//     toolbarTemplate: '<header class="bar bar-nav">\
+//     <button class="button button-link pull-right close-picker">确定</button>\
+//     <h1 class="title">选择日期和时间</h1>\
+//     </header>',
+//     onClose: function () {
+//         app.cardFormModel.birthday = $("#datetime-picker").val()
+//     }
+// });
 
 
 $(".avatar-upload").change(function (e) {
@@ -105,3 +114,7 @@ $(".avatar-upload").change(function (e) {
         }
     });
 });
+
+function getBirth() {
+    app.cardFormModel.birthday = $("#datetime-picker").val();
+}

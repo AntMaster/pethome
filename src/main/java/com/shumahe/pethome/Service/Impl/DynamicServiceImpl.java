@@ -74,7 +74,6 @@ public class DynamicServiceImpl implements DynamicService {
                 throw new PetHomeException(ResultEnum.PARAM_ERROR.getCode(), "");
 
             } else {
-
                 //多次关注取消
                 if (dynamic.get(0).getDynamicType() == DynamicTypeEnum.LIKE.getCode()) {
                     dynamic.get(0).setDynamicType(DynamicTypeEnum.CANCEL.getCode());

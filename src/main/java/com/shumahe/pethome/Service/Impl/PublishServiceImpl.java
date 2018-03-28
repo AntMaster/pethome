@@ -217,9 +217,8 @@ public class PublishServiceImpl implements PublishService {
         if (pet.getId() == null) {
             throw new PetHomeException(ResultEnum.RESULT_EMPTY);
         }
-        pet.setViewCount(pet.getViewCount() + 1);
-        petPublishRepository.save(pet);
-
+       /* pet.setViewCount(pet.getViewCount() + 1);
+        petPublishRepository.save(pet);*/
 
         /**
          * 品种名称
@@ -268,6 +267,13 @@ public class PublishServiceImpl implements PublishService {
         Integer publishView = publishBaseService.findPublishView(openId, pet);
         publishDTO.setViewCount(publishView);
 
+
+        /**
+         * 关注状态
+         */
+        UserDynamic like = userDynamicRepository.findByUserIdFromAndPublishIdAndDynamicType(openId, publishId, DynamicTypeEnum.LIKE.getCode());
+        if (like != null)
+            publishDTO.setLikeState(true);
 
         return publishDTO;
 

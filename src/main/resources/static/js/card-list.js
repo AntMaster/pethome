@@ -3,9 +3,11 @@ var app = new Vue({
     el: "#cardListPage",
     mounted: function () {
         this.loadPetList();
+        this.params = GetQueryString("openid");
     },
     data: {
-        petArr: []
+        petArr: [],
+        params : ''
     },
     updated: function () {
         //卡片自适应

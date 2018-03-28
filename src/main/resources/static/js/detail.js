@@ -82,6 +82,33 @@ var app = new Vue({
         //关注
         attention: function () {
 
+            var params = {
+                publishId: app.detailData.id,
+                dynamicType: 0
+            };
+            if (app.detailData.likeState) {
+                params.dynamicType = 3;//取关
+            } else {
+                params.dynamicType = 1;//关注
+            }
+            //load data
+            $.ajax({
+                url: '/pethome/dynamic/like/' + GetQueryString("openid"),
+                type: 'PUT',
+                contentType: 'application/json',
+                dataType: 'json',
+                data: JSON.stringify(params),
+                success: function (res) {
+                    if (res.data === true) {
+                        if(app.detailData.likeState){
+                            $.toast("取关啦~");
+                        }else {
+                            $.toast("关注成功~");
+                        }
+                        app.detailData.likeState = !app.detailData.likeState;
+                    }
+                }
+            });
         },
         //切换消息列表
         changeList: function (type) {

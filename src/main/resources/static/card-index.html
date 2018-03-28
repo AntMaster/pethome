@@ -58,7 +58,8 @@
                             <div class="card-form-item">
                                 <div class="item-title">生日</div>
                                 <div class="item-input">
-                                    <input :model="cardFormModel.birthday" id="datetime-picker" value="2018-03-05 08:30" id="datetime-picker" class="date-picker" placeholder="填写主子诞辰" />
+                                    <input  id="datetime-picker" onchange="getBirth()" placeholder="填写主子诞辰" :model="cardFormModel.birthday"  type="text" data-toggle='date' />
+                                    <!--<input :model="cardFormModel.birthday" id="datetime-picker" value="2018-03-05 08:30" id="datetime-picker" class="date-picker" placeholder="填写主子诞辰" />-->
                                 </div>
                             </div>
                             <!-- 性别 -->

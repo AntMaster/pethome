@@ -67,8 +67,8 @@
                             <span>{{detailData.shareCount}}</span>
                         </div>
                         <!-- 关注 -->
-                        <div class="attention">
-                            <img src="img/icon/card-zan.png" alt="">
+                        <div class="attention" @click="attention" >
+                            <img  :src="detailData.likeState ? 'img/icon/card-zaned.png' : 'img/icon/card-zan.png'"  alt="">
                             <span>关注</span>
                         </div>
                     </div>

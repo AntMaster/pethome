@@ -186,8 +186,6 @@
                     alert(JSON.stringify(res));
                 }
             });
-
-
             wx.onMenuShareTimeline({
                 title: '溜了溜了',
                 desc: '从前有一只大鱼和一只小鱼。有一天 小鱼问大鱼：大～鱼～大～鱼～你～平～常～喜～欢～吃～什～么～丫。大鱼说：我～喜～欢～吃～说～话～慢～的～小～鱼。然后小鱼说：喔 酱紫 造了！',
@@ -321,8 +319,46 @@
                 });
             },
             //评论
-            comment: function () {
-                app.isAuthority ? window.location.href = "detail.html?openid=" + GetQueryString("openid") : $.modal(goAuthormodal);
+            comment: function (id) {
+                $.ajax({
+                    url: '/pethome/user/auth/' + GetQueryString("openid"),
+                    type: 'GET',
+                    dataType: 'json',
+                    data: null,
+                    success: function (res) {
+                        if (res.code === 1) {
+
+                            if (res.data.type == "person") {
+
+                                if (res.data.state == 0) {
+                                    $.modal(goAuthormodal);
+                                } else {
+                                    window.location.href = "./detail.html?openid=" + GetQueryString("openid") + "&id=" + id;
+                                }
+
+                            } else if (res.data.type == "association") {
+
+                                if (res.data.state == 0) {
+
+                                    $.modal(goAuthormodal);
+
+                                } else if (res.data.state == 1) {
+
+                                    window.location.href = "./detail.html?openid=" + GetQueryString("openid") + "&id=" + id;
+
+                                } else if (res.data.state == 2) {
+
+                                    window.location.href = "./ov-state.html?openid=" + GetQueryString("openid") + "&id=" + id;
+                                }
+                            }
+                        } else {
+
+                            $.modal(goAuthormodal);
+                        }
+                    }
+                });
+
+                //app.isAuthority ? window.location.href = "detail.html?openid=" + GetQueryString("openid") : $.modal(goAuthormodal);
             },
             //分享
             share: function () {
@@ -352,9 +388,9 @@
                     success: function (res) {
                         if (res.data === true) {
                             if(likeState){
-                                $.alert("取关啦~");
+                                $.toast("取关啦~");
                             }else {
-                                $.alert("关注成功~");
+                                $.toast("关注成功~");
                             }
                             app.dynamicArr[index].likeState = !likeState;
                         }

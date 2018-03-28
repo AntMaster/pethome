@@ -28,6 +28,9 @@ var app = new Vue({
     mounted: function () {
         this.init();
     },
+    updated:function(){
+
+    },
     methods: {
         init: function () {
             //加载宠物类别
@@ -46,6 +49,9 @@ var app = new Vue({
                     }
                 }
             });
+            //初始化时间
+            var date = new Date();
+            this.formData.lostTime = date.toLocaleString();
         },
         //选择品种
         selectVarietyArr: function (id, name) {
@@ -69,17 +75,13 @@ var app = new Vue({
         submitRelease: function () {
 
             if(this.formData.publisherId != GetQueryString("openid")){
-
             }
-
             if (this.petImageArr.length == 0) {
                 alert("宠物照片必填");
                 return;
             }
 
-
             this.formData.petImage = this.petImageArr.join(";");
-
                 $.ajax({
                     url: '/pethome/publish/pet/'+GetQueryString("openid"),
                     type: 'PUT',

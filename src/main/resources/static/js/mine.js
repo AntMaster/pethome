@@ -119,12 +119,16 @@ $(document).on("pageInit", function (e, pageId, $page) {
      * 我的任务 我的发布
      */
     if (pageId == "taskPage") {
-
+        document.title = "我的任务";
         var task = new Vue({
             el: "#taskPage",
             data: {
                 isPend: true,
-                taskArr: []
+                taskArr: [],
+                //待处理
+                pendNum:'',
+                //我发布得
+                mineNum:''
             },
             mounted: function () {
                 var type = GetQueryString("type");
@@ -144,7 +148,15 @@ $(document).on("pageInit", function (e, pageId, $page) {
                     dataType: 'json',
                     data: null,
                     success: function (res) {
+
                         if (res.code === 1) {
+
+                            if(type == 1){
+                                task.pendNum = "（" + res.data.length +"）";
+
+                            }else {
+                                task.mineNum = "（" + res.data.length +"）";
+                            }
                             task.taskArr = res.data;
                             for (var i = 0; i < task.taskArr.length; i++) {
                                 task.taskArr[i].petImage = task.taskArr[i].petImage.split(";")[0];
@@ -155,7 +167,6 @@ $(document).on("pageInit", function (e, pageId, $page) {
             },
 
             methods: {
-
                 waitDeal: function () {
                     this.isPend = true;
 
@@ -167,6 +178,8 @@ $(document).on("pageInit", function (e, pageId, $page) {
                         success: function (res) {
                             if (res.code === 1) {
                                 task.taskArr = res.data;
+                                task.pendNum = "（" + res.data.length + "）";
+                                task.mineNum = '';
                                 for (var i = 0; i < task.taskArr.length; i++) {
                                     task.taskArr[i].petImage = task.taskArr[i].petImage.split(";")[0];
                                 }
@@ -186,6 +199,8 @@ $(document).on("pageInit", function (e, pageId, $page) {
                         success: function (res) {
                             if (res.code === 1) {
                                 task.taskArr = res.data;
+                                task.pendNum = '';
+                                task.mineNum = "（"+ res.data.length +"）";
                                 for (var i = 0; i < task.taskArr.length; i++) {
                                     task.taskArr[i].petImage = task.taskArr[i].petImage.split(";")[0];
                                 }
@@ -223,7 +238,7 @@ $(document).on("pageInit", function (e, pageId, $page) {
      * 我的转发
      */
     if (pageId == "msgPage") {
-
+        document.title = "我的转发";
         var message = new Vue({
             el: "#msgPage",
             data: {
@@ -279,6 +294,7 @@ $(document).on("pageInit", function (e, pageId, $page) {
      * 关注
      */
     if (pageId == 'attentionPage') {
+        document.title = "我的关注";
 
         var message = new Vue({
             el: "#attentionPage",
@@ -337,6 +353,9 @@ $(document).on("pageInit", function (e, pageId, $page) {
      * 私信
      */
     if (pageId == 'chatPage') {
+
+        document.title = "我的私信";
+
         var interact = new Vue({
             el: "#chatPage",
             data: {
@@ -420,6 +439,9 @@ $(document).on("pageInit", function (e, pageId, $page) {
      * 互动
      */
     if (pageId == "interactPage") {
+
+        document.title = "我的互动";
+
         var interact = new Vue({
             el: "#interactPage",
             data: {
@@ -502,7 +524,7 @@ $(document).on("pageInit", function (e, pageId, $page) {
      */
     if (pageId == "ovedPage") {
 
-
+        document.title = "我的认证";
         var ovedPage = new Vue({
             el: "#ovedPage",
             data: {
@@ -558,7 +580,6 @@ $(document).on("pageInit", function (e, pageId, $page) {
             }
         });
     }
-
 });
 
 

@@ -3,7 +3,10 @@ var task = new Vue({
     el: "#taskPage",
     data: {
         isPend: true,
-        taskArr: []
+        taskArr: [],
+        pendNum:'',
+        //我发布得
+        mineNum:''
     },
     mounted: function () {
         //初始化
@@ -27,7 +30,16 @@ var task = new Vue({
                 dataType: 'json',
                 data: null,
                 success: function (res) {
+
                     if (res.code === 1) {
+
+                        if(type == 1){
+                            task.pendNum = "（" + res.data.length +"）";
+
+                        }else {
+                            task.mineNum = "（" + res.data.length +"）";
+
+                        }
                         task.taskArr = res.data;
                         for (var i = 0; i < task.taskArr.length; i++) {
                             task.taskArr[i].petImage = task.taskArr[i].petImage.split(";")[0];
@@ -46,6 +58,8 @@ var task = new Vue({
                 data: null,
                 success: function (res) {
                     if (res.code === 1) {
+                        task.pendNum = "（" + res.data.length + "）";
+                        task.mineNum = '';
                         task.taskArr = res.data;
                         for (var i = 0; i < task.taskArr.length; i++) {
                             task.taskArr[i].petImage = task.taskArr[i].petImage.split(";")[0];
@@ -64,6 +78,8 @@ var task = new Vue({
                 data: null,
                 success: function (res) {
                     if (res.code === 1) {
+                        task.pendNum = '';
+                        task.mineNum = "（"+ res.data.length +"）";
                         task.taskArr = res.data;
                         for (var i = 0; i < task.taskArr.length; i++) {
                             task.taskArr[i].petImage = task.taskArr[i].petImage.split(";")[0];

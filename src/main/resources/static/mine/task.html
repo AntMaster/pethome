@@ -19,11 +19,11 @@
         <!-- nav -->
         <div class="nav center-block">
             <div class="nav-item flex-center" :class="{active:isPend}">
-                <div class="nav-item-title" @click="waitDeal">待处理（{{taskArr.length}}）</div>
+                <div class="nav-item-title" @click="waitDeal">待处理{{pendNum}}</div>
                 <div class="nav-item-indicator"></div>
             </div>
             <div class="nav-item flex-center" :class="{active:!isPend}">
-                <div class="nav-item-title" @click="myPublish">我发布的（{{taskArr.length}}）</div>
+                <div class="nav-item-title" @click="myPublish">我发布的{{mineNum}}</div>
                 <div class="nav-item-indicator"></div>
             </div>
         </div>
