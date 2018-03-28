@@ -148,6 +148,16 @@ public class FileController {
         petPhoto.setPath(photoPath);
 
         UserPetPhoto save = userPetPhotoRepository.save(petPhoto);
+
+        /**
+         * 默认第一张图片做为封面
+         */
+        String coverPath = album.getCoverPath();
+        if (coverPath.isEmpty()) {
+            album.setCoverPath(save.getPath());
+            userPetAlbumRepository.save(album);
+        }
+
         return ResultVOUtil.success(save);
     }
 

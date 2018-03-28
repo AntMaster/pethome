@@ -36,7 +36,7 @@ public class PetSearchForm {
     /**
      * 搜索关键字
      */
-    @NotBlank(message = "搜索关键字不能为空")
+    //@NotBlank(message = "搜索关键字不能为空")
     private String keyWord;
 
 }

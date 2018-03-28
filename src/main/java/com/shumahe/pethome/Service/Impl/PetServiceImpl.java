@@ -144,7 +144,7 @@ public class PetServiceImpl implements PetService {
         //相册数量
         int[] albumIds = albums.stream().mapToInt(e -> e.getId()).toArray();
         List<UserPetPhoto> photos = userPetPhotoRepository.findByAlbumIdInAndShowOrderByPetId(albumIds, ShowStateEnum.SHOW.getCode());
-        Map<Integer, List<UserPetPhoto>> albumGroup = photos.stream().collect(Collectors.groupingBy(photo -> photo.getPetId()));//根据相册ID对照片分组
+        Map<Integer, List<UserPetPhoto>> albumGroup = photos.stream().collect(Collectors.groupingBy(photo -> photo.getAlbumId()));//根据相册ID对照片分组
 
 
         UserPetDTO petDTO = new UserPetDTO();

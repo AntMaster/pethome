@@ -55,7 +55,7 @@ var app = new Vue({
         },
         goPrivateMsg: function () {
 
-            if (!app.myself.approveState) {//未认证 && 认证失败
+            /*if (!app.myself.approveState) {//未认证 && 认证失败
 
                 $.modal(goAuthormodal);
 
@@ -66,13 +66,13 @@ var app = new Vue({
             } else if (app.myself.approveState == 1) { //认证成功
 
                 $.router.loadPage("./mine/chat.html?openid=" + this.param);
-            }
+            }*/
 
-
+            $.router.loadPage("./mine/chat.html?openid=" + this.param);
         },
         goPublishMsg: function () {
 
-            if (!app.myself.approveState) {//未认证 && 认证失败
+/*            if (!app.myself.approveState) {//未认证 && 认证失败
 
                 $.modal(goAuthormodal);
 
@@ -83,7 +83,9 @@ var app = new Vue({
             } else if (app.myself.approveState == 1) { //认证成功
 
                 $.router.loadPage("./mine/interact.html?openid=" + this.param);
-            }
+            }*/
+
+            $.router.loadPage("./mine/interact.html?openid=" + this.param);
         },
         goApprove:function () {
 
@@ -179,7 +181,7 @@ $(document).on("pageInit", function (e, pageId, $page) {
                             if (res.code === 1) {
                                 task.taskArr = res.data;
                                 task.pendNum = "（" + res.data.length + "）";
-                                task.mineNum = '';
+                                //task.mineNum = '';
                                 for (var i = 0; i < task.taskArr.length; i++) {
                                     task.taskArr[i].petImage = task.taskArr[i].petImage.split(";")[0];
                                 }
@@ -199,7 +201,7 @@ $(document).on("pageInit", function (e, pageId, $page) {
                         success: function (res) {
                             if (res.code === 1) {
                                 task.taskArr = res.data;
-                                task.pendNum = '';
+                                //task.pendNum = '';
                                 task.mineNum = "（"+ res.data.length +"）";
                                 for (var i = 0; i < task.taskArr.length; i++) {
                                     task.taskArr[i].petImage = task.taskArr[i].petImage.split(";")[0];
@@ -362,6 +364,7 @@ $(document).on("pageInit", function (e, pageId, $page) {
                 showMsgList: []
             },
             mounted: function () {
+                app.myself.privateMsgCount = 0;
                 this.privateMsg();
             },
             methods: {
@@ -448,6 +451,8 @@ $(document).on("pageInit", function (e, pageId, $page) {
                 showMsgList: []
             },
             mounted: function () {
+
+                app.myself.publicMsgCount = 0;
                 this.publicMsg();
             },
             methods: {
@@ -506,7 +511,7 @@ $(document).on("pageInit", function (e, pageId, $page) {
                                                 };
                                                 interact.showMsgList[index].detail.push(msg);
                                             } else {
-                                                alert(res.msg);
+                                                $.toast(res.msg);
                                             }
                                         }
                                     });

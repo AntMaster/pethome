@@ -82,10 +82,12 @@ public class PrivateMsgDTO {
     private Date talkTime;
 
 
+
     /**
      * 阅读状态
      */
     private Integer readState;
+
 
 
     /**

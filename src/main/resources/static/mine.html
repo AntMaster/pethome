@@ -55,7 +55,9 @@
                                 <img class="list-icon" src="img/icon/mine-todo.png" alt="" />
                             </div>
                             <div class="item-inner">
-                                <div class="item-title">待处理</div>
+                                <div class="item-title">待处理
+                                    <span class="badge" v-show = "myself.unFinishCount != 0" >{{myself.unFinishCount}}</span>
+                                </div>
                             </div>
                         </a>
                     </li>
@@ -82,7 +84,7 @@
                             </div>
                             <div class="item-inner">
                                 <div class="item-title">私信
-                                    <span class="badge">{{myself.privateMsgCount}}</span>
+                                    <span class="badge" v-show = "myself.privateMsgCount != 0"  >{{myself.privateMsgCount}}</span>
                                 </div>
                             </div>
                         </a>
@@ -104,7 +106,7 @@
                             </div>
                             <div class="item-inner">
                                 <div class="item-title">互动
-                                    <span class="badge">{{myself.publicMsgCount}}</span>
+                                    <span class="badge" v-show = "myself.publicMsgCount != 0" >{{myself.publicMsgCount}}</span>
                                 </div>
                             </div>
                         </a>

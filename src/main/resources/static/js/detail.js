@@ -13,8 +13,8 @@ var app = new Vue({
         privateMsgListNull:true,
         detailData: {},
         commentContent: '',
-        placeholderText:'说点什么'
-
+        placeholderText:'说点什么',
+        petImageArr : []
     },
     mounted: function () {
         this.init();
@@ -35,6 +35,8 @@ var app = new Vue({
 
                         app.detailData = res.data;
                         app.showMsgList = res.data.publicTalk;
+
+                        app.petImageArr = app.detailData.petImage.split(";");
 
                         if(app.detailData.publisherId == GetQueryString("openid")){
                             app.isAuthority =true;
@@ -101,9 +103,9 @@ var app = new Vue({
                 success: function (res) {
                     if (res.data === true) {
                         if(app.detailData.likeState){
-                            $.toast("取关啦~");
+                            $.toast("已取关");
                         }else {
-                            $.toast("关注成功~");
+                            $.toast("已关注");
                         }
                         app.detailData.likeState = !app.detailData.likeState;
                     }
@@ -225,7 +227,7 @@ var app = new Vue({
             $.modal({
                 title: '回复',
                 text: '',
-                afterText: '<textarea class="reply-modal-textarea" id="replayContent" placehodler="这里输入回复内容"></textarea>',
+                afterText: '<textarea placeholder="说点什么" class="reply-modal-textarea" id="replayContent"></textarea>',
                 buttons: [{
                     text: '确定',
                     onClick: function () {
@@ -233,7 +235,7 @@ var app = new Vue({
                         var content = $("#replayContent").val();
 
                         if (!content) {
-                            alert("请输入回复内容");
+                            $.toast("请输入回复内容");
                             return;
                         }
 
@@ -267,7 +269,7 @@ var app = new Vue({
                                 if (res.code === 1) {
                                     app.showMsgList[index].push(res.data);
                                 } else {
-                                    alert(res.msg);
+                                    $.toast(res.msg);
                                 }
                             }
                         });

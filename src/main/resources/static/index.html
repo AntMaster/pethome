@@ -60,7 +60,8 @@
                             <div class="card-tag">
                                 <div class="tag-title flex-center"
                                      :class="[{xunzhu:item.publishType == 2},{found:item.findState == 1}]">
-                                    {{item.publishType == 1 ? "寻宠":"寻主"}}
+                                    <span v-if="item.findState == 1">找到了</span>
+                                    <span v-if="item.findState == 0">{{item.publishType == 1 ? "寻宠":"寻主"}}</span>
                                 </div>
                                 <img class="tag-img" v-if="item.classifyId == 2 && item.findState == 0"
                                      src="img/icon/icon-miao.png"/>
@@ -76,7 +77,7 @@
                                     <img :src="item.publisherPhoto" width="34" height="34">
                                 </div>
                                 <div class="facebook-name">{{item.publisherName}}</div>
-                                <div class="facebook-date">{{item.lostTime}}</div>
+                                <div class="facebook-date">{{item.createTime}}</div>
                             </div>
                             <div class="card-content" @click="entryDetail(item.id,item.publisherId)">
                                 <!--寻宠-->
@@ -90,6 +91,7 @@
                                     发现日期：{{item.lostTime}}
                                 </div>
                                 <div class="card-content-img">
+                                    <div class="cardImg-mask" v-show="item.findState == 1"></div>
                                     <img :src="item.petImage"/>
                                 </div>
                             </div>
@@ -387,9 +389,9 @@
                     success: function (res) {
                         if (res.data === true) {
                             if(likeState){
-                                $.toast("取关啦~");
+                                $.toast("已取关");
                             }else {
-                                $.toast("关注成功~");
+                                $.toast("已关注");
                             }
                             app.dynamicArr[index].likeState = !likeState;
                         }

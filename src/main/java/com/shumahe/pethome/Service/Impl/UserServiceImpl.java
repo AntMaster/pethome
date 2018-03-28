@@ -174,7 +174,7 @@ public class UserServiceImpl implements UserService {
          * step 2 我互动过的主题
          */
 
-        List<PetPublish> pets = petPublishRepository.findByIdIn(publishIds);
+        List<PetPublish> pets = petPublishRepository.findByIdInOrderByCreateTimeDesc(publishIds);
 
         /**
          * step 3 与我互动过的人员
@@ -413,7 +413,7 @@ public class UserServiceImpl implements UserService {
 
         //私信人信息 主题信息 自身信息
         List<UserBasic> userData = userBasicRepository.findByOpenIdIn(users);
-        List<PetPublish> themeData = petPublishRepository.findByIdIn(themes);
+        List<PetPublish> themeData = petPublishRepository.findByIdInOrderByCreateTimeDesc(themes);
         Map<String, UserBasic> usersMap = userData.stream().collect(Collectors.toMap(e -> e.getOpenId().trim(), Function.identity()));
         Map<Integer, PetPublish> themesMap = themeData.stream().collect(Collectors.toMap(PetPublish::getId, Function.identity()));
 

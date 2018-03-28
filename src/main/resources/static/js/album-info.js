@@ -147,7 +147,7 @@ var app = new Vue({
                 data: null,
                 success: function (res) {
                   if(res.code){
-                      $.alert("设置成功~");
+                      $.toast("设置成功~");
                   }
                 }
             });

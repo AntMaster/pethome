@@ -80,6 +80,14 @@ public class PublishBaseServiceImpl implements PublishBaseService {
             });
         }
 
+        /**
+         * 私信
+         */
+        
+
+
+
+
         List<UserDynamic> dynamics = userDynamicRepository.findByPublishIdIn(publishIds);
         //转发和关注分组
         Map<Integer, List<UserDynamic>> collect = dynamics.stream().collect(Collectors.groupingBy(UserDynamic::getDynamicType));

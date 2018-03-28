@@ -90,6 +90,7 @@ public class AdminController {
         return ResultVOUtil.success(dynamic);
     }
 
+
     /**
      * 私信
      */

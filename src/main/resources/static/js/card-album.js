@@ -69,6 +69,7 @@ var app = new Vue({
                         app.pet = res.data;
                         app.petAlbums = res.data.petAlbumDTOS;
                         app.classifyId = app.pet.classifyId;
+                        app.petType = app.pet.classifyId;
                         //配置相册状态控制数组
                         app.configAlbumList();
                     }
@@ -228,11 +229,15 @@ $(document).on('click', '.del-mask', function () {
                     data: JSON.stringify(app.selectedAlbumList),
                     success: function (res) {
                         $.toast('删除成功');
+//                        window.location.href = "./card-album.html?openid="+GetQueryString("openid")+"&petid="+ GetQueryString("petid") +"";
                         if (res.code === 1) {
                             for (var i = 0; i < app.selectedAlbumListIndex.length; i++) {
                                 app.petAlbums.splice(app.petAlbums[app.selectedAlbumListIndex[i]], 1);
                                 app.albumConfArr.splice(app.albumConfArr[app.selectedAlbumListIndex[i]], 1)
                             }
+
+                            app.isManageModel=false;
+                            app.manageButtonText = "管理相册";
                         }
                     }
                 });

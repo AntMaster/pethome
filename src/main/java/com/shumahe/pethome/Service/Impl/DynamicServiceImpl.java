@@ -122,12 +122,12 @@ public class DynamicServiceImpl implements DynamicService {
         List<Integer> publishIds = userDynamics.stream().map(e -> e.getPublishId()).distinct().collect(Collectors.toList());
 
 
-        List<PetPublish> pets = petPublishRepository.findByIdIn(publishIds);
+        List<PetPublish> pets = petPublishRepository.findByIdInOrderByCreateTimeDesc(publishIds);
         /**
          * BaseService查关联信息
          */
         List<PublishDTO> list = publishBaseService.findPetExtends(pets);
-        //list.forEach(e -> e.setLikeState(true));
+        list.forEach(e -> e.setLikeState(true));
 
         return list;
 

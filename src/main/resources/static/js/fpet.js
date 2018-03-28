@@ -1,7 +1,7 @@
 var app = new Vue({
     el: "#fpet",
     data: {
-        petType: '喵',
+        petType: '汪',
         maleActive: true,
         femaleActive: false,
         varietyArrDataSource: [],
@@ -10,8 +10,8 @@ var app = new Vue({
         petImageArr: [],
         formData: {
             publishType: 1,
-            classifyId: 2,
-            varietyId: 3,
+            classifyId: 3,
+            varietyId: 4,
             petName: null,
             petSex: 1,
             petDescription: null,
@@ -44,7 +44,7 @@ var app = new Vue({
                     if (res.code === 1) {
                         app.varietyArrDataSource = res.data;
                         //默认猫子品种
-                        app.varietyArr = app.varietyArrDataSource["2"];
+                        app.varietyArr = app.varietyArrDataSource["3"];
                         app.varietyName = app.varietyArr[0].name;
                     }
                 }
@@ -114,17 +114,6 @@ $(document).on('click', '.create-actions', function () {
         label: true
     },
         {
-            text: '喵',
-            onClick: function () {
-                app.formData.classifyId = 2;
-                //改变类别id同时需要一个默认品种
-                app.formData.varietyId = 3;
-                app.petType = '喵';
-                app.varietyArr = app.varietyArrDataSource['2'];
-                app.varietyName = app.varietyArr[0].name;
-            }
-        },
-        {
             text: '汪',
             onClick: function () {
                 app.formData.classifyId = 3;
@@ -132,6 +121,17 @@ $(document).on('click', '.create-actions', function () {
                 app.formData.varietyId = 4;
                 app.petType = '汪';
                 app.varietyArr = app.varietyArrDataSource['3'];
+                app.varietyName = app.varietyArr[0].name;
+            }
+        },
+        {
+            text: '喵',
+            onClick: function () {
+                app.formData.classifyId = 2;
+                //改变类别id同时需要一个默认品种
+                app.formData.varietyId = 3;
+                app.petType = '喵';
+                app.varietyArr = app.varietyArrDataSource['2'];
                 app.varietyName = app.varietyArr[0].name;
             }
         }

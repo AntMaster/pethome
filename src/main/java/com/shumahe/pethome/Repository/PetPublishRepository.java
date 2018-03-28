@@ -43,7 +43,7 @@ public interface PetPublishRepository extends JpaRepository<PetPublish, Integer>
      * @param publisherIds
      * @return
      */
-    List<PetPublish> findByIdIn(List<Integer> publisherIds);
+    List<PetPublish> findByIdInOrderByCreateTimeDesc(List<Integer> publisherIds);
 
 
     /**

@@ -107,10 +107,12 @@ var app = new Vue({
         },
         search: function () {
 
-            if (!this.keyword) {
+            /*if (!this.keyword) {
                 $.toast("搜索关键字不能为空~");
                 return;
-            }
+            }*/
+
+
             $.ajax({
                 url: "/pethome/search/",
                 dataType: "json",
@@ -127,14 +129,39 @@ var app = new Vue({
                     if (res.code == 1) {
                         app.annotationList = res.data;
                         //配置一个数组用于控制大头针状态
-                        app.confPinIcon();
+                        if(app.publishType == 1){
+                            //寻宠
+                            app.annotationConfArr = new Array();
+                            for(var i = 0 ; i < app.annotationList.length; i++){
+                                app.annotationConfArr.push(app.annotationConf.icon_fpet);
+                            }
+                        }
+                        if(app.publishType == 2){
+                            //寻主
+                            app.annotationConfArr = new Array();
+                            for(var i = 0 ; i < app.annotationList.length; i++){
+                                app.annotationConfArr.push(app.annotationConf.icon_fowner);
+                            }
+                        }
+                        if(app.publishType == -1){
+                            app.annotationConfArr = new Array();
+                            for(var i = 0 ; i < app.annotationList.length; i++){
+                               if(app.annotationList[i].publishType == 1){
+                                   app.annotationConfArr.push(app.annotationConf.icon_fpet);
+                               }else {
+                                   app.annotationConfArr.push(app.annotationConf.icon_fowner);
+                               }
+                            }
+                        }
+                        // app.confPinIcon();
                         //$(".marker-card").fadeIn().css("diplay", "none");
                     }
                 }
             });
         },
         draw: function () {
-
+            //关闭已经打开的卡片
+            $(".marker-card").fadeOut();
         },
         reset: function () {
             //重置筛选信息

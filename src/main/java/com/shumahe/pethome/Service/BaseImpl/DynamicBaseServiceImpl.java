@@ -53,7 +53,7 @@ public class DynamicBaseServiceImpl implements DynamicBaseService {
 
         //发布信息
         List<Integer> themeId = userDynamics.stream().map(UserDynamic::getPublishId).distinct().collect(Collectors.toList());
-        List<PetPublish> themes = petPublishRepository.findByIdIn(themeId);
+        List<PetPublish> themes = petPublishRepository.findByIdInOrderByCreateTimeDesc(themeId);
         Map<Integer, PetPublish> themesMap = themes.stream().collect(Collectors.toMap(PetPublish::getId, Function.identity()));
 
         List<Map<String, String>> result = new ArrayList<>();
