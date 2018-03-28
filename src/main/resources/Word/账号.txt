@@ -8,8 +8,12 @@ petin520CQ
 uid:sa
 pwd:petin520
 
-蝌蚪聚力公众号 
-账号:kedoujuli@qq.com  
+IP：114.55.38.33
+密码：3327132713shumahe!
+
+
+蝌蚪聚力公众号
+账号:kedoujuli@qq.com
 密码:shumahekeji518
 appid:wx41fd8229749f5df8
 app Secret:76cde729d3bbf04728661309549298f5
@@ -22,34 +26,3 @@ uid=iShumahe
 pwd=1qaz2wsx3edc!@#
 
 
-
-7_BOS-9PIeRtfJP2cGs3zNaekeIlb8nz0csnu1tjT1n5mMceCejWGjwzWrTKhBFGMGa17sLyAhbCMroNXfdnaGTvOGxdDlV-CwgfW_YKnFI5QTK1rod9VK-mykTPS8QPpHy-bR8ZvwJIZyMAISMPSjAFAYBE
-
-     		
-
-{
-    "button": [
-        {
-            "name": "Menu1", 
-            "sub_button": [
-                {
-                    "type": "click", 
-                    "name": "点击测试", 
-                    "key": "CLICK_TEST", 
-                    "sub_button": [ ]
-                }
-            ]
-        }, 
-        {
-            "name": "Menu2", 
-            "sub_button": [
-                {
-                    "type": "view", 
-                    "name": "寻主寻宠", 
-                    "url": "http://girl.nat300.top/pethome/index.html", 
-                    "sub_button": [ ]
-                }
-            ]
-        }
-    ]
-}

@@ -177,7 +177,28 @@ public class AdminController {
     }
 
 
+    /**
+     * 审核认证
+     * @param id
+     * @param approveType
+     * @param msg
+     * @return
+     */
+    @PostMapping("/approve/{id}")
+    public ResultVO modifyApprove(@PathVariable("id") Integer id,
+                                @RequestParam("approveType") Integer approveType,
+                                @RequestParam(value = "msg",defaultValue = "") String msg) {
 
+        boolean res = adminService.modifyApprove(id, approveType, msg);
+        return ResultVOUtil.success(res);
+    }
+
+    /**
+     * 浏览记录
+     * @param id
+     * @param day
+     * @return
+     */
     @GetMapping("/view/{id}")
     public ResultVO findView(@PathVariable("id") Integer id,
                              @RequestParam(value = "day",defaultValue = "0")Integer day){

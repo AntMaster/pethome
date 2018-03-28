@@ -105,7 +105,7 @@
                 </div>
             </div>
         </div>
-        <div class="del-mask" :class="{delActive:selectedAlbumList.length != 0}">
+        <div class="del-mask"  v-show = "isManageModel" :class="{delActive:selectedAlbumList.length != 0}">
             删除相册
         </div>
     </div>

@@ -65,4 +65,10 @@ public interface AdminService {
      * @return
      */
     Map<String,Object> findView(Integer id,Integer day);
+
+    /**
+     * 认证审核
+     * @param
+     */
+    boolean modifyApprove(Integer id, Integer approveType , String msg );
 }

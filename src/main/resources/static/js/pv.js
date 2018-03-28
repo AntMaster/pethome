@@ -6,15 +6,13 @@ var app = new Vue({
     },
     methods: {
         getMessageCode: function () {
-
-            if (!app.mobile){
-                $.alert("请填写手机号码~");
+            if (!this.mobile){
+                $.toast("请填写手机号码~");
                 return;
             }
 
-            if(onOff){
-                $.alert("验证码已发送,请稍后再获取~");
-                return;
+            if(!onOff){
+                $.toast("验证码已发送,请稍后再获取~");
             }
 
             $.ajax({
@@ -26,7 +24,9 @@ var app = new Vue({
                 },
                 success: function (res) {
                     if (res.code != 1) {
-                        alert(res.msg);
+                        $.toast('请求服务器后'+res.msg);
+                    }else {
+                        verify();
                     }
                 }
             });
@@ -34,7 +34,7 @@ var app = new Vue({
         submit: function () {
 
             if(!(this.mobile && this.messageCode)){
-                $.alert("请输入认证信息哟~");
+                $.toast("请输入认证信息哟~");
                 return;
             }
 
@@ -49,7 +49,7 @@ var app = new Vue({
                 success: function (res) {
 
                     if (res.code != 1) {
-                        alert(res.msg);
+                        $.toast(res.msg);
                     } else {
                         //验证成功后
                         $('.validate-remind').fadeIn();
@@ -63,15 +63,14 @@ var app = new Vue({
     }
 });
 
-
 $(function () {
     //验证码
-
     /*发送验证码间隔*/
     $(".verify-btn").click(function () {
-        verify();
+        //verify();
     });
 });
+
 
 var onOff = true;
 var getVerifyBtn = $(".verify-btn");

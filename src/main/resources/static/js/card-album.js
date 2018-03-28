@@ -202,7 +202,6 @@ $(document).on('click', '.del-mask', function () {
     if(!app.isManageModel){
         return;
     }
-
     $.modal({
         title: '删除相册',
         text: '确定要删除人家嘛~删除的内容无法恢复哦',

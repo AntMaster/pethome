@@ -17,6 +17,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
 import java.util.function.Function;
@@ -267,7 +268,7 @@ public class AdminServiceImpl implements AdminService {
      * @return
      */
     @Override
-    public Map<String, Object>  findApprove(Integer approveState, PageRequest request) {
+    public Map<String, Object> findApprove(Integer approveState, PageRequest request) {
 
         Page<UserApprove> all;
         if (approveState == 0) {
@@ -308,23 +309,54 @@ public class AdminServiceImpl implements AdminService {
 
     /**
      * 浏览记录
+     *
      * @param id
      * @return
      */
     @Override
-    public Map<String, Object> findView(Integer id,Integer day) {
+    public Map<String, Object> findView(Integer id, Integer day) {
 
         Calendar now = Calendar.getInstance();
-        now.set(Calendar.DATE,now.get(Calendar.DATE) - day);
+        now.set(Calendar.DATE, now.get(Calendar.DATE) - day);
 
         Date startTime = DateUtil.getStartTime(now.getTime());
         Date endTime = DateUtil.getEndTime(now.getTime());
         List<PublishView> viewers = publishViewRepository.findByPublishIdAndViewTimeBetweenOrderByViewTimeDesc(id, startTime, endTime);
 
-        if(viewers.isEmpty()){
+        if (viewers.isEmpty()) {
 
         }
         return null;
     }
 
+    /**
+     * 认证审核
+     *
+     * @param id
+     * @param approveType
+     * @param msg
+     * @return
+     */
+    @Transactional
+    @Override
+    public boolean modifyApprove(Integer id, Integer approveType, String msg) {
+
+        UserApprove approve = userApproveRepository.findOne(id);
+        if (approve == null)
+            throw new PetHomeException(ResultEnum.RESULT_EMPTY);
+
+        approve.setApproveState(approveType);
+        approve.setDescription(msg);
+
+        userApproveRepository.save(approve);
+
+
+        UserBasic userBasic = userBasicRepository.findByOpenId(approve.getUserId());
+        if (userBasic == null)
+            throw new PetHomeException(ResultEnum.RESULT_EMPTY);
+
+        userBasic.setApproveState(approveType);
+        userBasicRepository.save(userBasic);
+        return true;
+    }
 }
