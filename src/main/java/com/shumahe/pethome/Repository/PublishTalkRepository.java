@@ -88,7 +88,7 @@ public interface PublishTalkRepository extends JpaRepository<PublishTalk, Intege
     int notReadTalksCount(String ReplierAccept,Integer readCount);
 
 
-    List<PublishTalk> findByPublishIdOrderByReplyDateDesc(Integer id, Pageable pageRequest);
+    Page<PublishTalk> findByPublishIdOrderByReplyDateDesc(Integer id, Pageable pageRequest);
 
 
     List<PublishTalk>  findByPublisherIdAndReadState(String publisherId,Integer readState);

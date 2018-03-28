@@ -2,6 +2,7 @@ package com.shumahe.pethome.Repository;
 
 import com.shumahe.pethome.Domain.UserTalk;
 
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -29,7 +30,7 @@ public interface UserTalkRepository extends JpaRepository<UserTalk, Integer> {
     List<UserTalk> findByPublishIdOrderByTalkId(Integer publishId);
 
 
-    List<UserTalk> findByPublishIdOrderByIdDesc(Integer publishId, Pageable pageable);
+    Page<UserTalk> findByPublishIdOrderByIdDesc(Integer publishId, Pageable pageable);
 
 
     @Query(value = "SELECT * FROM usertalk where publishId = ?1 AND talkId in (select top(50) talkId from UserTalk  where publishId = ?2 AND useridfrom = ?3 ORDER  BY talktime ) AND showstate = 1;", nativeQuery = true)

@@ -2,9 +2,11 @@ package com.shumahe.pethome.Repository;
 
 
 import com.shumahe.pethome.Domain.UserDynamic;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 
+import java.util.Date;
 import java.util.List;
 
 public interface UserDynamicRepository extends JpaRepository<UserDynamic, Integer> {
@@ -22,7 +24,10 @@ public interface UserDynamicRepository extends JpaRepository<UserDynamic, Intege
     UserDynamic findByUserIdFromAndPublishIdAndDynamicType(String openId, Integer publishId,Integer dynamicType);
 
 
+    List<UserDynamic> findByPublishIdInAndDynamicType(List<Integer> publisherIds , Integer dynamicType);
 
+
+    List<UserDynamic> findByPublishIdIn(List<Integer> publisherIds);
 
 
     /**
@@ -48,7 +53,11 @@ public interface UserDynamicRepository extends JpaRepository<UserDynamic, Intege
     /**
      * 某个发布的    转发 || 关注
      */
-    List<UserDynamic> findByPublishIdAndDynamicTypeOrderByCreateTimeDesc(Integer publishId, int dynamicType, Pageable pageable);
+    Page<UserDynamic> findByPublishIdAndDynamicTypeOrderByCreateTimeDesc(Integer publishId, int dynamicType, Pageable pageable);
+
+
+
+    List<UserDynamic> findByPublishIdAndDynamicTypeAndCreateTimeBetweenOrderByCreateTimeDesc(Integer publishId, int dynamicType, Date beginTime,Date endTime);
 
 
 }

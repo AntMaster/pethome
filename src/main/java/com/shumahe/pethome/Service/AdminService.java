@@ -28,13 +28,13 @@ public interface AdminService {
     /**
      * 转发 关注
      */
-    Map<String, List<Map<String, String>>> findDynamic(Integer id, Integer dynamicType, PageRequest pageRequest);
+    List<Map<String, String>> findDynamic(Integer id, Integer dynamicType, Integer day);
 
 
     /**
      * 私信
      */
-    List<PrivateMsgDTO> findPrivateMsg(Integer id, PageRequest pageRequest);
+    Map<String, Object> findPrivateMsg(Integer id, PageRequest pageRequest);
 
 
     /**
@@ -45,7 +45,7 @@ public interface AdminService {
     /**
      * 互动
      */
-    List<PublicMsgDTO> findPublicMsg(Integer id, PageRequest pageRequest);
+    Map<String, Object> findPublicMsg(Integer id, PageRequest pageRequest);
 
 
     /**

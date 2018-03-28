@@ -91,6 +91,11 @@ var app = new Vue({
             });
             this.laodPetVariety();
         },
+        closeDetail: function (event) {
+            if (!event.overlay) {
+                $(".marker-card").fadeOut();
+            }
+        },
         laodPetVariety: function () {
             this.showVarietyArr = this.dogVarietyArr;
         },
@@ -102,7 +107,7 @@ var app = new Vue({
         },
         search: function () {
 
-            if(!this.keyword){
+            if (!this.keyword) {
                 $.toast("搜索关键字不能为空~");
                 return;
             }
@@ -110,12 +115,12 @@ var app = new Vue({
                 url: "/pethome/search/",
                 dataType: "json",
                 type: "GET",
-                data:{
-                    publishType : app.publishType,
-                    classifyId : app.classifyID,
-                    varietyId : app.varietyID,
-                    petSex : app.petSex,
-                    keyWord : app.keyword
+                data: {
+                    publishType: app.publishType,
+                    classifyId: app.classifyID,
+                    varietyId: app.varietyID,
+                    petSex: app.petSex,
+                    keyWord: app.keyword
                 },
                 success: function (res) {
 
@@ -131,8 +136,8 @@ var app = new Vue({
         draw: function () {
 
         },
-        reset:function () {
-          //重置筛选信息
+        reset: function () {
+            //重置筛选信息
             this.publishType = -1;
             this.classifyID = -1;
             this.varietyID = -1;
@@ -192,7 +197,7 @@ var app = new Vue({
             this.tempActiveCard = item;
             $(".marker-card").fadeIn();
         },
-        goDetail :function (tempActiveCard) {
+        goDetail: function (tempActiveCard) {
 
             //认证流程
             $.ajax({

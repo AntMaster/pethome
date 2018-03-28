@@ -2,14 +2,9 @@ package com.shumahe.pethome.Service.BaseImpl;
 
 import com.shumahe.pethome.Convert.Publish2PublishDTOConvert;
 import com.shumahe.pethome.DTO.PublishDTO;
-import com.shumahe.pethome.Domain.PetPublish;
-import com.shumahe.pethome.Domain.PetVariety;
-import com.shumahe.pethome.Domain.PublishView;
-import com.shumahe.pethome.Domain.UserBasic;
-import com.shumahe.pethome.Repository.PetVarietyRepository;
-import com.shumahe.pethome.Repository.PublishTalkRepository;
-import com.shumahe.pethome.Repository.PublishViewRepository;
-import com.shumahe.pethome.Repository.UserBasicRepository;
+import com.shumahe.pethome.Domain.*;
+import com.shumahe.pethome.Enums.DynamicTypeEnum;
+import com.shumahe.pethome.Repository.*;
 import com.shumahe.pethome.Service.BaseService.PublishBaseService;
 import com.shumahe.pethome.Util.DateUtil;
 
@@ -37,6 +32,9 @@ public class PublishBaseServiceImpl implements PublishBaseService {
     @Autowired
     PetVarietyRepository petVarietyRepository;
 
+    @Autowired
+    UserDynamicRepository userDynamicRepository;
+
     /**
      * 查询发布扩展信息(发布人详情 + 评论数详情)
      *
@@ -51,7 +49,7 @@ public class PublishBaseServiceImpl implements PublishBaseService {
         List<String> userIds = publishes.stream().map(e -> e.getPublisherId()).distinct().collect(Collectors.toList());
 
         /**
-         * step 1  评论数量
+         * step 1  评论count
          */
         List<Object[]> commentCount = publishTalkRepository.findPublishCommentCount(publishIds);
 
@@ -69,7 +67,7 @@ public class PublishBaseServiceImpl implements PublishBaseService {
 
 
         /**
-         * step 2  浏览数量
+         * step 2  浏览count
          */
         List<Integer[]> viewObject = publishViewRepository.findViewCount(publishIds);
         List<Map<Integer, Integer>> viewCount = new ArrayList<>();
@@ -82,21 +80,43 @@ public class PublishBaseServiceImpl implements PublishBaseService {
             });
         }
 
+        List<UserDynamic> dynamics = userDynamicRepository.findByPublishIdIn(publishIds);
+        //转发和关注分组
+        Map<Integer, List<UserDynamic>> collect = dynamics.stream().collect(Collectors.groupingBy(UserDynamic::getDynamicType));
 
         /**
-         *  step 3 发布人ID查询发布人基本信息
+         * step3 转发count
+         */
+        List<UserDynamic> shareDynamics = collect.get(DynamicTypeEnum.SHARE.getCode());
+        Map<Integer, Long> publishShareCount = new HashMap<>();
+        if (shareDynamics != null) {
+            publishShareCount = shareDynamics.stream().collect(Collectors.groupingBy(UserDynamic::getPublishId, Collectors.counting()));
+        }
+
+        /**
+         * step4 关注count
+         */
+        List<UserDynamic> likeDynamics = collect.get(DynamicTypeEnum.LIKE.getCode());
+        Map<Integer, Long> publishLikeCount = new HashMap<>();
+        if (likeDynamics != null) {
+            publishLikeCount = likeDynamics.stream().collect(Collectors.groupingBy(UserDynamic::getPublishId, Collectors.counting()));
+        }
+
+
+        /**
+         *  step 5 发布人ID查询发布人基本信息
          */
         List<UserBasic> userBasics = userBasicRepository.findByOpenIdIn(userIds);
 
 
         /**
-         *  step 4 宠物品种
+         *  step 6 宠物品种
          */
         Map<Integer, Map<Integer, PetVariety>> petVariety = this.findPetVariety();
 
 
         /**
-         *  step 5  合成发布信息 =  发布信息 + 评论信息 +  发布人基本信息
+         *  step 7  合成发布信息 =  发布信息 + 评论信息 +  发布人基本信息
          */
         List<PublishDTO> publishDTOS = Publish2PublishDTOConvert.convert(publishes);
 
@@ -135,10 +155,24 @@ public class PublishBaseServiceImpl implements PublishBaseService {
             //品种
             Map<Integer, PetVariety> classifyMap = petVariety.get(publishDTO.getClassifyId());
             PetVariety variety = classifyMap.get(publishDTO.getVarietyId());
-            if (variety!= null)
-            publishDTO.setVarietyName(variety.getName());
-
+            if (variety != null)
+                publishDTO.setVarietyName(variety.getName());
         });
+
+        for (PublishDTO publishDTO : publishDTOS) {
+
+            //转发
+            if (publishShareCount.get(publishDTO.getId()) != null) {
+                int shareCount = publishShareCount.get(publishDTO.getId()).intValue();
+                publishDTO.setShareCount(shareCount);
+            }
+
+            //关注
+            if (publishLikeCount.get(publishDTO.getId()) != null) {
+                int likeCount = publishLikeCount.get(publishDTO.getId()).intValue();
+                publishDTO.setLikeCount(likeCount);
+            }
+        }
 
 
         return publishDTOS;

@@ -107,7 +107,7 @@
                 </div>
             </div>
         </div>
-        <baidu-map class="bm-view" mapType="BMAP_NORMAL_MAP" :zoom="12" :scroll-wheel-zoom="true" center="武汉">
+        <baidu-map @click="closeDetail" class="bm-view" mapType="BMAP_NORMAL_MAP" :zoom="12" :scroll-wheel-zoom="true" center="武汉">
             <!-- 定位 -->
             <bm-geolocation anchor="BMAP_ANCHOR_BOTTOM_RIGHT" :showaddressbar="true" :autolocation="true"></bm-geolocation>
             <!-- 缩放Btn -->

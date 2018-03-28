@@ -80,15 +80,13 @@ public class AdminController {
     @GetMapping("/forward/{id}")
     public ResultVO findDynamic(@PathVariable("id") Integer id,
                                 @RequestParam(value = "dynamicType", defaultValue = "0") Integer dynamicType,
-                                @RequestParam(value = "page", defaultValue = "0") Integer page,
-                                @RequestParam(value = "size", defaultValue = "100") Integer size) {
+                                @RequestParam(value = "day",defaultValue = "0")Integer day) {
 
         if (dynamicType == 0) {
             throw new PetHomeException(ResultEnum.PARAM_ERROR);
         }
 
-        PageRequest pageRequest = new PageRequest(page, size);
-        Map<String, List<Map<String, String>>> dynamic = adminService.findDynamic(id, dynamicType, pageRequest);
+        List<Map<String, String>> dynamic = adminService.findDynamic(id, dynamicType, day);
         return ResultVOUtil.success(dynamic);
     }
 
@@ -101,7 +99,7 @@ public class AdminController {
                                 @RequestParam(value = "size", defaultValue = "100") Integer size) {
 
         PageRequest pageRequest = new PageRequest(page, size);
-        List<PrivateMsgDTO> privateMsg = adminService.findPrivateMsg(id, pageRequest);
+        Map<String, Object> privateMsg = adminService.findPrivateMsg(id, pageRequest);
         return ResultVOUtil.success(privateMsg);
 
     }
@@ -126,7 +124,7 @@ public class AdminController {
                                 @RequestParam(value = "size", defaultValue = "100") Integer size) {
 
         PageRequest pageRequest = new PageRequest(page, size);
-        List<PublicMsgDTO> publicMsg = adminService.findPublicMsg(id, pageRequest);
+        Map<String, Object> publicMsg = adminService.findPublicMsg(id, pageRequest);
         return ResultVOUtil.success(publicMsg);
 
     }

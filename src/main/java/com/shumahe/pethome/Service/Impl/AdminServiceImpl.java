@@ -97,7 +97,7 @@ public class AdminServiceImpl implements AdminService {
      * 转发 || 关注
      */
     @Override
-    public Map<String, List<Map<String, String>>> findDynamic(Integer id, Integer dynamicType, PageRequest pageRequest) {
+    public List<Map<String, String>> findDynamic(Integer id, Integer dynamicType, Integer day) {
 
         PetPublish publish = petPublishRepository.findById(id);
 
@@ -105,7 +105,15 @@ public class AdminServiceImpl implements AdminService {
             throw new PetHomeException(ResultEnum.RESULT_EMPTY);
         }
 
-        List<UserDynamic> dynamics = userDynamicRepository.findByPublishIdAndDynamicTypeOrderByCreateTimeDesc(id, dynamicType, pageRequest);
+
+        Calendar now = Calendar.getInstance();
+        now.set(Calendar.DATE, now.get(Calendar.DATE) - day);
+
+        Date startTime = DateUtil.getStartTime(now.getTime());
+        Date endTime = DateUtil.getEndTime(now.getTime());
+
+        List<UserDynamic> dynamics = userDynamicRepository.findByPublishIdAndDynamicTypeAndCreateTimeBetweenOrderByCreateTimeDesc(id, dynamicType, startTime, endTime);
+
         if (dynamics.isEmpty()) {
             throw new PetHomeException(ResultEnum.RESULT_EMPTY);
         }
@@ -113,14 +121,12 @@ public class AdminServiceImpl implements AdminService {
         List<String> usersId = dynamics.stream().map(e -> e.getUserIdFrom()).distinct().collect(Collectors.toList());
 
         List<UserBasic> users = userBasicRepository.findByOpenIdIn(usersId);
-
-
         List<Map<String, String>> res = new ArrayList<>();
+
 
         dynamics.stream().forEach(dynamic -> {
 
             Map<String, String> _temp = new HashMap<>();
-
             _temp.put("dynamicDate", dynamic.getCreateTime().toString().split(" ")[0]);
             _temp.put("dynamicTime", dynamic.getCreateTime().toString());
 
@@ -136,16 +142,14 @@ public class AdminServiceImpl implements AdminService {
             res.add(_temp);
         });
 
-        Map<String, List<Map<String, String>>> dynamicResult = res.stream().collect(Collectors.groupingBy(e -> e.get("dynamicDate")));
-
-        return dynamicResult;
+        return res;
     }
 
     /**
      * 私信
      */
     @Override
-    public List<PrivateMsgDTO> findPrivateMsg(Integer id, PageRequest pageRequest) {
+    public Map<String, Object> findPrivateMsg(Integer id, PageRequest pageRequest) {
 
         PetPublish publish = petPublishRepository.findById(id);
 
@@ -153,7 +157,9 @@ public class AdminServiceImpl implements AdminService {
             throw new PetHomeException(ResultEnum.RESULT_EMPTY);
         }
 
-        List<UserTalk> talks = userTalkRepository.findByPublishIdOrderByIdDesc(id, pageRequest);
+        Page<UserTalk> page = userTalkRepository.findByPublishIdOrderByIdDesc(id, pageRequest);
+
+        List<UserTalk> talks = page.getContent();
         if (talks.isEmpty()) {
             throw new PetHomeException(ResultEnum.RESULT_EMPTY);
         }
@@ -179,7 +185,15 @@ public class AdminServiceImpl implements AdminService {
             msgDTOS.add(msgDTO);
         });
 
-        return msgDTOS;
+
+        Map<String, Object> res = new HashMap<>();
+        res.put("total", page.getTotalElements());
+        res.put("pages", page.getTotalPages());
+        res.put("size", page.getSize());
+        res.put("page", page.getNumber());
+        res.put("data", msgDTOS);
+
+        return res;
     }
 
 
@@ -205,7 +219,7 @@ public class AdminServiceImpl implements AdminService {
      * 互动
      */
     @Override
-    public List<PublicMsgDTO> findPublicMsg(Integer id, PageRequest pageRequest) {
+    public Map<String, Object> findPublicMsg(Integer id, PageRequest pageRequest) {
 
 
         PetPublish publish = petPublishRepository.findById(id);
@@ -214,7 +228,8 @@ public class AdminServiceImpl implements AdminService {
             throw new PetHomeException(ResultEnum.RESULT_EMPTY);
         }
 
-        List<PublishTalk> talks = publishTalkRepository.findByPublishIdOrderByReplyDateDesc(id, pageRequest);
+        Page<PublishTalk> page = publishTalkRepository.findByPublishIdOrderByReplyDateDesc(id, pageRequest);
+        List<PublishTalk> talks = page.getContent();
         if (talks.isEmpty()) {
             throw new PetHomeException(ResultEnum.RESULT_EMPTY);
         }
@@ -240,8 +255,13 @@ public class AdminServiceImpl implements AdminService {
             msgDTOS.add(msgDTO);
         });
 
-        return msgDTOS;
-
+        Map<String, Object> res = new HashMap<>();
+        res.put("total", page.getTotalElements());
+        res.put("pages", page.getTotalPages());
+        res.put("size", page.getSize());
+        res.put("page", page.getNumber());
+        res.put("data", msgDTOS);
+        return res;
     }
 
 
@@ -314,7 +334,7 @@ public class AdminServiceImpl implements AdminService {
      * @return
      */
     @Override
-    public List<Map<String,String>> findView(Integer id, Integer day) {
+    public List<Map<String, String>> findView(Integer id, Integer day) {
 
         Calendar now = Calendar.getInstance();
         now.set(Calendar.DATE, now.get(Calendar.DATE) - day);
@@ -327,17 +347,17 @@ public class AdminServiceImpl implements AdminService {
         List<UserBasic> users = userBasicRepository.findByOpenIdIn(userIds);
         Map<String, UserBasic> usersMap = users.stream().collect(Collectors.toMap(e -> e.getOpenId().trim(), Function.identity()));
 
-        List<Map<String,String>> res = new ArrayList<>();
-       if (viewers.isEmpty())
+        List<Map<String, String>> res = new ArrayList<>();
+        if (viewers.isEmpty())
             return res;
 
-        viewers.forEach(e->{
+        viewers.forEach(e -> {
             UserBasic curUser = usersMap.get(e.getViewer());
-            Map<String,String> _temp = new HashMap<>();
-            _temp.put("viewerId",curUser.getOpenId());
-            _temp.put("viewerName",curUser.getNickName());
-            _temp.put("viewerImage",curUser.getHeadImgUrl());
-            _temp.put("viewTime",e.getViewTime().toString());
+            Map<String, String> _temp = new HashMap<>();
+            _temp.put("viewerId", curUser.getOpenId());
+            _temp.put("viewerName", curUser.getNickName());
+            _temp.put("viewerImage", curUser.getHeadImgUrl());
+            _temp.put("viewTime", e.getViewTime().toString());
             res.add(_temp);
         });
 

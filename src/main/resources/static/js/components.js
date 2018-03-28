@@ -105,31 +105,80 @@ Vue.component('mc-tabbar', {
             if (this.lv == 2) return "../mine.html?openid=" + GetQueryString("openid");
             return "mine.html?openid=" + GetQueryString("openid");
         },
-        tabbarIcon: function (i) {
+        tabbarIcon:function(i) {
             switch (i) {
-                case 1: {
-                    if (this.lv == 2) return "../img/icon/icon-wang.png";
-                    return "img/icon/icon-wang.png";
+                case 1:
+                {
+                    if (this.lv == 2) {
+                        if (this.index) {
+                            return "..img/icon/bar-home-active.png";
+                        } else {
+                            return "..img/icon/bar-home.png";
+                        }
+                    } else {
+                        if (this.index) {
+                            return "img/icon/bar-home-active.png";
+                        } else {
+                            return "img/icon/bar-home.png";
+                        }
+                    }
                 }
                     break;
-                case 2: {
-                    if (this.lv == 2) return "../img/icon/icon-wang.png";
-                    return "img/icon/icon-wang.png";
+                case 2:
+                {
+                    if (this.lv == 2) {
+                        if (this.search) {
+                            return "..img/icon/bar-search-active.png";
+                        } else {
+                            return "..img/icon/bar-search.png";
+                        }
+                    } else {
+                        if (this.search) {
+                            return "img/icon/bar-search-active.png";
+                        } else {
+                            return "img/icon/bar-search.png";
+                        }
+                    }
                 }
                     break;
-                case 3: {
-                    if (this.lv == 2) return "../img/icon/icon-publish.png";
+                case 3:
+                {
+                    if (this.lv == 2) return "..img/icon/icon-publish.png";
                     return "img/icon/icon-publish.png";
                 }
                     break;
-                case 4: {
-                    if (this.lv == 2) return "../img/icon/icon-wang.png";
-                    return "img/icon/icon-wang.png";
+                case 4:
+                {
+                    if (this.lv == 2) {
+                        if (this.card) {
+                            return "..img/icon/bar-card-active.png";
+                        } else {
+                            return "..img/icon/bar-card.png";
+                        }
+                    } else {
+                        if (this.card) {
+                            return "img/icon/bar-card-active.png";
+                        } else {
+                            return "img/icon/bar-card.png";
+                        }
+                    }
                 }
                     break;
-                case 5: {
-                    if (this.lv == 2) return "../img/icon/icon-wang.png";
-                    return "img/icon/icon-wang.png";
+                case 5:
+                {
+                    if (this.lv == 2) {
+                        if (this.mine) {
+                            return "..img/icon/bar-mine-active.png";
+                        } else {
+                            return "..img/icon/bar-mine.png";
+                        }
+                    } else {
+                        if (this.mine) {
+                            return "img/icon/bar-mine-active.png";
+                        } else {
+                            return "img/icon/bar-mine.png";
+                        }
+                    }
                 }
                     break;
                 default:
