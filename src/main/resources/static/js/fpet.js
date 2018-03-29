@@ -159,6 +159,7 @@ $("#datetime-picker").datetimePicker({
 });
 
 $(document).on("pageInit", function (e, pageId, $page) {
+
     if (pageId == 'locationPage') {
         //地图组件初始化
         Vue.use(VueBaiduMap.default, {
@@ -176,6 +177,9 @@ $(document).on("pageInit", function (e, pageId, $page) {
                 location: "武汉",
                 resList: []
             },
+            mounted:function () {
+                //alert('已更新');
+            },
             methods: {
                 search: function (w) {
                     //alert(w);
@@ -186,6 +190,9 @@ $(document).on("pageInit", function (e, pageId, $page) {
                     if (res.zr.length > 0) {
                         this.resList = res.zr;
                     }
+                },
+                handleLocationSuccess:function (res) {
+                    alert(res);
                 },
                 selectAddress: function (address, point) {
                     $.router.back("fpet.html");

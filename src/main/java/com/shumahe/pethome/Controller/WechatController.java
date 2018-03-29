@@ -124,7 +124,6 @@ public class WechatController {
         //1. 配置
         //2. 调用方法
         String url = projectUrlConfig.getWechatMpAuthorize() + "/pethome/wechat/userinfo";
-
         String redirectUrl;
         try {
             redirectUrl = wxMpService.oauth2buildAuthorizationUrl(url, WxConsts.OAuth2Scope.SNSAPI_USERINFO, URLEncoder.encode(returnUrl, "UTF-8"));
@@ -150,7 +149,7 @@ public class WechatController {
      *
      * @param code
      * @param returnUrl
-     * @return
+     * @return http://girl.nat300.top/pethome//detail.html?openid=oCLNDwc8bUgjnBUibOX1yfPh5Ni0
      * @throws WxErrorException
      */
     @GetMapping("/userinfo")
@@ -158,15 +157,28 @@ public class WechatController {
                            @RequestParam("state") String returnUrl) throws WxErrorException {
 
         WxMpOAuth2AccessToken wxMpOAuth2AccessToken = wxMpService.oauth2getAccessToken(code);//如果code使用过，5分钟内再次使用会报错。
+        //{"errcode":40001,"errmsg":"invalid credential, access_token is invalid or not latest, hints: [ req_id: 4y0XGa0264s152 ]"}
         WxMpUser user = wxMpService.oauth2getUserInfo(wxMpOAuth2AccessToken, null);
 
+        /**
+         * 创建/更新用户
+         */
+        UserBasic userBasic = saveUser(user);
+        if(returnUrl.contains("detail.html")){
 
-        saveUser(user);
-        return "redirect:" + returnUrl + "?openid=" + wxMpOAuth2AccessToken.getOpenId();
+            if (userBasic.getApproveState() == 1){
+                return "redirect:" + returnUrl + "&openid=" + wxMpOAuth2AccessToken.getOpenId()  ;
+            }else {
+                return "redirect:" + returnUrl.split("detail.html")[0] + "index.html?openid=" + wxMpOAuth2AccessToken.getOpenId();
+            }
+
+        }else{
+            return "redirect:" + returnUrl + "?openid=" + wxMpOAuth2AccessToken.getOpenId();
+        }
     }
 
     @Transactional
-    protected  void saveUser(WxMpUser user) {
+    protected  UserBasic saveUser(WxMpUser user) {
 
         UserBasic userBasic = userBasicRepository.findByAppIdAndOpenId(wechatAccountConfig.getMpAppId(), user.getOpenId());
         if (userBasic == null) {
@@ -185,6 +197,7 @@ public class WechatController {
         tagsMapping.setTagId(MemberTagsEnum.Volunteer.getCode());
         memberTagsMappingRepository.save(tagsMapping);
 
+        return userBasic;
     }
 
     @GetMapping("/menu")

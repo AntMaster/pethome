@@ -21,7 +21,7 @@ public class ExceptionHandle {
             return ResultVOUtil.error(petHomeException.getCode(), petHomeException.getMessage());
         } else {
             log.error("【系统异常】{}", e);
-            return ResultVOUtil.error(999, e.getMessage());
+            return ResultVOUtil.error(999, "累了先休息一下吧");
         }
     }
 }

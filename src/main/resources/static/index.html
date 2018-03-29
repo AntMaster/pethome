@@ -134,7 +134,6 @@
 <script>
 
     $(function () {
-        console.log(GetQueryString("openid"))
         $.ajax({
             url: '/pethome/wechat/jsApiSignature',
             type: 'GET',
@@ -144,13 +143,12 @@
             },
             success: function (res) {
                 if (res.code === 1) {
-
                     wx.config({
-                        debug: false, // 开启调试模式,调用的所有api的返回值会在客户端alert出来
-                        appId: res.data.appId, // 必填，公众号的唯一标识
-                        timestamp: res.data.timestamp, // 必填，生成签名的时间戳
-                        nonceStr: res.data.nonceStr, // 必填，生成签名的随机串
-                        signature: res.data.signature,// 必填，签名，见附录1
+                        debug: false,
+                        appId: res.data.appId,
+                        timestamp: res.data.timestamp,
+                        nonceStr: res.data.nonceStr,
+                        signature: res.data.signature,
                         jsApiList: [
                             "onMenuShareTimeline",
                             "onMenuShareAppMessage",
@@ -165,38 +163,41 @@
 
         wx.ready(function () {
 
+            var wechatParams = {};
+            wechatParams.title = "寻宠寻主新方式";
+            wechatParams.desc = "寻宠寻主太闹心？免费一键发布“寻主&寻宠”信息，云端备份全民救助少担心。";
+            wechatParams.link = getAuthURL() + 'index.html';
+            wechatParams.imgUrl = getResourceUlr() + 'upload/picture/petLove.png';
+            /**
+             * 分享好友
+             */
+            wx.onMenuShareAppMessage({
+
+                title: wechatParams.title,
+                desc: wechatParams.desc,
+                link: wechatParams.link,
+                imgUrl: wechatParams.imgUrl,
+                success: function () {
+                    $.toast("分享成功")
+                },
+                cancel: function () {
+                },
+                fail: function (){
+                }
+            });
+
             /**
              * 朋友圈
              */
-
-            wx.onMenuShareAppMessage({
-                title: '0.0',
-                desc: '从前有一只大鱼和一只小鱼。有一天 小鱼问大鱼：大～鱼～大～鱼～你～平～常～喜～欢～吃～什～么～丫。大鱼说：我～喜～欢～吃～说～话～慢～的～小～鱼。然后小鱼说：喔 酱紫 造了！',
-                link: 'http://girl.nat300.top/pethome/wechat/webAuth?returnUrl=http://girl.nat300.top/pethome/index.html',
-                imgUrl: 'http://girl.nat300.top/pethome/upload/picture/publish/1521309726224418606052492799746.jpg',
-                trigger: function (res) {
-                    // 不要尝试在trigger中使用ajax异步请求修改本次分享的内容，因为客户端分享操作是一个同步操作，这时候使用ajax的回包会还没有返回
-                    alert('用户点击发送给朋友');
-                },
-                success: function (res) {
-                    alert('已分享');
-                },
-                cancel: function (res) {
-                    alert('已取消');
-                },
-                fail: function (res) {
-                    alert(JSON.stringify(res));
-                }
-            });
             wx.onMenuShareTimeline({
-                title: '溜了溜了',
-                desc: '从前有一只大鱼和一只小鱼。有一天 小鱼问大鱼：大～鱼～大～鱼～你～平～常～喜～欢～吃～什～么～丫。大鱼说：我～喜～欢～吃～说～话～慢～的～小～鱼。然后小鱼说：喔 酱紫 造了！',
-                link: 'http://girl.nat300.top/pethome/index.html?openid=' + GetQueryString("openid"),
-                imgUrl: 'https://avatars3.githubusercontent.com/u/12826895?s=460&v=4',
+                title: wechatParams.title,
+                desc: wechatParams.desc,
+                link: wechatParams.link,
+                imgUrl: wechatParams.imgUrl,
                 success: function () {
-                    alert("success")
+                    $.toast("分享成功")
                 }, cancel: function () {
-                    alert("cancel")
+
                 }
             });
 
@@ -388,9 +389,9 @@
                     data: JSON.stringify(params),
                     success: function (res) {
                         if (res.data === true) {
-                            if(likeState){
+                            if (likeState) {
                                 $.toast("已取关");
-                            }else {
+                            } else {
                                 $.toast("已关注");
                             }
                             app.dynamicArr[index].likeState = !likeState;

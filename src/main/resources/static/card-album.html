@@ -28,8 +28,10 @@
                     {{pet.nickName}}
                 </div>
                 <!-- 类别 -->
-                <div class="classify classify-dog">
-                    <span class="icon"></span> {{pet.classifyId == 2 ? "喵" : "汪"}}
+                <div class="classify" :class="{sexMale:pet.sex == 1, sexFemale:pet.sex == 0}">
+                    <span class="icon">
+                        <img :src="pet.sex == 1 ? 'img/icon/card-male.png' : 'img/icon/card-female.png'" alt="">
+                    </span> {{pet.classifyId == 2 ? "喵" : "汪"}}
                 </div>
                 <div class="info-box">
                     <div class="info-item">
@@ -81,7 +83,6 @@
             <div class="album-list">
                 <div class="album-body">
                     <div class="album-pic" style="background-image:none;">
-
                     </div>
                     <div class="album-new">
                         <p>+</p>
@@ -92,7 +93,7 @@
                 <div v-for="(item,index) in petAlbums" class="album-body">
                     <!--这是封面图-->
                     <div class="album-pic" v-on:click="clickAlbum(index,item.id)" >
-                        <img :src="item.coverPath" alt="">
+                        <img v-show="item.coverPath" :src="item.coverPath" alt="">
                         <div class="album-del" v-show="isManageModel">
                             <img :src="albumConfArr[index].icon" alt="" />
                         </div>

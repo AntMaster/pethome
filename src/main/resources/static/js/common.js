@@ -1,5 +1,12 @@
 //document.documentElement.style.fontSize = document.documentElement.clientWidth / 640 * 100 + 'px';
 
+function getAuthURL(){
+    return "http://girl.nat300.top/pethome/wechat/webAuth?returnUrl=http://girl.nat300.top/pethome/";
+}
+
+function  getResourceUlr() {
+    return "http://girl.nat300.top/pethome/";
+}
 
 Date.prototype.Format = function (fmt) { //author: meizz
     var o = {

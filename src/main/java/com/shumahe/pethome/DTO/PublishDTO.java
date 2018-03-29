@@ -107,6 +107,11 @@ public class PublishDTO {
     //互动信息
     private List<List<PublicMsgDTO>> publicTalk;
 
+    /**
+     * 用户认证状态
+     */
+    private Integer approveState = 0;
+
 }
 
 

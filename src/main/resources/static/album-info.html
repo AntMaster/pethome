@@ -21,9 +21,10 @@
     <div class="content albumPage-content">
         <!--封面-->
         <div class="album-cover">
+            <img class="cover-img" :src=" petType == 2 ? 'img/album-back-cat.png' : 'img/album-back-dog.png' "/>
             <div class="album-name">
                 {{albumData.name}}
-                <img src="" alt="" class="editAlbumName" />
+                <img src="img/icon/album-nameEdit.jpg" alt="" class="editAlbumName" />
             </div>
             <div class="album-num">
                 {{albumData.photoCount}}张

@@ -113,7 +113,7 @@ var app = new Vue({
         clickAlbum: function (index, albumId) {
             if (!this.isManageModel) {
                 //非管理状态下直接进入相册详情
-                window.location.href = "album-info.html?openid=" + GetQueryString("openid") + "&albumid=" + albumId;
+                window.location.href = "album-info.html?openid=" + GetQueryString("openid") + "&albumid=" + albumId + "&classifyid=" + this.pet.classifyId;
                 return false;
             }
             //判断选中的相册是否是选中状态 0未选中 1选中

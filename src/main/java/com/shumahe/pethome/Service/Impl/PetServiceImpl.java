@@ -11,6 +11,7 @@ import com.shumahe.pethome.Exception.PetHomeException;
 import com.shumahe.pethome.Form.UserPetAlbumForm;
 import com.shumahe.pethome.Form.UserPetForm;
 import com.shumahe.pethome.Form.UserPetPhotoForm;
+import com.shumahe.pethome.Repository.PetPublishRepository;
 import com.shumahe.pethome.Repository.UserPetAlbumRepository;
 import com.shumahe.pethome.Repository.UserPetPhotoRepository;
 import com.shumahe.pethome.Repository.UserPetRepository;
@@ -41,6 +42,9 @@ public class PetServiceImpl implements PetService {
 
     @Autowired
     UserPetPhotoRepository userPetPhotoRepository;
+
+    @Autowired
+    PetPublishRepository petPublishRepository;
 
     /**
      * 新增   宠卡

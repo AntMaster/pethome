@@ -92,6 +92,7 @@ var app = new Vue({
             this.laodPetVariety();
         },
         closeDetail: function (event) {
+            alert(event.overlay);
             if (!event.overlay) {
                 $(".marker-card").fadeOut();
             }

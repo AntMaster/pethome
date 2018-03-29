@@ -33,6 +33,7 @@ var app = new Vue({
     },
     mounted: function () {
         this.loadPhotoList();
+        this.petType = GetQueryString("classifyid")
     },
     updated: function () {
         setPhotoBoxStyle();
@@ -199,18 +200,36 @@ var app = new Vue({
 $(document).on('click', '.editAlbumName', function () {
     $.modal({
         title: '修改相册名称',
-        text: '<input type="" class="album-edit" placeholder="请添加相册名称"/>',
+        text: '<input type=""  class="album-edit" placeholder="输入相册名称"/>',
         buttons: [{
             text: '取消',
             bold: true,
             onClick: function () {
-                $.alert('取消了')
+                //$.alert('取消了')
             }
         }, {
             text: '保存',
             bold: true,
             onClick: function () {
-                $.alert('修改已保存')
+                var name = $(".album-edit").val();
+                if(!name){
+                    $.toast("请输入相册文字");
+                    return;
+                }
+
+                $.ajax({
+                    url: "/pethome/pet/album/"+GetQueryString("albumid"),
+                    type: 'POST',
+                    data: {
+                        name : name
+                    },
+                    success: function (res) {
+                        if(res.code){
+                            app.albumData.name = res.data.name;
+                            $.toast("修改成功");
+                        }
+                    }
+                });
             }
         },]
     })

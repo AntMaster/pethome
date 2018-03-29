@@ -15,6 +15,8 @@ public class UserPetAlbumDTO {
 
     private String name;
 
+    private Integer classifyId;
+
     private String coverPath;
 
     private String description;

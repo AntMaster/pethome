@@ -19,7 +19,15 @@
     background-color: #999999;
     position: relative;
     margin-bottom: 1.5rem;
+    position:relative;
     /*封面图片作为背景设置*/
+}
+.album-cover .cover-img{
+    position:absolute;
+    top:0;
+    left:0;
+    width:100%;
+    height:100%;
 }
 
 .album-name {
@@ -36,7 +44,6 @@
     display: inline-block;
     width: 0.8rem;
     height: 0.8rem;
-    background-color: red;
     margin-left: 0.4rem;
 }
 

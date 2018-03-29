@@ -53,7 +53,7 @@ public class DynamicController {
 
 
     /**
-     * 关注取关 操作
+     * 关注  取关 操作
      *
      * @param openId
      * @return
@@ -65,6 +65,18 @@ public class DynamicController {
         return ResultVOUtil.success(state);
     }
 
+    /**
+     *  分享
+     * @param openId
+     * @param userDynamic
+     * @return
+     */
+    @PutMapping("/share/{openId}")
+    public ResultVO sharePublish(@PathVariable("openId") String openId, @RequestBody UserDynamic userDynamic) {
+
+        boolean state = dynamicService.sharePublish(openId, userDynamic);
+        return ResultVOUtil.success(state);
+    }
 
     /**
      * 转发列表(我的关注 + 关注我的)
@@ -73,7 +85,6 @@ public class DynamicController {
      * @param type
      * @return
      */
-
     @GetMapping("/share/list")
     public ResultVO<List<Map<String, String>>> shareList(@RequestParam("openid") String openId, @RequestParam("type") int type) {
 

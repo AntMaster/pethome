@@ -105,14 +105,13 @@ public class PetController {
     /**
      * 修改相册
      */
-    @PostMapping("/album/{openId}")
-    public ResultVO albumModify(@RequestParam("albumId") Integer albumId,
-                                @RequestParam(value = "name", defaultValue = "EMPTY") String name,
-                                @RequestParam(value = "description", defaultValue = "EMPTY") String description) {
+    @PostMapping("/album/{albumId}")
+    public ResultVO albumModify(@PathVariable("albumId") Integer albumId,
+                                @RequestParam(value = "name", defaultValue = "EMPTY") String name) {
 
 
-        if (name.equals("EMPTY") && description.equals("EMPTY")) {
-            throw new PetHomeException(ResultEnum.PARAM_ERROR.getCode(), "相册名称和相册描述不能同时为空");
+        if (name.equals("EMPTY") ) {
+            throw new PetHomeException(ResultEnum.PARAM_ERROR.getCode(), "相册名称不能为空");
         }
 
         UserPetAlbum album = userPetAlbumRepository.findOne(albumId);
@@ -122,9 +121,6 @@ public class PetController {
 
         if (!name.equals("EMPTY"))
             album.setName(name);
-
-        if (!description.equals("EMPTY"))
-            album.setDescription(description);
 
         UserPetAlbum save = userPetAlbumRepository.save(album);
         return ResultVOUtil.success(save);
@@ -176,17 +172,16 @@ public class PetController {
     }
 
     /**
-     * 修改相册
+     * 修改相片
      */
-    @PostMapping("/photo/{openId}")
-    public ResultVO photoModify(@RequestParam("photoId") Integer albumId,
-                                @RequestParam(value = "name", defaultValue = "EMPTY") String name,
-                                @RequestParam(value = "description", defaultValue = "EMPTY") String description) {
+    @PostMapping("/photo/{albumId}")
+    public ResultVO photoModify(@RequestParam("albumId") Integer albumId,
+                                @RequestParam(value = "name", defaultValue = "EMPTY") String name) {
 
 
-        if (name.equals("EMPTY") && description.equals("EMPTY")) {
+        if (name.equals("EMPTY")) {
 
-            throw new PetHomeException(ResultEnum.PARAM_ERROR.getCode(), "相册名称和相册描述不能同时为空");
+            throw new PetHomeException(ResultEnum.PARAM_ERROR.getCode(), "相册名称不能为空");
         }
 
         UserPetPhoto photo = userPetPhotoRepository.findOne(albumId);
@@ -196,9 +191,6 @@ public class PetController {
 
         if (!name.equals("EMPTY"))
             photo.setName(name);
-
-        if (!description.equals("EMPTY"))
-            photo.setDescription(description);
 
         UserPetPhoto save = userPetPhotoRepository.save(photo);
         return ResultVOUtil.success(save);

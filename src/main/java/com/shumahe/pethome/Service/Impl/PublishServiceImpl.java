@@ -27,6 +27,8 @@ import org.springframework.stereotype.Service;
 
 
 import java.util.*;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 
 import static org.springframework.beans.BeanUtils.*;
@@ -244,8 +246,12 @@ public class PublishServiceImpl implements PublishService {
         /**
          * 发布者信息
          */
-        UserBasic myself = userBasicRepository.findByOpenId(pet.getPublisherId());
+        List<String> userIds = Arrays.asList(pet.getPublisherId(), openId);
+        List<UserBasic> users = userBasicRepository.findByOpenIdIn(userIds);
+        Map<String, UserBasic> usersMap = users.stream().collect(Collectors.toMap(e -> e.getOpenId().trim(), Function.identity()));
 
+
+        //UserBasic myself = userBasicRepository.findByOpenId(openId);
 
         /**
          * 互动条数
@@ -257,9 +263,9 @@ public class PublishServiceImpl implements PublishService {
 
         BeanUtils.copyProperties(pet, publishDTO);
         publishDTO.setPublicTalk(msgDTOS);
-        publishDTO.setPublisherName(myself.getNickName());
-        publishDTO.setPublisherPhoto(myself.getHeadImgUrl());
-
+        publishDTO.setPublisherName(usersMap.get(pet.getPublisherId()).getNickName());
+        publishDTO.setPublisherPhoto(usersMap.get(pet.getPublisherId()).getHeadImgUrl());
+        publishDTO.setApproveState(usersMap.get(openId).getApproveState());
 
         /**
          * 浏览条数

@@ -181,5 +181,34 @@ public class DynamicServiceImpl implements DynamicService {
 
     }
 
+    /**
+     * 转发
+     * @param openId
+     * @param userDynamic
+     * @return
+     */
+    @Override
+    public boolean sharePublish(String openId, UserDynamic userDynamic) {
+
+        if (userDynamic.getPublishId() == null) {
+            throw new PetHomeException(ResultEnum.PARAM_ERROR.getCode(), "发布ID必填");
+        }
+        if (userDynamic.getDynamicType() == null) {
+            throw new PetHomeException(ResultEnum.PARAM_ERROR.getCode(), "互动类型必填");
+        }
+
+        PetPublish pet = petPublishRepository.findById(userDynamic.getPublishId());
+        if (pet == null) {
+            throw new PetHomeException(ResultEnum.PARAM_ERROR.getCode(), "发布ID不存在");
+        }
+
+
+        userDynamic.setUserIdFrom(openId);
+        userDynamic.setUserIdArrive(pet.getPublisherId());
+        userDynamicRepository.save(userDynamic);
+
+        return true;
+    }
+
 
 }

@@ -41,6 +41,14 @@ public interface DynamicService {
      */
     List<Map<String,String>> findMyShare(String openId , int type);
 
+    /**
+     * 转发
+     * @param openId
+     * @param userDynamic
+     * @return
+     */
+    boolean sharePublish(String openId, UserDynamic userDynamic);
+
 
     /**
      * 分享操作(主页)
