@@ -183,6 +183,7 @@ public class WechatController {
                            @RequestParam("state") String returnUrl) throws WxErrorException {
 
 
+
         WxMpOAuth2AccessToken wxMpOAuth2AccessToken = null;//如果code使用过，5分钟内再次使用会报错。
         WxMpUser user = null;
         try {
@@ -192,7 +193,6 @@ public class WechatController {
             //{"errcode":40001,"errmsg":"invalid credential, access_token is invalid or not latest, hints: [ req_id: 4y0XGa0264s152 ]"}
             if (e.getError().getErrorCode() == 40001){
                 wxMpOAuth2AccessToken = wxMpService.oauth2refreshAccessToken(wxMpOAuth2AccessToken.getRefreshToken());
-
             }
         }
 
@@ -247,6 +247,7 @@ public class WechatController {
     @PostMapping("/menu")
     public ResultVO saveWxMenu() {
         try {
+
 
             WxMenuButton button = new WxMenuButton();
             button.setName("宠爱有家");
