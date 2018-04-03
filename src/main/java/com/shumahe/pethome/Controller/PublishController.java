@@ -48,7 +48,7 @@ public class PublishController {
     public ResultVO publishList(@PathVariable(name = "openId") String openId,
                                 @RequestParam(value = "publishType", defaultValue = "0") Integer publishType,
                                 @RequestParam(value = "page", defaultValue = "0") Integer page,
-                                @RequestParam(value = "size", defaultValue = "10") Integer size) {
+                                @RequestParam(value = "size", defaultValue = "100") Integer size) {
 
         PageRequest request = new PageRequest(page, size);
         List<PublishDTO> all = publishService.findAll(openId, publishType, request);

@@ -98,6 +98,9 @@
             </div>
             <div class="card-img-location">
                 <div class="img-box">
+                    <div class="cardImg-mask" v-show="tempActiveCard.findState == 1">
+                        <img src="img/icon/icon-found-big.jpg">
+                    </div>
                     <img class="tag" :src="tempActiveCard.classifyId == 2 ? 'img/icon/icon-miao.png':'img/icon/icon-wang.png'" />
                     <img class="pet-img" :src="tempActiveCard.petImage" />
                 </div>

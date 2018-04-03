@@ -127,7 +127,6 @@ public class AdminController {
         PageRequest pageRequest = new PageRequest(page, size);
         Map<String, Object> publicMsg = adminService.findPublicMsg(id, pageRequest);
         return ResultVOUtil.success(publicMsg);
-
     }
 
     /**
@@ -166,7 +165,7 @@ public class AdminController {
      * @return
      */
     @GetMapping("/approve")
-    public ResultVO approveList(@RequestParam(value = "approveState", defaultValue = "0") Integer approveState,
+    public ResultVO approveList(@RequestParam(value = "approveState", defaultValue = "-1") Integer approveState,
                                 @RequestParam(value = "number", defaultValue = "0") Integer number,
                                 @RequestParam(value = "size", defaultValue = "10") Integer size) {
 

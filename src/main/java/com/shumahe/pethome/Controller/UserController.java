@@ -117,7 +117,9 @@ public class UserController {
 
             } else if (user.getApproveState() == ApproveStateEnum.FAILURE.getCode()) {
 
+                UserApprove approve = userApproveRepository.findTopByUserIdOrderByCreateTimeDesc(openId);
                 res.put("state", String.valueOf(ApproveStateEnum.FAILURE.getCode()));
+                res.put("msg", approve.getDescription());
             }
         }
         return ResultVOUtil.success(res);
@@ -314,7 +316,7 @@ public class UserController {
      */
     @GetMapping("/organization/{openId}")
     public ResultVO findOrganization(@PathVariable("openId") String openId) {
-        UserApprove approve = userApproveRepository.findByUserId(openId);
+        UserApprove approve = userApproveRepository.findTopByUserIdOrderByCreateTimeDesc(openId);
         return ResultVOUtil.success(approve);
     }
 

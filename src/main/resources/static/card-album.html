@@ -36,7 +36,7 @@
                 <div class="info-box">
                     <div class="info-item">
                         <img src="img/icon/card-jueyu.png" class="icon" />
-                        <span>{{pet.contraception ==  1 ? "已节育" : "未节育" }}</span>
+                        <span>{{pet.contraception ==  1 ? "已绝育" : "未绝育" }}</span>
                     </div>
                     <div class="info-item">
                         <img src="img/icon/card-birth.png" class="icon" />
@@ -76,7 +76,7 @@
             <div class="pet-album">
                 <div class="album-title">
                     <span class="album-title-name">{{pet.nickName}}的相册</span>
-                    <span class="album-title-btn"  @click="manageAlbum">{{manageButtonText}}</span>
+                    <span class="album-title-btn"  @click="manageAlbum">{{ petAlbums.length != 0 ? manageButtonText : ''}}</span>
                 </div>
             </div>
             <!--相册列表-->

@@ -26,7 +26,7 @@ public class ProjectUrlConfig {
     //public String wechatOpenAuthorize;
 
     /**
-     * 寻主寻宠系统
+     * 寻主寻宠系统url
      */
     public String petHome;
 }

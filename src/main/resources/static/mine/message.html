@@ -35,6 +35,9 @@
                         <div class="card facebook-card">
                             <div class="card-header no-border">
                                 <div class="facebook-avatar">
+                                    <div class="user-validate" v-if="item.approveState">
+                                        <img :src=" item.approveType == 1 ? '../img/icon/user-pv.jpg' : '../img/icon/user-ov.jpg' " alt="">
+                                    </div>
                                     <img :src="item.userFromImage" width="34" height="34">
                                 </div>
                                 <div class="facebook-name">{{item.userFromName}}</div>
@@ -45,7 +48,10 @@
                                 <div class="quote-box">
                                     <!-- avatar -->
                                     <div class="avatar">
-                                        <img :src="item.petImage" />
+                                        <div class="cardImg-mask" v-show="0">
+                                            <img class="icon-small" src="../img/icon/icon-found.jpg">
+                                        </div>
+                                        <img class="quote-avatar" :src="(item.petImage).split(';')[0]" />
                                     </div>
                                     <!-- info -->
                                     <div class="info-box">

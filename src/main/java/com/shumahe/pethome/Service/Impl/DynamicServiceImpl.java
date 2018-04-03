@@ -68,29 +68,23 @@ public class DynamicServiceImpl implements DynamicService {
         List<UserDynamic> dynamic = userDynamicRepository.findByUserIdFromAndPublishId(openId, userDynamic.getPublishId());
         if (!dynamic.isEmpty()) {
 
-            if (dynamic.size() > 1) {
+            dynamic.forEach(e -> {
 
-                log.error("【关注，取关】数据量不正确,dynamic={}", dynamic.toString());
-                throw new PetHomeException(ResultEnum.PARAM_ERROR.getCode(), "");
-
-            } else {
-                //多次关注取消
-                if (dynamic.get(0).getDynamicType() == DynamicTypeEnum.LIKE.getCode()) {
-                    dynamic.get(0).setDynamicType(DynamicTypeEnum.CANCEL.getCode());
-
-                } else if (dynamic.get(0).getDynamicType() == DynamicTypeEnum.CANCEL.getCode()) {
-                    dynamic.get(0).setDynamicType(DynamicTypeEnum.LIKE.getCode());
+                if (e.getDynamicType() == DynamicTypeEnum.LIKE.getCode()) {
+                    e.setDynamicType(DynamicTypeEnum.CANCEL.getCode());
+                } else if (e.getDynamicType() == DynamicTypeEnum.CANCEL.getCode()) {
+                    e.setDynamicType(DynamicTypeEnum.LIKE.getCode());
                 }
-                userDynamicRepository.save(dynamic);
-            }
+            });
+            userDynamicRepository.save(dynamic);
+
         } else {
+
             //首次关注
             userDynamic.setUserIdFrom(openId);
             userDynamic.setUserIdArrive(pet.getPublisherId());
             userDynamicRepository.save(userDynamic);
         }
-
-
         return true;
     }
 
@@ -132,7 +126,6 @@ public class DynamicServiceImpl implements DynamicService {
         return list;
 
     }
-
 
 
     /**
@@ -183,6 +176,7 @@ public class DynamicServiceImpl implements DynamicService {
 
     /**
      * 转发
+     *
      * @param openId
      * @param userDynamic
      * @return

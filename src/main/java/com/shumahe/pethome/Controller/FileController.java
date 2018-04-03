@@ -46,7 +46,7 @@ public class FileController {
      * @return
      */
 
-    @Value("${picturePath}")
+    @Value("${web.upload-path}")
     private String picturePath;
 
     /**
@@ -153,7 +153,7 @@ public class FileController {
          * 默认第一张图片做为封面
          */
         String coverPath = album.getCoverPath();
-        if (coverPath.isEmpty()) {
+        if (coverPath == null) {
             album.setCoverPath(save.getPath());
             userPetAlbumRepository.save(album);
         }

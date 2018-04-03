@@ -13,7 +13,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter
 @Configuration
 public class WebAppConfig extends WebMvcConfigurerAdapter {
 
-    @Value("${picturePath}")
+    @Value("${web.upload-path}")
     private  String picturePath;
 
     @Override

@@ -11,8 +11,11 @@ public interface UserApproveRepository extends JpaRepository<UserApprove, Intege
 
     UserApprove findByUserId(String openId);
 
-    Page<UserApprove> findByApproveState(Integer approveState, Pageable pageable);
+    UserApprove findTopByUserIdOrderByCreateTimeDesc(String openId);
+
+    Page<UserApprove> findByApproveStateOrderByCreateTimeDesc(Integer approveState, Pageable pageable);
 
 
+    Page<UserApprove> findAllByOrderByCreateTimeDesc(Pageable pageable);
 
 }

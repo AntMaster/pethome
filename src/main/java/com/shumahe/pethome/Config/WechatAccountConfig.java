@@ -19,19 +19,17 @@ import java.util.Map;
 @ConfigurationProperties(prefix = "wechat")
 public class WechatAccountConfig {
 
-    /**
-     * 公众平台id
-     */
+
     private String mpAppId;
 
-    /**
-     * 公众平台密钥
-     */
     private String mpAppSecret;
 
     private String myAppToken;
 
     private String myAppEncodingAESKey;
+
+    private String myAppMsgTemplateId;
+
 
     @Override
     public String toString() {

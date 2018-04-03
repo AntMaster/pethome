@@ -11,6 +11,7 @@ import com.shumahe.pethome.Form.UserApproveForm;
 import com.shumahe.pethome.Repository.*;
 import com.shumahe.pethome.Service.BaseService.DynamicBaseService;
 import com.shumahe.pethome.Service.UserService;
+import javafx.util.converter.DateStringConverter;
 import org.apache.catalina.User;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -225,11 +226,15 @@ public class UserServiceImpl implements UserService {
                     onePrivate.put("lostTime", curTheme.getLostTime().toString().split(" ")[0]);
 
                     UserBasic curUser = usersMap.get(curTalk.getReplierFrom().trim());
+
                     onePrivate.put("publisherName", curUser.getNickName());
                     onePrivate.put("userIdFromName", curUser.getNickName());
                     onePrivate.put("userIdFromImage", curUser.getHeadImgUrl());
+                    onePrivate.put("approveType", curUser.getApproveType());
+                    onePrivate.put("approveState", curUser.getApproveState());
 
                     e.remove(curTalk);
+
                     break;
                 }
             }
@@ -256,7 +261,6 @@ public class UserServiceImpl implements UserService {
             }
         });
 
-
         return finalRes;
 
 
@@ -272,56 +276,6 @@ public class UserServiceImpl implements UserService {
          * 人员信息    ： 我的昵称 对方昵称   对方头像
          *
          */
-
-       /* List<Map<String, String>> msgList = new ArrayList<>();
-
-        talkMessages.stream().forEach(msg -> {
-
-            Map<String, String> msgMap = new HashMap<>();
-            pets.forEach(pet -> {
-
-                if (msg.getPublishId().equals(pet.getId())) {
-                    msgMap.put("petImg", pet.getPetImage());
-                    msgMap.put("petName", pet.getPetName());
-                    msgMap.put("petLostTime", pet.getLostTime().toString());
-                    msgMap.put("publishType", String.valueOf(pet.getPublishType()));
-                }
-            });
-
-            users.forEach(user -> {
-                if (msg.getReplierFrom().equals(user.getOpenId())) {
-                    msgMap.put("userFrom", user.getNickName());
-                    msgMap.put("userIdFrom", user.getOpenId());
-                    msgMap.put("userImgFrom", user.getHeadImgUrl());
-                }
-            });
-
-            msgMap.put("myName", myself.getNickName());
-            msgMap.put("msgDetail", msg.getContent());
-            msgMap.put("talkTime", msg.getReplyDate().toString());
-            msgMap.put("publishId", String.valueOf(msg.getPublishId()));
-            msgList.add(msgMap);
-
-        });
-
-
-        List<List<Map<String, String>>> msgListGroup = new ArrayList<>();
-
-        //e = 2 1 3
-        msgList.stream().map(e -> e.get("publishId")).distinct().forEach(e -> {
-
-            List<Map<String, String>> _tempList = new ArrayList<>();
-            msgList.forEach(msg -> {
-                if (msg.get("publishId").equals(e)) {
-                    _tempList.add(msg);
-                }
-            });
-            msgListGroup.add(_tempList);
-
-        });
-         return msgListGroup;
-        */
-
 
     }
 
@@ -368,7 +322,6 @@ public class UserServiceImpl implements UserService {
          */
         List<Map<String, String>> likeList = dynamicBaseService.findLikeOrShareList(userDynamics, type);
 
-
         return likeList;
     }
 
@@ -390,7 +343,6 @@ public class UserServiceImpl implements UserService {
             userTalkRepository.save(userTalks);
         }
 
-
         /**
          * 私信消息
          */
@@ -407,12 +359,17 @@ public class UserServiceImpl implements UserService {
 
 
         //与私信有关的人
-        List<String> users = myCreate.stream().map(UserTalk::getUserIdFrom).distinct().collect(Collectors.toList());
+        List<String> usersFrom = myCreate.stream().map(UserTalk::getUserIdFrom).distinct().collect(Collectors.toList());
+        /*
+        List<String> usersAccept = myCreate.stream().map(UserTalk::getUserIdAccept).distinct().collect(Collectors.toList());
+        usersFrom.addAll(usersAccept);
+        */
+
         //全部私信主题
         List<Integer> themes = myCreate.stream().map(UserTalk::getPublishId).distinct().collect(Collectors.toList());
 
         //私信人信息 主题信息 自身信息
-        List<UserBasic> userData = userBasicRepository.findByOpenIdIn(users);
+        List<UserBasic> userData = userBasicRepository.findByOpenIdIn(usersFrom);
         List<PetPublish> themeData = petPublishRepository.findByIdInOrderByCreateTimeDesc(themes);
         Map<String, UserBasic> usersMap = userData.stream().collect(Collectors.toMap(e -> e.getOpenId().trim(), Function.identity()));
         Map<Integer, PetPublish> themesMap = themeData.stream().collect(Collectors.toMap(PetPublish::getId, Function.identity()));
@@ -428,67 +385,6 @@ public class UserServiceImpl implements UserService {
         talksByTheme.forEach(e -> e.stream().collect(Collectors.groupingBy(UserTalk::getTalkId)).values().forEach(a -> talksByUser.add(a)));
 
 
-        //最终结果
-        List<Map<String, Object>> finalRes = new ArrayList<>();
-
-        talksByUser.stream().forEach(e -> {
-
-            //一条互动
-            Map<String, Object> onePrivate = new HashMap<>();
-
-
-            //对话详情
-            List<Map<String, String>> detailList = new ArrayList<>();
-
-            for (int i = e.size() - 1; i >= 0; i--) {
-                UserTalk curTalk = e.get(i);
-                if (!curTalk.getUserIdFrom().equals(openId)) {
-
-                    onePrivate.put("userIdFrom", curTalk.getUserIdFrom());
-                    onePrivate.put("talkTime", curTalk.getTalkTime().toString());
-                    onePrivate.put("content", curTalk.getContent());
-                    onePrivate.put("talkId", curTalk.getTalkId());
-
-                    PetPublish curTheme = themesMap.get(curTalk.getPublishId());
-                    onePrivate.put("publishType", curTheme.getPublishType());
-                    onePrivate.put("publisherId", curTheme.getPublisherId());
-                    onePrivate.put("publishId", curTheme.getId());
-                    onePrivate.put("petName", curTheme.getPetName());
-                    onePrivate.put("petImage", curTheme.getPetImage());
-                    onePrivate.put("lostTime", curTheme.getLostTime().toString().split(" ")[0]);
-
-                    UserBasic curUser = usersMap.get(curTalk.getUserIdFrom().trim());
-                    onePrivate.put("publisherName", curUser.getNickName());
-                    onePrivate.put("userIdFromName", curUser.getNickName());
-                    onePrivate.put("userIdFromImage", curUser.getHeadImgUrl());
-
-                    e.remove(curTalk);
-                    break;
-                }
-            }
-
-            e.forEach(detail -> {
-
-                UserBasic curUserFrom = usersMap.get(detail.getUserIdFrom());
-                UserBasic curUserAccept = usersMap.get(detail.getUserIdAccept());
-
-                Map<String, String> detailMap = new HashMap<>();
-                detailMap.put("userIdFrom", detail.getUserIdFrom());
-                detailMap.put("userIdFromName", curUserFrom.getNickName());
-                detailMap.put("userIdAccept", detail.getUserIdAccept());
-                detailMap.put("userIdAcceptName", curUserAccept.getNickName());
-                detailMap.put("content", detail.getContent());
-
-                detailList.add(detailMap);
-            });
-
-            onePrivate.put("detail", detailList);
-
-            finalRes.add(onePrivate);
-
-        });
-
-        return finalRes;
         /**
          * {
          *     userIdFrom : 'Alieen',
@@ -516,98 +412,81 @@ public class UserServiceImpl implements UserService {
          *
          *
          */
+        //最终结果
+        List<Map<String, Object>> finalRes = new ArrayList<>();
 
-        /*List<List<Map<String, String>>> msgResult = new ArrayList<>();
+        talksByUser.stream().forEach(e -> {
 
-        talksByUser.forEach(msgs -> {
-
-            List<Map<String, String>> _tempList = new ArrayList<>();
-
-            msgs.forEach(msg -> {
-
-                Map<String, String> msgMap = new HashMap<>();
-                userData.forEach(user -> {
-                    if (msg.getUserIdFrom().equals(user.getOpenId())) {
-                        msgMap.put("userFrom", user.getNickName());
-                        msgMap.put("userIdFrom", user.getOpenId());
-                        msgMap.put("userImgFrom", user.getHeadImgUrl());
-                    }
-                });
+            //一条互动
+            Map<String, Object> onePrivate = new HashMap<>();
 
 
-                themeData.forEach(publish -> {
-                    if (msg.getPublishId() == publish.getId()) {
-                        msgMap.put("petImg", publish.getPetImage());
-                        msgMap.put("petName", publish.getPetName());
-                        msgMap.put("petLostTime", publish.getLostTime().toString());
-                        msgMap.put("publishType", String.valueOf(publish.getPublishType()));
-                    }
-                });
+            //对话详情
+            List<Map<String, String>> detailList = new ArrayList<>();
 
-                msgMap.put("myName", myself.getNickName());
-                msgMap.put("msgDetail", msg.getContent());
-                msgMap.put("talkTime", msg.getTalkTime().toString());
+            for (int i = e.size() - 1; i >= 0; i--) {
 
-                _tempList.add(msgMap);
-            });
+                UserTalk curTalk = e.get(i);
 
-            msgResult.add(_tempList);
-        });
-        System.out.println(123);
-*/
+                //除开自己私信自己
+                if (!curTalk.getUserIdFrom().equals(openId)) {
+
+                    onePrivate.put("userIdFrom", curTalk.getUserIdFrom());
+                    onePrivate.put("talkTime", curTalk.getTalkTime().toString());
+                    onePrivate.put("content", curTalk.getContent());
+                    onePrivate.put("talkId", curTalk.getTalkId());
 
 
-         /*if (i == (e.size()-1)) {
 
-                    UserTalk userTalk = e.get(i);
-                    onePrivate.put("userIdFrom", userTalk.getUserIdFrom());
-                    onePrivate.put("talkTime", userTalk.getTalkTime().toString());
-                    onePrivate.put("content", userTalk.getContent());
-                    onePrivate.put("talkId", userTalk.getTalkId());
+                    PetPublish curTheme = themesMap.get(curTalk.getPublishId());
+                    onePrivate.put("publishType", curTheme.getPublishType());
+                    onePrivate.put("publisherId", curTheme.getPublisherId());
+                    onePrivate.put("publishId", curTheme.getId());
+                    onePrivate.put("petName", curTheme.getPetName());
+                    onePrivate.put("petImage", curTheme.getPetImage());
+                    onePrivate.put("lostTime", curTheme.getLostTime().toString().split(" ")[0]);
 
-                    themeData.forEach(theme -> {
-                        if (theme.getId().equals(userTalk.getPublishId())) {
+                    UserBasic curUser = usersMap.get(curTalk.getUserIdFrom().trim());
+                    onePrivate.put("publisherName", curUser.getNickName());
+                    onePrivate.put("userIdFromName", curUser.getNickName());
+                    onePrivate.put("userIdFromImage", curUser.getHeadImgUrl());
+                    onePrivate.put("approveState",curUser.getApproveState());
+                    onePrivate.put("approveType",curUser.getApproveType());
 
-                            onePrivate.put("publisherType", theme.getPublishType().toString());
-                            onePrivate.put("publisherId", theme.getPublisherId());
-                            onePrivate.put("publishId", theme.getId());
-
-                            onePrivate.put("petName", theme.getPetName());
-                            onePrivate.put("petImage", theme.getPetImage());
-                            onePrivate.put("lostTime", theme.getLostTime().toString().split(" ")[0]);
-                        }
-                    });
-                    userData.forEach(user -> {
-
-                        //发布人信息
-                        if (user.getOpenId().trim().equals(userTalk.getPublisherId().trim())) {
-                            onePrivate.put("publisherName", user.getNickName());
-                        }
-                        //来信人信息
-                        if(user.getOpenId().trim().equals(userTalk.getUserIdFrom().trim())){
-                            onePrivate.put("userIdFromName", user.getNickName());
-                            onePrivate.put("userIdFromImage", user.getHeadImgUrl());
-                        }
-
-                        userInfoCache.put(user.getOpenId().trim(), user.getNickName());//缓存用户信息
-                    });
-
-                } else {
-
-                    UserTalk userTalk = e.get(i);
-                    Map<String, String> detail = new HashMap<>();
-                    detail.put("userIdFrom", userTalk.getUserIdFrom());
-                    detail.put("userIdFromName", userInfoCache.get(userTalk.getUserIdFrom().trim()));
-                    detail.put("userIdAccept", userTalk.getUserIdAccept());
-                    detail.put("userIdAcceptName", userInfoCache.get(userTalk.getUserIdAccept().trim()));
-                    detail.put("content", userTalk.getContent());
-
-                    detailList.add(detail);
+                    e.remove(curTalk);
+                    break;
                 }
-                onePrivate.put("detail", detailList);
-*/
+            }
 
+            e.forEach(detail -> {
 
+                UserBasic curUserFrom = usersMap.get(detail.getUserIdFrom());
+                UserBasic curUserAccept = usersMap.get(detail.getUserIdAccept());
+
+              if(curUserAccept != null){
+                  Map<String, String> detailMap = new HashMap<>();
+                  detailMap.put("userIdFrom", detail.getUserIdFrom());
+                  detailMap.put("userIdFromName", curUserFrom.getNickName());
+                  detailMap.put("userIdAccept", detail.getUserIdAccept());
+                  detailMap.put("userIdAcceptName", curUserAccept.getNickName());
+                  detailMap.put("content", detail.getContent());
+                  detailList.add(detailMap);
+              }
+
+            });
+            onePrivate.put("detail", detailList);
+            finalRes.add(onePrivate);
+        });
+
+        List<Map<String, Object>> userIdFromName = finalRes.stream().filter(e -> e.get("userIdFromName") != null).collect(Collectors.toList());
+        //userIdFromName.sort(Comparator.comparing());
+        Collections.sort(userIdFromName, (o1, o2) -> {
+            String time1 = (String) o1.get("talkTime");
+            String time2 = (String) o2.get("talkTime");
+            int i = time2.compareTo(time1);
+            return i;
+        });
+        return userIdFromName;
     }
 
 }

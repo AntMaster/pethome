@@ -42,6 +42,16 @@ public class PrivateMsgDTO {
 
 
     /**
+     * 发送人认证类型
+     */
+    private Integer approveType;
+
+    /**
+     * 发送人认证状态
+     */
+    private Integer approveState;
+
+    /**
      * 接收人ID
      */
     @JsonProperty("replierAccept")

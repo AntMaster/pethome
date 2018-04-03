@@ -6,13 +6,25 @@ var app = new Vue({
         cardFormModel: {
             nickName: null,
             classifyId: 3,
+            varietyId:9,
             headImgUrl: null,
             birthday: null,
             sex: 1,
             contraception: false,
             description: null,
             chipNo: null
-        }
+        },
+        //pet品类数据源
+        varietyArrDataSource: [],
+        //当前显示品类
+        varietyArr:[],
+        varietyName:''
+    },
+    mounted:function () {
+        //初始化宠物品类
+        this.varietyArrDataSource = varietyArrDataSource;
+        this.varietyArr = this.varietyArrDataSource["3"];
+        this.varietyName = this.varietyArr[0].name;
     },
     methods: {
         create: function () {
@@ -20,9 +32,16 @@ var app = new Vue({
         },
         selectClass: function (classId) {
             if (classId == 2) {
+                //切换类别为猫
                 this.cardFormModel.classifyId = 2;
+                this.varietyArr = this.varietyArrDataSource['2'];
+                this.varietyName = this.varietyArr[0].name;
+                this.cardFormModel.varietyId = 3;
             } else {
                 this.cardFormModel.classifyId = 3;
+                this.varietyArr = this.varietyArrDataSource['3'];
+                this.varietyName = this.varietyArr[0].name;
+                this.cardFormModel.varietyId = 9;
             }
         },
         selectSex: function (sex) {
@@ -30,6 +49,12 @@ var app = new Vue({
         },
         selectContraceptionState: function (state) {
             state == 0 ? this.cardFormModel.contraception = false : this.cardFormModel.contraception = true;
+        },
+        //选择品种
+        selectVarietyArr: function (id, name) {
+            //id用于上传，name用于绑定model显示中文
+            app.cardFormModel.varietyId = id;
+            app.varietyName = name;
         },
         submit: function () {
 
@@ -73,7 +98,7 @@ $(function () {
         //当前为iphone5宽度
         $(".item-title").css("font-size", ".65rem");
         $(".sex-input span").css("margin-right", ".6rem");
-        $(".card-form-item").css("margin-bottom", ".7rem");
+        $(".card-form-item").css("margin-bottom", ".5rem");
         $(".avatar img").css({"width": "3rem", "height": "3rem", "border-radius": "1.5rem"});
     }
     //card rotate

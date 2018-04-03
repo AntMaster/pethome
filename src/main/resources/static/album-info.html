@@ -17,6 +17,10 @@
 
 <body>
 <div class="page" id="album-info">
+    <!-- 灯箱 -->
+    <div class="light-box" @click="lightBoxHide">
+        <img :src="lightBoxImg">
+    </div>
     <div class="mask"></div>
     <div class="content albumPage-content">
         <!--封面-->
@@ -47,7 +51,7 @@
                         </div>
                     </div>
                 </li>
-                <li :class="{centerItem:index%3 == 0}" v-for="(item, index) in photoList">
+                <li :class="{centerItem:index%3 == 0}" v-for="(item, index) in photoList" @click="lightBoxOpen(item.path)">
                     <div class="item-photo" @click="clickPhoto(index,item.id)">
                         <img :src="item.path">
                         <div class="album-del" v-show="manager.open">

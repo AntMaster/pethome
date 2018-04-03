@@ -14,7 +14,7 @@ var app = new Vue({
         formData: {
             publishType: 2,
             classifyId: 3,
-            varietyId: 4,
+            varietyId: 9,
             petSex: 1,
             petDescription: '',
             petImage: '',
@@ -33,21 +33,13 @@ var app = new Vue({
     methods: {
         init: function () {
             //加载宠物类别
-            $.ajax({
-                url: '/pethome/pet/variety',
-                type: 'GET',
-                dataType: 'json',
-                data: null,
+            this.varietyArrDataSource = varietyArrDataSource;
+            this.varietyArr = this.varietyArrDataSource["3"];
+            this.varietyName = this.varietyArr[0].name;
 
-                success: function (res) {
-                    if (res.code === 1) {
-                        app.varietyArrDataSource = res.data;
-                        //默认猫子品种
-                        app.varietyArr = app.varietyArrDataSource["3"];
-                        app.varietyName = app.varietyArr[0].name;
-                    }
-                }
-            });
+            //初始化时间
+            var date = new Date().Format("yyyy-MM-dd HH:mm:ss");
+            this.formData.lostTime = date;
         },
         selectSex: function (sex) {
             if (sex == 1) {
@@ -62,6 +54,9 @@ var app = new Vue({
                 this.femaleActive ? this.formData.PetSex = 0 : this.formData.PetSex = '';
             }
         },
+        hasNullItem:function (obj) {
+            return hasNullItem(obj);
+        },
         //选择品种
         selectVarietyArr: function (id, name) {
             //id用于上传，name用于绑定model显示中文
@@ -69,11 +64,18 @@ var app = new Vue({
             app.varietyName = name;
         },
         submitRelease: function () {
+
+
             if (this.petImageArr.length == 0) {
-                $.alert("请上传宠物照片哟~");
+                $.toast("请上传宠物照片哟~");
                 return;
             }
             this.formData.petImage = this.petImageArr.join(";");
+
+            if(this.formData.ownerContact.length != 11){
+                $.toast("手机号位数不正确");
+                return;
+            }
 
             $.ajax({
                 url: '/pethome/publish/master/'+GetQueryString("openid"),
@@ -86,7 +88,7 @@ var app = new Vue({
                         app.dynamicArr = res.data;
                         window.location.href = "./index.html?openid=" + GetQueryString("openid");
                     } else {
-                        $.alert(res.msg);
+                        $.toast(res.msg);
                     }
                 }
             });
@@ -108,7 +110,7 @@ $(document).on('click', '.create-actions', function () {
             onClick: function () {
                 app.formData.classifyId = 3;
                 //切换宠物类别后给一个默认的品种id(默认为第一个)
-                app.formData.varietyId = 4;
+                app.formData.varietyId = 9;
                 app.classifyName = '汪';
                 app.varietyArr = app.varietyArrDataSource['3'];
                 app.varietyName = app.varietyArr[0].name;
@@ -144,7 +146,7 @@ $("#datetime-picker").datetimePicker({
     <h1 class="title">选择日期和时间</h1>\
     </header>',
     onClose: function () {
-        console.log($("#datetime-picker").val());
+
         app.formData.lostTime = $("#datetime-picker").val()
     }
 });
@@ -200,6 +202,33 @@ $(document).on("pageInit", function (e, pageId, $page) {
     }
 });
 
+$(".petImg-upload").change(function (e) {
+
+    //var type = $(this).data().type;
+
+    if(app.petImageArr.length >=3 ){
+        $.toast("图片最多只能上传三张");
+        return;
+    }
+
+    var data = new FormData();
+    $.each(e.target.files, function (i, file) {
+        data.append("file", file);
+    });
+
+    $.ajax({
+        url: "/pethome/upload/publish",
+        type: 'PUT',
+        data: data,
+        cache: false,
+        contentType: false,
+        processData: false,
+        success: function (respond) {
+            app.petImageArr.push(respond.data);
+            app.formData.petImage = app.petImageArr.join(";");
+        }
+    });
+});
 
 /**
  *
@@ -249,24 +278,3 @@ $(document).on("pageInit", function (e, pageId, $page) {
  *
  *
  */
-
-$(".petImg-upload").change(function (e) {
-
-    //var type = $(this).data().type;
-    var data = new FormData();
-    $.each(e.target.files, function (i, file) {
-        data.append("file", file);
-    });
-
-    $.ajax({
-        url: "/pethome/upload/publish",
-        type: 'PUT',
-        data: data,
-        cache: false,
-        contentType: false,
-        processData: false,
-        success: function (respond) {
-            app.petImageArr.push(respond.data);
-        }
-    });
-});

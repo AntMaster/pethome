@@ -525,7 +525,7 @@ $(document).on("pageInit", function (e, pageId, $page) {
     }
 
     /**
-     * 认证
+     * 认证 (未使用)
      */
     if (pageId == "ovedPage") {
 

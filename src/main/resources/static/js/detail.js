@@ -114,9 +114,9 @@ var app = new Vue({
 
         },
         //分享
-        share: function () {
-
-        },
+        // share: function () {
+        //     openShareRemind();
+        // },
         //关注
         attention: function () {
 
@@ -215,17 +215,14 @@ var app = new Vue({
             var url = null;
 
             if (this.msgListType == "interactMsg") {
-
                 this.msgListType = "interactMsg";
                 url = '/pethome/message/public/' + GetQueryString("id");
                 data = {
                     replierFrom: GetQueryString("openid"),
-                    replierAccept: GetQueryString("openid"),
-                    content: this.commentContent,
+                    replierAccept: this.detailData.publisherId,
+                    content: this.commentContent
                 }
-
             } else {
-
                 this.msgListType = "privateMsg";
                 url = '/pethome/message/private/' + GetQueryString("id")
                 data = {
@@ -244,6 +241,7 @@ var app = new Vue({
 
                     if (res.code == 1) {
 
+                        console.log()
                         if (!app.showMsgList) {
                             app.showMsgList = new Array();
                         }
@@ -252,7 +250,7 @@ var app = new Vue({
                         if (app.msgListType == "interactMsg")
                             app.detailData.publicMsgCount++;
                     } else {
-                        alert(res.msg);
+                        $.toast(res.msg);
                     }
                 }
             });
@@ -398,43 +396,6 @@ $(function () {
                     }
                 });
             }, cancel: function () {
-            }
-        });
-        /**
-         * 分享到QQ
-         */
-        wx.onMenuShareQQ({
-            title: '这是一条测试的title',
-            desc: '从前有一只大鱼和一只小鱼。有一天 小鱼问大鱼：大～鱼～大～鱼～你～平～常～喜～欢～吃～什～么～丫。大鱼说：我～喜～欢～吃～说～话～慢～的～小～鱼。然后小鱼说：喔 酱紫 造了！',
-            link: 'http://girl.nat300.top/pethome/index.html?openid=' + GetQueryString("openid"),
-            imgUrl: 'https://avatars3.githubusercontent.com/u/12826895?s=460&v=4',
-            success: function () {
-            },
-            cancel: function () {
-            }
-        });
-        /**
-         * 分享到qq空间
-         */
-        wx.onMenuShareQZone({
-            title: '今天下雨,冷死个人,宇锅出去吃饭',
-            desc: '从前有一只大鱼和一只小鱼。有一天 小鱼问大鱼：大～鱼～大～鱼～你～平～常～喜～欢～吃～什～么～丫。大鱼说：我～喜～欢～吃～说～话～慢～的～小～鱼。然后小鱼说：喔 酱紫 造了！',
-            link: 'http://girl.nat300.top/pethome/index.html?openid=' + GetQueryString("openid"),
-            imgUrl: 'https://avatars3.githubusercontent.com/u/12826895?s=460&v=4',
-            success: function () {
-            },
-            cancel: function () {
-            }
-        });
-        wx.onMenuShareWeibo({
-            title: '这是一条测试的title',
-            desc: '从前有一只大鱼和一只小鱼。有一天 小鱼问大鱼：大～鱼～大～鱼～你～平～常～喜～欢～吃～什～么～丫。大鱼说：我～喜～欢～吃～说～话～慢～的～小～鱼。然后小鱼说：喔 酱紫 造了！',
-            //link: 'http://girl.nat300.top/pethome/index.html?openid=' + GetQueryString("openid"),
-            link: 'http://girl.nat300.top/pethome/wechat/webAuth?returnUrl=http://girl.nat300.top/pethome/index.html',
-            imgUrl: 'https://avatars3.githubusercontent.com/u/12826895?s=460&v=4',
-            success: function () {
-            },
-            cancel: function () {
             }
         });
     });

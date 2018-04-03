@@ -41,7 +41,9 @@ var app = new Vue({
         selectedAlbumList: [],
         selectedAlbumListIndex: [],
         //相册配置列表 用于控制选中状态
-        albumConfArr: []
+        albumConfArr: [],
+        dogSoundArr:["sound/dog.mp3","sound/dog2.mp3","sound/dog3.mp3"],
+        catSoundArr:["sound/cat.mp3","sound/cat2.mp3","sound/cat3.mp3"]
     },
     mounted: function () {
 
@@ -86,6 +88,7 @@ var app = new Vue({
             }
         },
         play: function (type) {
+            type = this.petType;
             //随机播放动画
             var r = parseInt(Math.random() * 10) % 6;
             var animateClass = this.animateArr[r];
@@ -102,7 +105,7 @@ var app = new Vue({
         },
         playText: function (type) {
             var textArr;
-            type = 1 ? textArr = this.catTextArr : textArr = this.dogTextArr;
+            type = 2 ? textArr = this.catTextArr : textArr = this.dogTextArr;
             var index = parseInt(Math.random() * 100) % textArr.length;
             this.petText = textArr[index];
             $(".petText").fadeIn();
@@ -248,13 +251,22 @@ $(document).on('click', '.del-mask', function () {
 
 function playSound(petType) {
     //0:猫叫  1：狗叫
-    var soundSrc = "sound/cat.mp3";
-    petType == 1 ? soundSrc = "sound/cat.mp3" : soundSrc = "sound/dog.mp3";
+    var soundSrc = "";
+    var randomIndex = parseInt(100*Math.random()) % 3;
+    if(petType == 2){
+        //猫
+        soundSrc = app.catSoundArr[randomIndex];
+    }
+    if(petType == 3){
+        //狗
+        soundSrc = app.dogSoundArr[randomIndex];
+    }
+    //alert("随机数是"+randomIndex+"播放的声音是"+soundSrc+"宠物类别是"+petType);
     var borswer = window.navigator.userAgent.toLowerCase();
     if (borswer.indexOf("ie") >= 0) {
         //IE内核浏览器
         var strEmbed = '<embed name="embedPlay" src=' + soundSrc + ' autostart="true" hidden="true" loop="false"></embed>';
-        if ($("body").find("embed").length <= 0)
+        //if ($("body").find("embed").length <= 0)
             $("body").append(strEmbed);
         var embed = document.embedPlay;
         //浏览器不支持 audion，则使用 embed 播放
@@ -263,11 +275,14 @@ function playSound(petType) {
     } else {
         //非IE内核浏览器
         var strAudio = "<audio id='audioPlay' src=" + soundSrc + " hidden='true'>";
-        if ($("body").find("audio").length <= 0)
+        //if ($("body").find("audio").length <= 0)
             $("body").append(strAudio);
         var audio = document.getElementById("audioPlay");
+
         //浏览器支持 audion
         audio.play();
+        $("body").remove(strAudio);
+
     }
 }
 

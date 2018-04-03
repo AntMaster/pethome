@@ -20,7 +20,7 @@ public interface PetPublishRepository extends JpaRepository<PetPublish, Integer>
      * @param pageable
      * @return
      */
-    Page<PetPublish> findByPublishStateOrderByCreateTimeDesc(Integer showState, Pageable pageable);
+    Page<PetPublish> findByPublishStateAndFindStateOrderByCreateTimeDesc(Integer showState, Integer findState ,Pageable pageable);
 
 
     /**
@@ -96,6 +96,7 @@ public interface PetPublishRepository extends JpaRepository<PetPublish, Integer>
     int notReadPetCount(String openId, Integer findState);
 
 
+    Page<PetPublish> findByPublishStateOrderByCreateTimeDesc(int code, Pageable pageable);
 }
 
 

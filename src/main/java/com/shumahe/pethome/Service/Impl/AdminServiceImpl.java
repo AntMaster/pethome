@@ -16,6 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -290,11 +291,12 @@ public class AdminServiceImpl implements AdminService {
     @Override
     public Map<String, Object> findApprove(Integer approveState, PageRequest request) {
 
+
         Page<UserApprove> all;
-        if (approveState == 0) {
-            all = userApproveRepository.findAll(request);
+        if (approveState == -1) {
+            all = userApproveRepository.findAllByOrderByCreateTimeDesc(request);
         } else {
-            all = userApproveRepository.findByApproveState(approveState, request);
+            all = userApproveRepository.findByApproveStateOrderByCreateTimeDesc(approveState, request);
         }
 
         Map<String, Object> res = new HashMap<>();
@@ -382,9 +384,7 @@ public class AdminServiceImpl implements AdminService {
 
         approve.setApproveState(approveType);
         approve.setDescription(msg);
-
         userApproveRepository.save(approve);
-
 
         UserBasic userBasic = userBasicRepository.findByOpenId(approve.getUserId());
         if (userBasic == null)

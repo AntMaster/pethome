@@ -13,12 +13,10 @@ import java.util.HashMap;
 import java.util.Map;
 
 @Data
-@JsonInclude(JsonInclude.Include.NON_NULL)
+//@JsonInclude(JsonInclude.Include.NON_NULL)
 public class UserApproveDTO {
 
-
     private Integer id;
-
 
     private String userId;
 

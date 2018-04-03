@@ -36,6 +36,17 @@ public class PublicMsgDTO {
 
 
     /**
+     * 发送人认证类型
+     */
+    private Integer approveType;
+
+
+    /**
+     * 发送人认证状态
+     */
+    private Integer approveState;
+
+    /**
      * 发送人头像
      */
     private String replierFromPhoto;

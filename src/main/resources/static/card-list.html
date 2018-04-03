@@ -26,17 +26,21 @@
                             {{item.nickName}}
                         </div>
                         <!-- 类别 -->
-                        <div class="classify classify-cat">
-                            <span class="icon"></span> {{item.classifyId == 2 ? "喵" : "汪"}}
+                        <div class="classify"  :class="{sexMale:item.sex == 1, sexFemale:item.sex == 0}">
+                            <!--<span class="icon"></span> {{item.classifyId == 2 ? "喵" : "汪"}}-->
+
+                            <span class="icon">
+                        <img :src="item.sex == 1 ? 'img/icon/card-male.png' : 'img/icon/card-female.png'" alt="">
+                    </span> {{item.classifyId == 2 ? "喵" : "汪"}}
                         </div>
                         <div class="info-box">
                             <div class="info-item">
                                 <img src="img/icon/card-jueyu.png" class="icon" />
-                                <span>{{item.contraception ==  1 ? "已节育" : "未节育" }}</span>
+                                <span>{{item.contraception ==  1 ? "已绝育" : "未绝育" }}</span>
                             </div>
                             <div class="info-item">
                                 <img src="img/icon/card-birth.png" class="icon" />
-                                <span>{{item.birthday}}</span>
+                                <span>{{item.birthday.split(" ")[0]}}</span>
                             </div>
                             <div class="info-item">
                                 <img :src="item.classifyId == 2 ? 'img/icon/card-info-cat.png' : 'img/icon/card-info-dog.png'" class="icon" />

@@ -19,7 +19,6 @@ public class PublishDTO {
 
     private String publisherId;
 
-
     private Integer publishType;
 
 
@@ -111,6 +110,9 @@ public class PublishDTO {
      * 用户认证状态
      */
     private Integer approveState = 0;
+
+
+    private Integer approveType = 0;
 
 }
 

@@ -37,8 +37,8 @@
                 </div>
             </transition>
 
-            <baidu-map class="bm-view" maptype="BMAP_NORMAL_MAP" :zoom="12" :scroll-wheel-zoom="scrollWheelOpen" center="武汉">
-                <bm-local-search :forcelocal="true" @locationSuccess="handleLocationSuccess" @searchcomplete="handleSearchComplete" :panel="false" :keyword="keyword" :auto-viewport="true" location="location"></bm-local-search>
+            <baidu-map style="opacity:0;" class="bm-view" maptype="BMAP_NORMAL_MAP" :zoom="12" :scroll-wheel-zoom="scrollWheelOpen" center="武汉">
+                <bm-local-search :forcelocal="true" @searchcomplete="handleSearchComplete" :panel="false" :keyword="keyword" :auto-viewport="true" location="location"></bm-local-search>
                 <!-- 定位 -->
                 <bm-geolocation anchor="BMAP_ANCHOR_BOTTOM_RIGHT" :showaddressbar="true" :autolocation="true"></bm-geolocation>
                 <!-- 缩放Btn -->

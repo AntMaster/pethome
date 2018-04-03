@@ -39,6 +39,11 @@ var app = new Vue({
                 return;
             }
 
+            if(this.mobile.length != 11){
+                $.toast("手机号位数不正确");
+                return;
+            }
+
             $.ajax({
                 url: '/pethome/user/sms/' + GetQueryString("openid"),
                 type: 'POST',

@@ -69,9 +69,13 @@ public class DynamicBaseServiceImpl implements DynamicBaseService {
             _temp.put("acceptUserName", curUserAccept.getNickName());
             _temp.put("acceptUserImage", curUserAccept.getHeadImgUrl());
 
+
             _temp.put("userFromId", curUserFrom.getOpenId());
             _temp.put("userFromName", curUserFrom.getNickName());
             _temp.put("userFromImage", curUserFrom.getHeadImgUrl());
+            _temp.put("approveState", String.valueOf(curUserFrom.getApproveState()));
+            _temp.put("approveType", String.valueOf(curUserFrom.getApproveType()));
+
 
             _temp.put("lostTime", curTheme.getLostTime().toString().split(" ")[0]);
             _temp.put("petName", curTheme.getPetName());

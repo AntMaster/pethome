@@ -29,7 +29,9 @@ var app = new Vue({
         //已选中 未确定的封面照片
         // tempCover:'',
         //照片控制数组
-        photoConfArr: []
+        photoConfArr: [],
+        //当前灯箱图片
+        lightBoxImg:""
     },
     mounted: function () {
         this.loadPhotoList();
@@ -192,15 +194,25 @@ var app = new Vue({
         resetPhotoConfArr: function () {
             this.photoConfArr = new Array();
             this.confPhotoList();
+        },
+        lightBoxHide:function(){
+            $(".light-box").fadeOut();
+        },
+        //开启大图
+        lightBoxOpen:function(url){
+            $(".light-box").fadeIn().css("display","flex");
+            this.lightBoxImg = url;
         }
     }
 });
 
 //修改相册名称
 $(document).on('click', '.editAlbumName', function () {
+
+    var name  = app.albumData.name;
     $.modal({
         title: '修改相册名称',
-        text: '<input type=""  class="album-edit" placeholder="输入相册名称"/>',
+        text: '<input type=""  class="album-edit" placeholder="输入相册名称" />',
         buttons: [{
             text: '取消',
             bold: true,
@@ -211,6 +223,7 @@ $(document).on('click', '.editAlbumName', function () {
             text: '保存',
             bold: true,
             onClick: function () {
+
                 var name = $(".album-edit").val();
                 if(!name){
                     $.toast("请输入相册文字");

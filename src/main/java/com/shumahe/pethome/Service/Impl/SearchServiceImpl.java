@@ -231,11 +231,11 @@ public class SearchServiceImpl implements SearchService {
             checkChoose.put("chooseClassify", true);
         }
 
-
         /**
          * 性别匹配
          */
         if (petSearchForm.getPetSex() == SearchEnum.NONE_VALUE.getCode()) {
+
 
             SexMap.forEach((k, v) -> {
 
@@ -295,12 +295,16 @@ public class SearchServiceImpl implements SearchService {
             Predicate petNamePredicate = cb.like(root.get("petName").as(String.class), "%" + petSearchForm.getKeyWord().trim() + "%");
             Predicate descriPredicate = cb.like(root.get("petDescription").as(String.class), "%" + petSearchForm.getKeyWord().trim() + "%");
             Predicate lostPredicate = cb.like(root.get("lostLocation").as(String.class), "%" + petSearchForm.getKeyWord().trim() + "%");
+            Predicate findPredicate = cb.equal(root.get("findState").as(Integer.class), 0);//未找到
+
+
             Predicate basePredicate = cb.or(petNamePredicate, descriPredicate, lostPredicate);
 
             Predicate typePredicate;
             Predicate sexPredicate;
             Predicate classifyPredicate;
             Predicate varietyPredicate;
+            Predicate findStatePredicate;
 
 
             //publishType in (?,?,?)
@@ -345,14 +349,15 @@ public class SearchServiceImpl implements SearchService {
                 classifyPredicate = cb.or(sexPredicate, classifyIdIn);
             }
 
-
             if (checkChoose.get("chooseVariety")) {
                 varietyPredicate = cb.and(classifyPredicate);
             } else {
                 varietyPredicate = cb.and(classifyPredicate);
             }
 
-            return varietyPredicate;
+            findStatePredicate = cb.and(varietyPredicate, findPredicate);
+
+            return findStatePredicate;
         };
 
         Pageable pageRequest = new PageRequest(0, 200);
@@ -373,9 +378,9 @@ public class SearchServiceImpl implements SearchService {
     @Override
     public List<PublishDTO> init() {
 
-        Pageable pageable = new PageRequest(0,100);
+        Pageable pageable = new PageRequest(0, 100);
 
-        Page<PetPublish> pets = petPublishRepository.findByPublishStateOrderByCreateTimeDesc(ShowStateEnum.SHOW.getCode(), pageable);
+        Page<PetPublish> pets = petPublishRepository.findByPublishStateAndFindStateOrderByCreateTimeDesc(ShowStateEnum.SHOW.getCode(), PetFindStateEnum.NOT_FOUND.getCode() ,pageable);
         List<PublishDTO> petExtends = publishBaseService.findPetExtends(pets.getContent());
         return petExtends;
     }

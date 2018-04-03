@@ -35,6 +35,7 @@ public class WechatMpConfig {
         config.setSecret(accountConfig.getMpAppSecret());
         config.setToken(accountConfig.getMyAppToken());
         config.setAesKey(accountConfig.getMyAppEncodingAESKey());
+        config.setTemplateId(accountConfig.getMyAppMsgTemplateId());
         return config;
     }
 }

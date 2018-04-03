@@ -97,8 +97,6 @@ Vue.component('mc-tabbar', {
                     }
                 }
             });
-
-
         },
         toMine: function () {
 

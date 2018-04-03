@@ -17,9 +17,12 @@
 <body>
 <!-- 你的html代码 -->
 <div class="page" id="index">
+    <div onClick="remindHide()" class="remindBox">
+        <img src="img/share-remind.jpg"/>
+    </div>
     <!-- tabbar -->
     <mc-tabbar page="index"></mc-tabbar>
-    <div class="content index-content infinite-scroll" data-distance="100">
+    <div class="content index-content " data-distance="100">
         <!-- banner -->
         <div class="index-banner">
             <div class="swiper-container">
@@ -36,6 +39,7 @@
                         <img src="img/banner/banner3.jpg">
                         <div class="slide-shadow"></div>
                     </div>
+
                 </div>
                 <!-- 如果需要分页器 -->
                 <div class="swiper-pagination"></div>
@@ -74,6 +78,10 @@
                             </div>
                             <div class="card-header no-border">
                                 <div class="facebook-avatar">
+                                    <div class="user-validate" v-if="item.approveState">
+                                        <img :src=" item.approveType == 1 ? 'img/icon/user-pv.jpg' : 'img/icon/user-ov.jpg' "
+                                             alt="">
+                                    </div>
                                     <img :src="item.publisherPhoto" width="34" height="34">
                                 </div>
                                 <div class="facebook-name">{{item.publisherName}}</div>
@@ -91,7 +99,9 @@
                                     发现日期：{{item.lostTime}}
                                 </div>
                                 <div class="card-content-img">
-                                    <div class="cardImg-mask" v-show="item.findState == 1"></div>
+                                    <div class="cardImg-mask" v-show="item.findState == 1">
+                                        <img src="img/icon/icon-found-big.jpg">
+                                    </div>
                                     <img :src="item.petImage"/>
                                 </div>
                             </div>
@@ -118,9 +128,9 @@
                 </li>
             </ul>
             <!-- preloader -->
-            <div class="infinite-scroll-preloader">
-                <div class="preloader"></div>
-            </div>
+            <!--<div class="infinite-scroll-preloader">-->
+            <!--<div class="preloader"></div>-->
+            <!--</div>-->
         </div>
     </div>
 </div>
@@ -133,7 +143,9 @@
 <script type="text/javascript" src='http://res.wx.qq.com/open/js/jweixin-1.2.0.js'></script>
 <script>
 
+
     $(function () {
+
         $.ajax({
             url: '/pethome/wechat/jsApiSignature',
             type: 'GET',
@@ -153,8 +165,7 @@
                             "onMenuShareTimeline",
                             "onMenuShareAppMessage",
                             "onMenuShareQQ",
-                            "onMenuShareQZone",
-                            "onMenuShareWeibo"
+                            "onMenuShareQZone"
                         ]
                     });
                 }
@@ -182,14 +193,16 @@
                 },
                 cancel: function () {
                 },
-                fail: function (){
+                fail: function () {
                 }
+
             });
 
             /**
              * 朋友圈
              */
             wx.onMenuShareTimeline({
+
                 title: wechatParams.title,
                 desc: wechatParams.desc,
                 link: wechatParams.link,
@@ -205,40 +218,45 @@
              * 分享到QQ
              */
             wx.onMenuShareQQ({
-                title: '这是一条测试的title',
-                desc: '从前有一只大鱼和一只小鱼。有一天 小鱼问大鱼：大～鱼～大～鱼～你～平～常～喜～欢～吃～什～么～丫。大鱼说：我～喜～欢～吃～说～话～慢～的～小～鱼。然后小鱼说：喔 酱紫 造了！',
-                link: 'http://girl.nat300.top/pethome/index.html?openid=' + GetQueryString("openid"),
-                imgUrl: 'https://avatars3.githubusercontent.com/u/12826895?s=460&v=4',
+                title: wechatParams.title,
+                desc: wechatParams.desc,
+                link: getAuthUrl(),
+                imgUrl: wechatParams.imgUrl,
                 success: function () {
+                    $.toast("分享成功")
                 },
                 cancel: function () {
+                },
+                fail: function () {
                 }
             });
             /**
              * 分享到qq空间
              */
             wx.onMenuShareQZone({
-                title: '今天下雨,冷死个人,宇锅出去吃饭',
-                desc: '从前有一只大鱼和一只小鱼。有一天 小鱼问大鱼：大～鱼～大～鱼～你～平～常～喜～欢～吃～什～么～丫。大鱼说：我～喜～欢～吃～说～话～慢～的～小～鱼。然后小鱼说：喔 酱紫 造了！',
-                link: 'http://girl.nat300.top/pethome/index.html?openid=' + GetQueryString("openid"),
-                imgUrl: 'https://avatars3.githubusercontent.com/u/12826895?s=460&v=4',
+                title: wechatParams.title,
+                desc: wechatParams.desc,
+                link: getAuthUrl(),
+                imgUrl: wechatParams.imgUrl,
                 success: function () {
+                    $.toast("分享成功")
                 },
                 cancel: function () {
-                }
-            });
-            wx.onMenuShareWeibo({
-                title: '这是一条测试的title',
-                desc: '从前有一只大鱼和一只小鱼。有一天 小鱼问大鱼：大～鱼～大～鱼～你～平～常～喜～欢～吃～什～么～丫。大鱼说：我～喜～欢～吃～说～话～慢～的～小～鱼。然后小鱼说：喔 酱紫 造了！',
-                //link: 'http://girl.nat300.top/pethome/index.html?openid=' + GetQueryString("openid"),
-                link: 'http://girl.nat300.top/pethome/wechat/webAuth?returnUrl=http://girl.nat300.top/pethome/index.html',
-                imgUrl: 'https://avatars3.githubusercontent.com/u/12826895?s=460&v=4',
-                success: function () {
                 },
-                cancel: function () {
+                fail: function () {
                 }
             });
-
+            /*    wx.onMenuShareWeibo({
+                    title: '这是一条测试的title',
+                    desc: '从前有一只大鱼和一只小鱼。有一天 小鱼问大鱼：大～鱼～大～鱼～你～平～常～喜～欢～吃～什～么～丫。大鱼说：我～喜～欢～吃～说～话～慢～的～小～鱼。然后小鱼说：喔 酱紫 造了！',
+                    //link: 'http://girl.nat300.top/pethome/index.html?openid=' + GetQueryString("openid"),
+                    link: 'http://girl.nat300.top/pethome/wechat/webAuth?returnUrl=http://girl.nat300.top/pethome/index.html',
+                    imgUrl: 'https://avatars3.githubusercontent.com/u/12826895?s=460&v=4',
+                    success: function () {
+                    },
+                    cancel: function () {
+                    }
+                });*/
         });
     });
 
@@ -256,6 +274,8 @@
         },
         methods: {
             loadDynamicList: function () {
+
+                $.showIndicator();
                 $.ajax({
                     url: '/pethome/publish/index/' + GetQueryString("openid"),
                     type: 'GET',
@@ -267,13 +287,14 @@
                             for (var i = 0; i < app.dynamicArr.length; i++) {
                                 app.dynamicArr[i].petImage = app.dynamicArr[i].petImage.split(";")[0];
                             }
+                            $.hideIndicator();
                         }
                     }
                 });
             },
             //寻宠
             loadFindPetList: function () {
-
+                $.showIndicator();
                 $.ajax({
                     url: '/pethome/publish/index/' + GetQueryString("openid"),
                     type: 'GET',
@@ -285,12 +306,14 @@
                     success: function (res) {
                         if (res.code === 1) {
                             app.dynamicArr = res.data;
+                            $.hideIndicator();
                         }
                     }
                 });
             },
             //寻主
             loadFindOwnerList: function () {
+                $.showIndicator();
                 $.ajax({
                     url: '/pethome/publish/index/' + GetQueryString("openid"),
                     type: 'GET',
@@ -302,12 +325,13 @@
                     success: function (res) {
                         if (res.code === 1) {
                             app.dynamicArr = res.data;
+                            $.hideIndicator();
                         }
                     }
                 });
             },
             loadFindAttentionList: function () {
-
+                $.showIndicator();
                 $.ajax({
                     url: '/pethome/dynamic/like/' + GetQueryString("openid"),
                     type: 'GET',
@@ -317,11 +341,12 @@
                     success: function (res) {
                         if (res.code === 1) {
                             app.dynamicArr = res.data;
+                            $.hideIndicator();
                         }
                     }
                 });
             },
-            //评论
+            //关注
             comment: function (id) {
                 $.ajax({
                     url: '/pethome/user/auth/' + GetQueryString("openid"),
@@ -364,8 +389,7 @@
             },
             //分享
             share: function () {
-
-
+                openShareRemind();
             },
             //关注
             attention: function (index, id, likeState) {
@@ -449,40 +473,41 @@
         }
     });
     $.init();
-    var loading = false;
-    var maxItems = 100;
-    var itemsPerLoad = 20;
-
-    function addItems() {
-        app.dynamicArr.push({classifyId: 2, publishType: 2, petFindState: 2});
-    }
-
-    //addItems();
-    var lastIndex = app.dynamicArr.length;
-    $(document).on('infinite', '.infinite-scroll', function () {
-
-        // 如果正在加载，则退出
-        if (loading) return;
-
-        // 设置flag
-        loading = true;
-
-        setTimeout(function () {
-            loading = false;
-            if (lastIndex >= maxItems) {
-                $.detachInfiniteScroll($('.infinite-scroll'));
-                $('.infinite-scroll-preloader').remove();
-                return;
-            }
-            addItems();
-            lastIndex = app.dynamicArr.length;
-        }, 500);
-    });
+    // var loading = false;
+    // var maxItems = 100;
+    // var itemsPerLoad = 20;
+    //
+    // function addItems() {
+    //     app.dynamicArr.push({classifyId: 2, publishType: 2, petFindState: 2});
+    // }
+    //
+    // //addItems();
+    // var lastIndex = app.dynamicArr.length;
+    // $(document).on('infinite', '.infinite-scroll', function () {
+    //
+    //     // 如果正在加载，则退出
+    //     if (loading) return;
+    //
+    //     // 设置flag
+    //     loading = true;
+    //
+    //     setTimeout(function () {
+    //         loading = false;
+    //         if (lastIndex >= maxItems) {
+    //             $.detachInfiniteScroll($('.infinite-scroll'));
+    //             $('.infinite-scroll-preloader').remove();
+    //             return;
+    //         }
+    //         addItems();
+    //         lastIndex = app.dynamicArr.length;
+    //     }, 500);
+    // });
     $(function () {
         var swiper = new Swiper('.swiper-container', {
             slidesPerView: 'auto',
             initialSlide: 1,
             centeredSlides: true,
+            autoplay: 2000,
             //spaceBetween: 100,
             pagination: '.swiper-pagination'
         });

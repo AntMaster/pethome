@@ -343,6 +343,8 @@ public class MessageServiceImpl implements MessageService {
 
                     msgDTO.setReplierFromName(user.getNickName());
                     msgDTO.setReplierFromPhoto(user.getHeadImgUrl());
+                    msgDTO.setApproveState(user.getApproveState());
+                    msgDTO.setApproveType(user.getApproveType());
                 }
 
                 if (!StringUtils.isEmpty(talk.getReplierAccept()) && talk.getReplierAccept().trim().equals(user.getOpenId().trim())) {
@@ -426,6 +428,8 @@ public class MessageServiceImpl implements MessageService {
 
                     msgDTO.setUserIdFromName(user.getNickName());
                     msgDTO.setUserIdFromPhoto(user.getHeadImgUrl());
+                    msgDTO.setApproveState(user.getApproveState());
+                    msgDTO.setApproveType(user.getApproveType());
                 }
 
                 if (talk.getUserIdAccept().trim().equals(user.getOpenId().trim())) {
@@ -526,6 +530,8 @@ public class MessageServiceImpl implements MessageService {
             if ((user.getOpenId().trim()).equals(msgDTO.getReplierFrom().trim())) {
                 msgDTO.setReplierFromName(user.getNickName());
                 msgDTO.setReplierFromPhoto(user.getHeadImgUrl());
+                msgDTO.setApproveType(user.getApproveType());
+                msgDTO.setApproveState(user.getApproveState());
             }
 
             if (!StringUtils.isEmpty(msgDTO.getReplierAccept()) && (user.getOpenId().trim()).equals(msgDTO.getReplierAccept().trim())) {
@@ -597,6 +603,8 @@ public class MessageServiceImpl implements MessageService {
             if ((user.getOpenId().trim()).equals(msgDTO.getUserIdFrom().trim())) {
                 msgDTO.setUserIdFromName(user.getNickName());
                 msgDTO.setUserIdFromPhoto(user.getHeadImgUrl());
+                msgDTO.setApproveType(user.getApproveType());
+                msgDTO.setApproveState(user.getApproveState());
             }
 
             if (user.getOpenId().trim().equals(msgDTO.getUserIdAccept().trim())) {

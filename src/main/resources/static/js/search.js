@@ -77,6 +77,7 @@ var app = new Vue({
     },
     methods: {
         init: function () {
+            $.showIndicator();
             $.ajax({
                 url: "/pethome/search/init",
                 dataType: "json",
@@ -86,13 +87,13 @@ var app = new Vue({
                         app.annotationList = res.data;
                         //配置一个数组用于控制大头针状态
                         app.confPinIcon();
+                        $.hideIndicator();
                     }
                 }
             });
             this.laodPetVariety();
         },
         closeDetail: function (event) {
-            alert(event.overlay);
             if (!event.overlay) {
                 $(".marker-card").fadeOut();
             }
@@ -112,8 +113,7 @@ var app = new Vue({
                 $.toast("搜索关键字不能为空~");
                 return;
             }*/
-
-
+            $.showIndicator();
             $.ajax({
                 url: "/pethome/search/",
                 dataType: "json",
@@ -126,7 +126,6 @@ var app = new Vue({
                     keyWord: app.keyword
                 },
                 success: function (res) {
-
                     if (res.code == 1) {
                         app.annotationList = res.data;
                         //配置一个数组用于控制大头针状态
@@ -154,8 +153,10 @@ var app = new Vue({
                                }
                             }
                         }
-                        // app.confPinIcon();
-                        //$(".marker-card").fadeIn().css("diplay", "none");
+                        $.hideIndicator();
+
+                    }else if(res.code == 2){
+                        $.toast("未查询到相关的宠物")
                     }
                 }
             });
@@ -222,6 +223,10 @@ var app = new Vue({
         },
         //打开卡片
         openCard: function (item) {
+            item.petImage = item.petImage.split(";")[0];
+            item.lostTime = item.lostTime.split(" ")[0];
+            item.createTime = item.createTime.split(" ")[0];
+
             this.tempActiveCard = item;
             $(".marker-card").fadeIn();
         },

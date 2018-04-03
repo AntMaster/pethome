@@ -24,7 +24,7 @@ public interface UserDynamicRepository extends JpaRepository<UserDynamic, Intege
     UserDynamic findByUserIdFromAndPublishIdAndDynamicType(String openId, Integer publishId,Integer dynamicType);
 
 
-    List<UserDynamic> findByPublishIdInAndDynamicType(List<Integer> publisherIds , Integer dynamicType);
+    List<UserDynamic> findByPublishIdAndDynamicType(Integer publisherId , Integer dynamicType);
 
 
     List<UserDynamic> findByPublishIdIn(List<Integer> publisherIds);

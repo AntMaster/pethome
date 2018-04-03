@@ -54,6 +54,13 @@
                                     <span :class="{active:cardFormModel.classifyId == 2}" @click="selectClass(2)">喵</span>
                                 </div>
                             </div>
+                            <!-- 品种 -->
+                            <div class="card-form-item">
+                                <div class="item-title">品种</div>
+                                <div class="item-input">
+                                    <input type="text" v-model="varietyName" class="open-popup" readonly="readonly" placeholder="请选择主子品种" />
+                                </div>
+                            </div>
                             <!-- 生日 -->
                             <div class="card-form-item">
                                 <div class="item-title">生日</div>
@@ -66,8 +73,8 @@
                             <div class="card-form-item">
                                 <div class="item-title">性别</div>
                                 <div class="item-input sex-input">
-                                    <span :class="{active:cardFormModel.sex}" @click="selectSex(1)">男</span>
-                                    <span :class="{active:!cardFormModel.sex}" @click="selectSex(0)">女</span>
+                                    <span :class="{active:cardFormModel.sex}" @click="selectSex(1)">公</span>
+                                    <span :class="{active:!cardFormModel.sex}" @click="selectSex(0)">母</span>
                                 </div>
                             </div>
                             <!-- 是否绝育 -->
@@ -97,6 +104,23 @@
                         </form>
                     </div>
                 </div>
+            </div>
+        </div>
+        <!--宠物品种 popup -->
+        <div class="popup popup-petVariety">
+            <div class="variety-box">
+                <ul class="commonList-row">
+                    <li v-if="index < 12" v-for="(item,index) in varietyArr" @click="selectVarietyArr(item.id,item.name)"
+                        class="flex-center close-popup">
+                        <div class="avatar">
+                            <img :src="item.icon"/>
+                        </div>
+                        <div class="name">{{item.name}}</div>
+                    </li>
+                </ul>
+            </div>
+            <div class="cancel-btn">
+                <div class="btn flex-center close-popup">取消</div>
             </div>
         </div>
     </div>

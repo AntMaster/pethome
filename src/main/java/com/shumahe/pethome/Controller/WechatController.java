@@ -19,12 +19,16 @@ import me.chanjar.weixin.common.bean.WxJsapiSignature;
 import me.chanjar.weixin.common.bean.menu.WxMenu;
 import me.chanjar.weixin.common.bean.menu.WxMenuButton;
 import me.chanjar.weixin.common.exception.WxErrorException;
+import me.chanjar.weixin.mp.api.WxMpConfigStorage;
 import me.chanjar.weixin.mp.api.WxMpInMemoryConfigStorage;
 import me.chanjar.weixin.mp.api.WxMpService;
 import me.chanjar.weixin.mp.bean.menu.WxMpMenu;
 import me.chanjar.weixin.mp.bean.result.WxMpOAuth2AccessToken;
 import me.chanjar.weixin.mp.bean.result.WxMpUser;
+import me.chanjar.weixin.mp.bean.template.WxMpTemplateData;
+import me.chanjar.weixin.mp.bean.template.WxMpTemplateMessage;
 import net.minidev.json.JSONObject;
+import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -33,7 +37,9 @@ import org.springframework.web.bind.annotation.*;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
+import java.text.SimpleDateFormat;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 
 
@@ -58,9 +64,34 @@ public class WechatController {
     @Autowired
     private WechatAccountConfig wechatAccountConfig;
 
-
     @Autowired
-    private  MemberTagsMappingRepository memberTagsMappingRepository;
+    private MemberTagsMappingRepository memberTagsMappingRepository;
+
+
+    /**
+     * 模板消息推送
+     *
+     * @return
+     */
+    @PostMapping("/templateMsgPush/{openid}")
+    @ResponseBody
+    public String templateMsgPush(@PathVariable("openid") String openId) throws WxErrorException {
+
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
+        WxMpConfigStorage configStorage = wxMpService.getWxMpConfigStorage();
+
+        WxMpTemplateMessage templateMessage = WxMpTemplateMessage.builder()
+                .toUser(openId)
+                .templateId(configStorage.getTemplateId())
+                .url(projectUrlConfig.getWechatMpAuthorize() + "/pethome/mine.html?openid="+openId)
+                .build();
+
+        templateMessage.addData(new WxMpTemplateData("first", dateFormat.format(new Date()), "#FF00FF"))
+                .addData(new WxMpTemplateData("remark", RandomStringUtils.randomAlphanumeric(100), "#FF00FF"));
+        String msgId = wxMpService.getTemplateMsgService().sendTemplateMsg(templateMessage);
+        return msgId;
+    }
+
 
     /**
      * 服务器配置
@@ -92,24 +123,6 @@ public class WechatController {
         return "非法请求";
     }
 
-    /**
-     * JSAPI
-     *
-     * @param url
-     * @return
-     */
-    @GetMapping("/jsApiSignature")
-    @ResponseBody
-    public ResultVO forward(@RequestParam(name = "url") String url) {
-
-        WxJsapiSignature jsapiSignature = null;
-        try {
-            jsapiSignature = wxMpService.createJsapiSignature(url);
-        } catch (WxErrorException e) {
-            throw new PetHomeException(ResultEnum.WECHAT_MP_ERROR.getCode(), e.getMessage());
-        }
-        return ResultVOUtil.success(jsapiSignature);
-    }
 
     /**
      * 网页授权
@@ -134,18 +147,14 @@ public class WechatController {
         return "redirect:" + redirectUrl;
     }
 
+
     /**
+     * 网页授权
+     * <p>
      * code仅可以使用1次，第一次获取到的code使用过之后，传去别的地方用就会报这个错。要想再用，就得在代码中重新构建微信请求连接去请求获得新的code（所以5分钟之内有两次请求code的就会报）
      * <p>
      * 关于网页授权access_token和普通access_token的区别
-     * 1、微信网页授权是通过OAuth2.0机制实现的，在用户授权给公众号后，公众号可以获取到一个网页授权特有的接口调用凭证（网页授权access_token），通过网页授权access_token可以进行授权后接口调用，如获取用户基本信息；
-     *
-     * @param code
-     * @param returnUrl
-     * @return
-     */
-    /**
-     * 网页授权
+     * 1、微信网页授权是通过OAuth2.0机制实现的，在用户授权给公众号后，公众号可以获取到一个网页授权特有的接口调用凭证（网页授权access_token），通过网页授权access_token可以进行授权后接口调用，如获取用户基本信息； *
      *
      * @param code
      * @param returnUrl
@@ -160,45 +169,42 @@ public class WechatController {
         //{"errcode":40001,"errmsg":"invalid credential, access_token is invalid or not latest, hints: [ req_id: 4y0XGa0264s152 ]"}
         WxMpUser user = wxMpService.oauth2getUserInfo(wxMpOAuth2AccessToken, null);
 
-        /**
-         * 创建/更新用户
-         */
-        UserBasic userBasic = saveUser(user);
-        if(returnUrl.contains("detail.html")){
 
-            if (userBasic.getApproveState() == 1){
-                return "redirect:" + returnUrl + "&openid=" + wxMpOAuth2AccessToken.getOpenId()  ;
-            }else {
+        UserBasic userBasic = saveUser(user);
+        if (returnUrl.contains("detail.html")) {//详情页面
+
+            //认证
+            if (userBasic.getApproveState() == 1) {
+                return "redirect:" + returnUrl + "&openid=" + wxMpOAuth2AccessToken.getOpenId();
+            } else {//未认证
                 return "redirect:" + returnUrl.split("detail.html")[0] + "index.html?openid=" + wxMpOAuth2AccessToken.getOpenId();
             }
 
-        }else{
+        } else {
             return "redirect:" + returnUrl + "?openid=" + wxMpOAuth2AccessToken.getOpenId();
         }
     }
 
-    @Transactional
-    protected  UserBasic saveUser(WxMpUser user) {
+    
+    /**
+     * JSAPI
+     *
+     * @param url
+     * @return
+     */
+    @GetMapping("/jsApiSignature")
+    @ResponseBody
+    public ResultVO forward(@RequestParam(name = "url") String url) {
 
-        UserBasic userBasic = userBasicRepository.findByAppIdAndOpenId(wechatAccountConfig.getMpAppId(), user.getOpenId());
-        if (userBasic == null) {
-            userBasic = new UserBasic();
-            userBasic.setOpenId(user.getOpenId());
-            userBasic.setAppId(wechatAccountConfig.getMpAppId());
+        WxJsapiSignature jsapiSignature = null;
+        try {
+            jsapiSignature = wxMpService.createJsapiSignature(url);
+        } catch (WxErrorException e) {
+            throw new PetHomeException(ResultEnum.WECHAT_MP_ERROR.getCode(), e.getMessage());
         }
-
-        userBasic.setNickName(user.getNickname());
-        userBasic.setHeadImgUrl(user.getHeadImgUrl());
-        userBasic.setSex(user.getSexId());
-        UserBasic save = userBasicRepository.save(userBasic);
-
-        MemberTagsMapping tagsMapping = new MemberTagsMapping();
-        tagsMapping.setMemberId(save.getId());
-        tagsMapping.setTagId(MemberTagsEnum.Volunteer.getCode());
-        memberTagsMappingRepository.save(tagsMapping);
-
-        return userBasic;
+        return ResultVOUtil.success(jsapiSignature);
     }
+
 
     @GetMapping("/menu")
     @ResponseBody
@@ -231,5 +237,29 @@ public class WechatController {
         } catch (WxErrorException e) {
             throw new PetHomeException(ResultEnum.WECHAT_MP_ERROR.getCode(), e.getMessage());
         }
+    }
+
+
+    @Transactional
+    protected UserBasic saveUser(WxMpUser user) {
+
+        UserBasic userBasic = userBasicRepository.findByAppIdAndOpenId(wechatAccountConfig.getMpAppId(), user.getOpenId());
+        if (userBasic == null) {
+            userBasic = new UserBasic();
+            userBasic.setOpenId(user.getOpenId());
+            userBasic.setAppId(wechatAccountConfig.getMpAppId());
+        }
+
+        userBasic.setNickName(user.getNickname());
+        userBasic.setHeadImgUrl(user.getHeadImgUrl());
+        userBasic.setSex(user.getSex());
+        UserBasic save = userBasicRepository.save(userBasic);
+
+        MemberTagsMapping tagsMapping = new MemberTagsMapping();
+        tagsMapping.setMemberId(save.getId());
+        tagsMapping.setTagId(MemberTagsEnum.Volunteer.getCode());
+        memberTagsMappingRepository.save(tagsMapping);
+
+        return userBasic;
     }
 }

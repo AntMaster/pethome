@@ -40,6 +40,12 @@ var app = new Vue({
             });
         },
         validate: function () {
+
+            if(this.formData.dutyerPhone.length != 11){
+                $.toast("手机号位数不正确");
+                return;
+            }
+
             $.ajax({
                 url: '/pethome/user/auth',
                 type: 'PUT',

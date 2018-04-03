@@ -11,7 +11,7 @@ var app = new Vue({
         formData: {
             publishType: 1,
             classifyId: 3,
-            varietyId: 4,
+            varietyId: 9,
             petName: null,
             petSex: 1,
             petDescription: null,
@@ -33,31 +33,22 @@ var app = new Vue({
     },
     methods: {
         init: function () {
-            //加载宠物类别
-            $.ajax({
-                url: '/pethome/pet/variety',
-                type: 'GET',
-                dataType: 'json',
-                data: null,
 
-                success: function (res) {
-                    if (res.code === 1) {
-                        app.varietyArrDataSource = res.data;
-                        //默认猫子品种
-                        app.varietyArr = app.varietyArrDataSource["3"];
-                        app.varietyName = app.varietyArr[0].name;
-                    }
-                }
-            });
+            this.varietyArrDataSource = varietyArrDataSource;
+            this.varietyArr = this.varietyArrDataSource["3"];
+            this.varietyName = this.varietyArr[0].name;
+
             //初始化时间
             var date = new Date().Format("yyyy-MM-dd HH:mm:ss");
             this.formData.lostTime = date;
                 //date.toLocaleString();
         },
+        hasNullItem:function (obj) {
+            return hasNullItem(obj);
+        },
         //选择品种
         selectVarietyArr: function (id, name) {
             //id用于上传，name用于绑定model显示中文
-            console.log(id);
             app.formData.varietyId = id;
             app.varietyName = name;
         },
@@ -76,10 +67,15 @@ var app = new Vue({
         },
         submitRelease: function () {
 
-            if(this.formData.publisherId != GetQueryString("openid")){
-            }
+            if(this.formData.publisherId != GetQueryString("openid")){}
+
             if (this.petImageArr.length == 0) {
-                alert("宠物照片必填");
+                $.toast("宠物照片必填");
+                return;
+            }
+
+            if(this.formData.ownerContact.length != 11){
+                $.toast("手机号位数不正确");
                 return;
             }
 
@@ -95,13 +91,12 @@ var app = new Vue({
                             app.dynamicArr = res.data;
                             window.location.href = "./index.html?openid=" + GetQueryString("openid");
                         } else {
-                            alert(res.msg);
+                            $.toast(res.msg);
                         }
                     }
                 });
         },
         removePetImg: function (index) {
-
             this.petImageArr.splice(index, 1);
         }
     }
@@ -118,7 +113,7 @@ $(document).on('click', '.create-actions', function () {
             onClick: function () {
                 app.formData.classifyId = 3;
                 //改变类别id同时需要一个默认品种
-                app.formData.varietyId = 4;
+                app.formData.varietyId = 9;
                 app.petType = '汪';
                 app.varietyArr = app.varietyArrDataSource['3'];
                 app.varietyName = app.varietyArr[0].name;
@@ -192,7 +187,7 @@ $(document).on("pageInit", function (e, pageId, $page) {
                     }
                 },
                 handleLocationSuccess:function (res) {
-                    alert(res);
+                    $.toast(res);
                 },
                 selectAddress: function (address, point) {
                     $.router.back("fpet.html");
@@ -220,6 +215,10 @@ $(".petImg-upload").change(function (e) {
 
     //var type = $(this).data().type;
 
+    if(app.petImageArr.length >=3 ){
+        $.toast("图片最多只能上传三张");
+        return;
+    }
     var data = new FormData();
     $.each(e.target.files, function (i, file) {
         data.append("file", file);
@@ -234,10 +233,11 @@ $(".petImg-upload").change(function (e) {
         processData: false,
         success: function (respond) {
             app.petImageArr.push(respond.data);
+            app.formData.petImage = app.petImageArr.join(";");
         }
     });
-    /*
 
+    /*
         //创建FormData对象
         var data = new FormData();
         //为FormData对象添加数据

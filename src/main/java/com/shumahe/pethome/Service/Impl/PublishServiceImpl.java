@@ -99,6 +99,7 @@ public class PublishServiceImpl implements PublishService {
          */
         List<PublishDTO> publishDTOS = publishBaseService.findPetExtends(publishList);
 
+
         /**
          * 查看我是否关注了该发布
          */
@@ -219,8 +220,11 @@ public class PublishServiceImpl implements PublishService {
         if (pet.getId() == null) {
             throw new PetHomeException(ResultEnum.RESULT_EMPTY);
         }
-       /* pet.setViewCount(pet.getViewCount() + 1);
-        petPublishRepository.save(pet);*/
+
+       /*
+        pet.setViewCount(pet.getViewCount() + 1);
+        petPublishRepository.save(pet);
+        */
 
         /**
          * 品种名称
@@ -260,13 +264,12 @@ public class PublishServiceImpl implements PublishService {
             publishDTO.setPrivateMsgCount(userTalkRepository.findPrivateMsgCount(publishId));
         }
 
-
         BeanUtils.copyProperties(pet, publishDTO);
         publishDTO.setPublicTalk(msgDTOS);
         publishDTO.setPublisherName(usersMap.get(pet.getPublisherId()).getNickName());
         publishDTO.setPublisherPhoto(usersMap.get(pet.getPublisherId()).getHeadImgUrl());
         publishDTO.setApproveState(usersMap.get(openId).getApproveState());
-
+        publishDTO.setApproveType(usersMap.get(openId).getApproveType());
         /**
          * 浏览条数
          */
@@ -280,6 +283,13 @@ public class PublishServiceImpl implements PublishService {
         UserDynamic like = userDynamicRepository.findByUserIdFromAndPublishIdAndDynamicType(openId, publishId, DynamicTypeEnum.LIKE.getCode());
         if (like != null)
             publishDTO.setLikeState(true);
+
+        /**
+         * 浏览数量
+         */
+        List<UserDynamic> share = userDynamicRepository.findByPublishIdAndDynamicType(publishId, DynamicTypeEnum.SHARE.getCode());
+        publishDTO.setShareCount(share.size());
+
 
         return publishDTO;
 

@@ -41,9 +41,9 @@
             <div class="remind-text">抱歉,认证失败了</div>
             <div class="remind-subtitle"
                  style="text-align: center;width: 75%;margin: 0 auto;margin-top: .75rem;color: #a5a5a5;font-size: .65rem;">
-                请根据反馈修改您的认证信息，如需帮助在服
+                {{errMsg}}
             </div>
-            <a :href="'./index.html?openid='+param" class="remind-btn external">返回首页</a>
+            <a :href="'./ov.html?openid='+param"  class="remind-btn external" :class="{remindFail:!validateState}">重新认证</a>
         </div>
     </div>
 </div>
@@ -57,6 +57,7 @@
         data: {
             validateState: true,
             param:"",
+            errMsg:'您的信息已经提交,我们会尽快完成审核,请及时在我的页面查看认证结果',
         },
         created:function () {
             this.param = GetQueryString("openid");
@@ -76,42 +77,17 @@
                     this.validateState = false;
                 }
 
-                /*$.ajax({
-                    url: '/pethome/user/auth/' + GetQueryString("openid"),
+                $.ajax({
+                    url: '/pethome/user/organization/' + GetQueryString("openid"),
                     type: 'GET',
                     dataType: 'json',
                     data: null,
                     success: function (res) {
                         if (res.code === 1) {
-
-                            if (res.data.type == "person") {
-
-                                if (res.data.state == 0) {
-                                    $.modal(goAuthormodal);
-                                } else {
-                                    window.location.href = "./pv.html?openid=" + GetQueryString("openid");
-                                }
-                            } else if (res.data.type == "association") {
-
-                                if (res.data.state == 0) {
-
-                                    window.location.href = "./ov-state.html?openid=" + GetQueryString("openid");
-
-                                } else if (res.data.state == 1) {
-
-                                    window.location.href = "./oved.html?openid=" + GetQueryString("openid");
-
-                                } else if (res.data.state == 2) {
-
-                                    window.location.href = "./oved-state.html?openid=" + GetQueryString("openid");
-                                }
-                            }
-                        } else {
-                            $.modal(goAuthormodal);
+                            ovedPage.errMsg= "失败原因：" + res.data.description;
                         }
                     }
                 });
-                */
             }
         }
     });

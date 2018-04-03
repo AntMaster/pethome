@@ -56,7 +56,6 @@ public class PublishBaseServiceImpl implements PublishBaseService {
 
         //Map<publishId,msgCount>
         List<Map<Integer, Integer>> msgCount = new ArrayList<>();
-
         if (!commentCount.isEmpty()) {
             commentCount.stream().forEach((Object[] count) -> {
                 Map<Integer, Integer> _tempMsg = new HashMap<>();
@@ -80,12 +79,10 @@ public class PublishBaseServiceImpl implements PublishBaseService {
             });
         }
 
+
         /**
          * 私信
          */
-        
-
-
 
 
         List<UserDynamic> dynamics = userDynamicRepository.findByPublishIdIn(publishIds);
@@ -156,6 +153,8 @@ public class PublishBaseServiceImpl implements PublishBaseService {
 
                     publishDTO.setPublisherName(userBasic.getNickName());
                     publishDTO.setPublisherPhoto(userBasic.getHeadImgUrl());
+                    publishDTO.setApproveState(userBasic.getApproveState());
+                    publishDTO.setApproveType(userBasic.getApproveType());
 
                 }
             });
@@ -165,6 +164,7 @@ public class PublishBaseServiceImpl implements PublishBaseService {
             PetVariety variety = classifyMap.get(publishDTO.getVarietyId());
             if (variety != null)
                 publishDTO.setVarietyName(variety.getName());
+
         });
 
         for (PublishDTO publishDTO : publishDTOS) {
