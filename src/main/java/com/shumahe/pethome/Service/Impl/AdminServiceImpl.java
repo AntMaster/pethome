@@ -1,16 +1,24 @@
 package com.shumahe.pethome.Service.Impl;
 
+import com.shumahe.pethome.Config.ProjectUrlConfig;
+import com.shumahe.pethome.Controller.WechatController;
 import com.shumahe.pethome.DTO.PrivateMsgDTO;
 import com.shumahe.pethome.DTO.PublicMsgDTO;
 import com.shumahe.pethome.DTO.PublishDTO;
 import com.shumahe.pethome.DTO.UserApproveDTO;
 import com.shumahe.pethome.Domain.*;
+import com.shumahe.pethome.Enums.ApproveStateEnum;
 import com.shumahe.pethome.Enums.ResultEnum;
 import com.shumahe.pethome.Exception.PetHomeException;
 import com.shumahe.pethome.Repository.*;
 import com.shumahe.pethome.Service.AdminService;
 import com.shumahe.pethome.Service.BaseService.PublishBaseService;
 import com.shumahe.pethome.Util.DateUtil;
+import me.chanjar.weixin.common.exception.WxErrorException;
+import me.chanjar.weixin.mp.api.WxMpConfigStorage;
+import me.chanjar.weixin.mp.api.WxMpService;
+import me.chanjar.weixin.mp.bean.template.WxMpTemplateData;
+import me.chanjar.weixin.mp.bean.template.WxMpTemplateMessage;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -20,12 +28,14 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
 @Service
 public class AdminServiceImpl implements AdminService {
+
 
 
     @Autowired
@@ -52,6 +62,7 @@ public class AdminServiceImpl implements AdminService {
 
     @Autowired
     PublishViewRepository publishViewRepository;
+
 
 
     /**
@@ -366,6 +377,8 @@ public class AdminServiceImpl implements AdminService {
         return res;
     }
 
+    @Autowired
+    WechatController wechatController;
     /**
      * 认证审核
      *
@@ -392,6 +405,50 @@ public class AdminServiceImpl implements AdminService {
 
         userBasic.setApproveState(approveType);
         userBasicRepository.save(userBasic);
+
+        try {
+            wechatController.templateMsgPush(approve.getUserId(),approve);
+        } catch (WxErrorException e) {
+            e.printStackTrace();
+        }
         return true;
     }
+
+    @Autowired
+    private ProjectUrlConfig projectUrlConfig;
+
+    @Autowired
+    WxMpService wxMpService;
+
+
+/*
+    private String templateMsgPush(String openId,
+                       UserApprove approve) throws WxErrorException {
+        WxMpConfigStorage configStorage = wxMpService.getWxMpConfigStorage();
+
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy年MM月dd HH:mm:ss");
+        String keyword2Msg = "审核通过!";
+        String reMarkMsg = "恭喜您！（" + approve.getOrganizationName() + "）已通过认证，去解锁更多动物信息!";
+
+        if (approve.getApproveState() == ApproveStateEnum.FAILURE.getCode()) {
+            keyword2Msg = "审核失败!";
+            reMarkMsg = "很遗憾！（" + approve.getOrganizationName() + "）未能通过认证，" + approve.getDescription() + "!";
+        }
+
+        WxMpTemplateMessage templateMessage = WxMpTemplateMessage.builder()
+                .toUser(openId)
+                .templateId(configStorage.getTemplateId())
+                .url(projectUrlConfig.getWechatMpAuthorize() + "/pethome/mine.html?openid=" + openId)
+                .build();
+
+        templateMessage
+                .addData(new WxMpTemplateData("first", "您好，您提交的实名审核已经完成！", "#FF00FF"))
+                .addData(new WxMpTemplateData("keyword1", "实名认证审核", "#FF00FF"))
+                .addData(new WxMpTemplateData("keyword2", keyword2Msg, "#FF00FF"))
+                .addData(new WxMpTemplateData("keyword3", dateFormat.format(new Date()), "#FF00FF"))
+                .addData(new WxMpTemplateData("remark", reMarkMsg, "#FF00FF"));
+        String msgId = wxMpService.getTemplateMsgService().sendTemplateMsg(templateMessage);
+        return msgId;
+
+        }*/
 }

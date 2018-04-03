@@ -130,7 +130,7 @@ public class UserController {
      * 获取短信验证码
      */
     @GetMapping("/sms/{openId}")
-    private ResultVO getShortMessage(@PathVariable("openId") String openId,
+    public ResultVO getShortMessage(@PathVariable("openId") String openId,
                                      HttpServletRequest request,
                                      @RequestParam("mobile") String mobile) {
 
@@ -172,7 +172,7 @@ public class UserController {
      * 个人认证
      */
     @PostMapping("/sms/{openId}")
-    private ResultVO checkShortMessage(HttpServletRequest request,
+    public ResultVO checkShortMessage(HttpServletRequest request,
                                        @PathVariable("openId") String openId,
                                        @RequestParam("code") String code,
                                        @RequestParam("mobile") String mobile) {
@@ -197,7 +197,7 @@ public class UserController {
     }
 
     /**
-     * 组织认证
+     * 组织提交认证资料
      *
      * @param request
      * @param userApproveForm
@@ -205,7 +205,7 @@ public class UserController {
      * @return
      */
     @PutMapping("/auth")
-    private ResultVO saveOrganization(HttpServletRequest request, @Valid UserApproveForm userApproveForm, BindingResult bindingResult) {
+    public ResultVO approveOrganization(HttpServletRequest request, @Valid UserApproveForm userApproveForm, BindingResult bindingResult) {
 
         //验证表单数据是否正确
         if (bindingResult.hasErrors()) {

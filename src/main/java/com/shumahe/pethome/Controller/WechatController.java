@@ -5,7 +5,9 @@ import com.google.gson.JsonObject;
 import com.shumahe.pethome.Config.ProjectUrlConfig;
 import com.shumahe.pethome.Config.WechatAccountConfig;
 import com.shumahe.pethome.Domain.MemberTagsMapping;
+import com.shumahe.pethome.Domain.UserApprove;
 import com.shumahe.pethome.Domain.UserBasic;
+import com.shumahe.pethome.Enums.ApproveStateEnum;
 import com.shumahe.pethome.Enums.MemberTagsEnum;
 import com.shumahe.pethome.Enums.ResultEnum;
 import com.shumahe.pethome.Exception.PetHomeException;
@@ -73,12 +75,22 @@ public class WechatController {
      *
      * @return
      */
-    @PostMapping("/templateMsgPush/{openid}")
-    @ResponseBody
-    public String templateMsgPush(@PathVariable("openid") String openId) throws WxErrorException {
+    /*@PostMapping("/templateMsgPush/{openid}")
+    @ResponseBody*/
+    public String templateMsgPush( String openId,
+                                   UserApprove userApprove) throws WxErrorException {
 
-        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
         WxMpConfigStorage configStorage = wxMpService.getWxMpConfigStorage();
+
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy年MM月dd HH:mm:ss");
+        String keyword2Msg = "审核通过!";
+        String reMarkMsg = "恭喜您！（"+ userApprove.getOrganizationName() +"）已通过认证，去解锁更多动物信息!";
+        String reMarkColor = "#2E8800";
+        if (userApprove.getApproveState() == ApproveStateEnum.FAILURE.getCode()){
+            keyword2Msg = "审核失败!";
+            reMarkMsg = "很遗憾！（"+ userApprove.getOrganizationName() +"）未能通过认证，"+ userApprove.getDescription() +"!";
+            reMarkColor = "#E73631";
+        }
 
         WxMpTemplateMessage templateMessage = WxMpTemplateMessage.builder()
                 .toUser(openId)
@@ -86,8 +98,12 @@ public class WechatController {
                 .url(projectUrlConfig.getWechatMpAuthorize() + "/pethome/mine.html?openid="+openId)
                 .build();
 
-        templateMessage.addData(new WxMpTemplateData("first", dateFormat.format(new Date()), "#FF00FF"))
-                .addData(new WxMpTemplateData("remark", RandomStringUtils.randomAlphanumeric(100), "#FF00FF"));
+        templateMessage
+                .addData(new WxMpTemplateData("first",  "您好，您提交的实名审核已经完成！"))
+                .addData(new WxMpTemplateData("keyword1", "实名认证审核"))
+                .addData(new WxMpTemplateData("keyword2",   keyword2Msg))
+                .addData(new WxMpTemplateData("keyword3", dateFormat.format(new Date())))
+                .addData(new WxMpTemplateData("remark", reMarkMsg, reMarkColor));
         String msgId = wxMpService.getTemplateMsgService().sendTemplateMsg(templateMessage);
         return msgId;
     }
@@ -144,6 +160,7 @@ public class WechatController {
             log.error("【有异常】{}", e);
             throw new PetHomeException(999, e.getMessage());
         }
+
         return "redirect:" + redirectUrl;
     }
 
@@ -185,7 +202,7 @@ public class WechatController {
         }
     }
 
-    
+
     /**
      * JSAPI
      *

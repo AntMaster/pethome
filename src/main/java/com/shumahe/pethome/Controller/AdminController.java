@@ -1,8 +1,6 @@
 package com.shumahe.pethome.Controller;
 
-import com.shumahe.pethome.DTO.PrivateMsgDTO;
-import com.shumahe.pethome.DTO.PublicMsgDTO;
-import com.shumahe.pethome.DTO.PublishDTO;
+
 import com.shumahe.pethome.Domain.*;
 import com.shumahe.pethome.Enums.ResultEnum;
 import com.shumahe.pethome.Exception.PetHomeException;
@@ -12,11 +10,9 @@ import com.shumahe.pethome.Util.ResultVOUtil;
 import com.shumahe.pethome.VO.ResultVO;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -26,7 +22,6 @@ import java.util.stream.Collectors;
 @CrossOrigin
 @RequestMapping("/admin")
 public class AdminController {
-
 
     @Autowired
     AdminService adminService;
@@ -43,7 +38,7 @@ public class AdminController {
      * @return
      */
     @GetMapping("/publish")
-    public ResultVO findAll(@RequestParam(value = "publishType", defaultValue = "0") Integer publishType,
+    public ResultVO findPublishList(@RequestParam(value = "publishType", defaultValue = "0") Integer publishType,
                             @RequestParam(value = "page", defaultValue = "0") Integer page,
                             @RequestParam(value = "size", defaultValue = "10") Integer size) {
 
@@ -95,7 +90,7 @@ public class AdminController {
      * 私信
      */
     @GetMapping("/private/{id}")
-    public ResultVO findPrivate(@PathVariable("id") Integer id,
+    public ResultVO findPrivateMsg(@PathVariable("id") Integer id,
                                 @RequestParam(value = "page", defaultValue = "0") Integer page,
                                 @RequestParam(value = "size", defaultValue = "100") Integer size) {
 
@@ -120,7 +115,7 @@ public class AdminController {
      * 互动
      */
     @GetMapping("/public/{id}")
-    public ResultVO findPublish(@PathVariable("id") Integer id,
+    public ResultVO findPublicMsg(@PathVariable("id") Integer id,
                                 @RequestParam(value = "page", defaultValue = "0") Integer page,
                                 @RequestParam(value = "size", defaultValue = "100") Integer size) {
 
@@ -183,7 +178,7 @@ public class AdminController {
      * @return
      */
     @PostMapping("/approve/{id}")
-    public ResultVO modifyApprove(@PathVariable("id") Integer id,
+    public ResultVO approveResult(@PathVariable("id") Integer id,
                                 @RequestParam("approveType") Integer approveType,
                                 @RequestParam(value = "msg",defaultValue = "") String msg) {
 

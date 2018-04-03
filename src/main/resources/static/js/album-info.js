@@ -200,6 +200,8 @@ var app = new Vue({
         },
         //开启大图
         lightBoxOpen:function(url){
+
+            if(this.manager.open) return false;
             $(".light-box").fadeIn().css("display","flex");
             this.lightBoxImg = url;
         }

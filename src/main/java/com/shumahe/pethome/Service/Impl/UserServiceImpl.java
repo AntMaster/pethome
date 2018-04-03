@@ -261,8 +261,13 @@ public class UserServiceImpl implements UserService {
             }
         });
 
-        return finalRes;
+        Collections.sort(finalRes,(o1, o2) -> {
+            String str = (String)o1.get("talkTime");
+            String str2 = (String)o2.get("talkTime");
+            return str2.compareTo(str);
+        });
 
+        return finalRes;
 
         /**
          * step 4 自己的信息
@@ -479,12 +484,11 @@ public class UserServiceImpl implements UserService {
         });
 
         List<Map<String, Object>> userIdFromName = finalRes.stream().filter(e -> e.get("userIdFromName") != null).collect(Collectors.toList());
-        //userIdFromName.sort(Comparator.comparing());
+        //userIdFromName.sort(Comparator.comparing();
         Collections.sort(userIdFromName, (o1, o2) -> {
             String time1 = (String) o1.get("talkTime");
             String time2 = (String) o2.get("talkTime");
-            int i = time2.compareTo(time1);
-            return i;
+            return time2.compareTo(time1);
         });
         return userIdFromName;
     }
