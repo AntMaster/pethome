@@ -7,17 +7,33 @@ import org.springframework.boot.web.servlet.ErrorPage;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpStatus;
+import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
 
-@Configuration
-public class WebAppConfig extends WebMvcConfigurerAdapter {
+/**
+ * 拦截器
+ */
+
+@Configuration//配置拦截器
+public class WebAppConfig extends WebMvcConfigurerAdapter {//配置适配器
+
+
 
     @Value("${web.upload-path}")
     private  String picturePath;
 
     @Override
+    public void addInterceptors(InterceptorRegistry registry) {
+
+
+        super.addInterceptors(registry);
+    }
+
+    @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
+
+
         registry.addResourceHandler("/upload/**").addResourceLocations("file:" + picturePath);
         registry.addResourceHandler("/mine/upload/**").addResourceLocations("file:" + picturePath);
         super.addResourceHandlers(registry);

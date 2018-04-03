@@ -200,8 +200,6 @@ var app = new Vue({
                     }
                 }
             });
-
-
         },
         //发送评论
         sendComment: function () {
