@@ -15,8 +15,8 @@
 </head>
 
 <body>
-    <div class="page" id="card-index">
-        <div class="mask"></div>
+    <div class="page" id="card-edit">
+
         <!-- tabbar -->
         <mc-tabbar page="publish"></mc-tabbar>
         <div class="content cardIndex-content">
@@ -28,20 +28,11 @@
                 </div>
                 <!-- 宠卡 -->
                 <div class="card-create">
-                    <!-- 正面 -->
-                    <div class="card-front">
-                        <div class="card-cover">
-                            <img src="img/card_cover.png" />
-                        </div>
-                        <div class="card-title">为爱宠创建云端ID</div>
-                        <div class="card-subtitle">完善云端信息为TA定制专属身份</div>
-                        <button class="card-btn center-block" @click="create()">创建宠卡</button>
-                    </div>
                     <!-- 反面 -->
                     <div class="card-back">
                         <div class="avatar">
-                            <img  :src="cardFormModel.headImgUrl ? cardFormModel.headImgUrl : 'img/avatar-df.png' " /><!--src="img/avatar-df.png"-->
-                            <input class="avatar-upload"  accept="image/*" type="file" name="file"  />
+                            <img :src="cardFormModel.headImgUrl" />
+                            <input class="avatar-upload" type="file" />
                         </div>
                         <form class="card-form">
                             <div class="card-form-item card-name-input">
@@ -55,19 +46,19 @@
                                     <span :class="{active:cardFormModel.classifyId == 2}" @click="selectClass(2)">喵</span>
                                 </div>
                             </div>
-                            <!-- 品种 -->
-                            <div class="card-form-item">
-                                <div class="item-title">品种</div>
-                                <div class="item-input">
-                                    <input type="text" v-model="varietyName" class="open-popup" readonly="readonly" placeholder="请选择主子品种" />
+                             <!-- 品种 -->
+                             <div class="card-form-item">
+                                    <div class="item-title">品种</div>
+                                    <div class="item-input">
+                                       <input v-model="varietyName" data-popup=".popup-petVariety" class="open-popup" type="text" placeholder="请选择主子品种">
+                                    </div>
                                 </div>
-                            </div>
                             <!-- 生日 -->
                             <div class="card-form-item">
                                 <div class="item-title">生日</div>
                                 <div class="item-input">
-                                    <input  id="datetime-picker" onchange="getBirth()" placeholder="填写主子诞辰" :model="cardFormModel.birthday"  type="text" data-toggle='date' />
-                                    <!--<input :model="cardFormModel.birthday" id="datetime-picker" value="2018-03-05 08:30" id="datetime-picker" class="date-picker" placeholder="填写主子诞辰" />-->
+                                    <input id="birth-selector" onChange="getBirth" placeholder="请选择爱宠生日" v-model="cardFormModel.birthday.split(' ')[0]" type="text"  data-toggle='date' />
+                                    <!-- <input :model="cardFormModel.Birthday" id="datetime-picker" value="2018-03-05 08:30" id="datetime-picker" class="date-picker" placeholder="还记得爱宠的生日吗" /> -->
                                 </div>
                             </div>
                             <!-- 性别 -->
@@ -97,7 +88,7 @@
                             <div class="card-form-item">
                                 <div class="item-title">芯片号</div>
                                 <div class="item-input">
-                                    <input v-model="cardFormModel.chipNo" placeholder="未知（选填）" />
+                                    <input v-model="cardFormModel.chipNo" placeholder="（选填）" />
                                 </div>
                             </div>
                             <!-- btn -->
@@ -107,7 +98,6 @@
                 </div>
             </div>
         </div>
-        <!--宠物品种 popup -->
         <div class="popup popup-petVariety">
             <div class="variety-box">
                 <ul class="commonList-row">
@@ -131,7 +121,7 @@
     <script type='text/javascript' src='js/vue.js'></script>
     <script type='text/javascript' src='js/common.js'></script>
     <script type="text/javascript" src='js/components.js'></script>
-    <script type="text/javascript" src='js/card-index.js'></script>
+    <script type="text/javascript" src='js/card-edit.js'></script>
 </body>
 
 </html>

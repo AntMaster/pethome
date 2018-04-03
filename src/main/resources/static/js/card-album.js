@@ -66,7 +66,6 @@ var app = new Vue({
                     petId: GetQueryString("petid")
                 },
                 success: function (res) {
-                    console.log(res);
                     if (res.code === 1) {
                         app.pet = res.data;
                         app.petAlbums = res.data.petAlbumDTOS;
@@ -77,6 +76,11 @@ var app = new Vue({
                     }
                 }
             });
+        },
+        //跳转至编辑页面
+        toEdit:function () {
+            var petId = GetQueryString("petid");
+            window.location.href = "card-edit.html?openid="+GetQueryString('openid')+"&petid="+petId;
         },
         goPetPhoto: function (id) {
             window.location.href = "./album-info.html?openId=" + GetQueryString("openId") + "&albumId=" + id;

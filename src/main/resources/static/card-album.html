@@ -25,7 +25,8 @@
             <a class="petCard-item" :class="{dogCardItem:classifyId == 3}" style="background-color: #5adacd;">
                 <!-- 昵称 -->
                 <div class="name">
-                    {{pet.nickName}}
+                    <span>{{pet.nickName}}</span>
+                    <img @click="toEdit" src="img/icon/album-nameEdit.jpg"/>
                 </div>
                 <!-- 类别 -->
                 <div class="classify" :class="{sexMale:pet.sex == 1, sexFemale:pet.sex == 0}">

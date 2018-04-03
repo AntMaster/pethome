@@ -1,40 +1,58 @@
 var app = new Vue({
-    el: "#card-index",
+    el: "#card-edit",
     data: {
         show: true,
         isMiao: false,
+        varietyName: '',
         cardFormModel: {
-            nickName: null,
+            id: '',
+            nickName: '',
+            headImgUrl: '',
             classifyId: 3,
-            varietyId:9,
-            headImgUrl: null,
-            birthday: null,
-            sex: 1,
-            contraception: false,
-            description: null,
-            chipNo: null
+            //默认宠物品种id
+            varietyId: 9,
+            birthday: '',
+            sex: true,
+            contraceptionState: false,
+            description: '',
+            chipNo: ''
         },
-        //pet品类数据源
-        varietyArrDataSource: [],
-        //当前显示品类
-        varietyArr:[],
-        varietyName:''
+        varietyArr: []
     },
-    beforeCreate:function () {
-        $.showIndicator();
-    },
-    updated:function () {
-        $.hideIndicator();
-    },
-    mounted:function () {
-        //初始化宠物品类
-        this.varietyArrDataSource = varietyArrDataSource;
-        this.varietyArr = this.varietyArrDataSource["3"];
-        this.varietyName = this.varietyArr[0].name;
+    mounted: function () {
+        this.init();
     },
     methods: {
-        create: function () {
+        init: function () {
 
+            this.varietyArrDataSource = varietyArrDataSource;
+            var petId = GetQueryString('petid');
+            var openId = GetQueryString('openid');
+            $.ajax({
+                url: '/pethome/pet/one/' + openId,
+                type: 'GET',
+                dataType: 'json',
+                data: {
+                    petId: petId
+                },
+                success: function (res) {
+
+                    if (res.code === 1) {
+                        app.cardFormModel = res.data;
+                        if (res.data.classifyId == 2) {
+                            app.varietyArr = varietyArrDataSource['2'];
+                        } else {
+                            app.varietyArr = varietyArrDataSource['3'];
+                        }
+                        for (var i = 0; i < app.varietyArr.length; i++) {
+                            if (app.varietyArr[i].id == app.cardFormModel.varietyId) {
+                                app.varietyName = app.varietyArr[i].name;
+                            }
+                        }
+                    }
+                }
+            });
+            //初始化宠物品类
         },
         selectClass: function (classId) {
             if (classId == 2) {
@@ -58,21 +76,23 @@ var app = new Vue({
         },
         //选择品种
         selectVarietyArr: function (id, name) {
+
             //id用于上传，name用于绑定model显示中文
             app.cardFormModel.varietyId = id;
             app.varietyName = name;
         },
         submit: function () {
 
+            app.cardFormModel.birthday = app.cardFormModel.birthday + " 00:00:00";
             $.ajax({
-                url: '/pethome/pet/'+GetQueryString("openid"),
-                type: 'PUT',
-                contentType: "application/x-www-form-urlencoded",
+                url: '/pethome/pet/' + GetQueryString("openid"),
+                type: 'POST',
+                contentType: "application/json",
                 dataType: 'json',
-                data: app.cardFormModel,
+                data: JSON.stringify(app.cardFormModel),
                 success: function (res) {
                     if (res.code === 1) {
-                        window.location.href = "./card-list.html?openid="+GetQueryString("openid")
+                        window.location.href = "./card-list.html?openid=" + GetQueryString("openid")
                     } else {
                         $.toast(res.msg);
                     }
@@ -91,11 +111,14 @@ $(function () {
     var month = date.getMonth() +1 ;
     var day = date.getDate();
     var today = year + "-" + month + "-" + day;
-    //初始化组件
-    $("#datetime-picker").calendar({
-        maxDate: today,
-        monthNames:['一月','二月','二月','三月','四月','五月','六月','七月','八月','九月','十月','十一月','十二月'],
-        dayNamesShort:['天','一','二','三','四','五','六']
+    //初始化插件
+    $("#birth-selector").calendar({
+        maxDate:today,
+        monthNames: ['一月', '二月', '二月', '三月', '四月', '五月', '六月', '七月', '八月', '九月', '十月', '十一月', '十二月'],
+        dayNamesShort: ['天', '一', '二', '三', '四', '五', '六'],
+        onChange: function (p, values, displayValues) {
+            app.cardFormModel.birthday = displayValues[0];
+        }
     });
     //判断设备宽度
     var ScreenWidth = document.body.clientWidth;
@@ -108,24 +131,23 @@ $(function () {
         $(".avatar img").css({"width": "3rem", "height": "3rem", "border-radius": "1.5rem"});
     }
     //card rotate
-    var cardF = document.querySelector(".card-front");
-    var cardB = document.querySelector(".card-back");
-    cardF.onclick = function () {
-        cardF.style.transform = "rotateY(180deg)";
-        cardB.style.transform = "rotateY(0deg)";
+    // var cardF = document.querySelector(".card-front");
+    // var cardB = document.querySelector(".card-back");
+    // cardF.onclick = function() {
+    //     cardF.style.transform = "rotateY(180deg)";
+    //     cardB.style.transform = "rotateY(0deg)";
+    // }
+});
+
+$("#datetime-picker").datetimePicker({
+    toolbarTemplate: '<header class="bar bar-nav">\
+    <button class="button button-link pull-right close-picker">确定</button>\
+    <h1 class="title">选择日期和时间</h1>\
+    </header>',
+    onClose: function () {
+        app.cardFormModel.birthday = $("#datetime-picker").val()
     }
-})
-
-// $("#datetime-picker").datetimePicker({
-//     toolbarTemplate: '<header class="bar bar-nav">\
-//     <button class="button button-link pull-right close-picker">确定</button>\
-//     <h1 class="title">选择日期和时间</h1>\
-//     </header>',
-//     onClose: function () {
-//         app.cardFormModel.birthday = $("#datetime-picker").val()
-//     }
-// });
-
+});
 
 $(".avatar-upload").change(function (e) {
 

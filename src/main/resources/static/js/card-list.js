@@ -7,7 +7,9 @@ var app = new Vue({
     },
     data: {
         petArr: [],
-        params : ''
+        params: '',
+        varietyArrDataSource: '',
+        varietyName: ''
     },
     updated: function () {
         //卡片自适应
@@ -17,7 +19,7 @@ var app = new Vue({
         loadPetList: function () {
             //load data
             $.ajax({
-                url: '/pethome/pet/' + GetQueryString("openid"),
+                url: '/pethome/pet/list/' + GetQueryString("openid"),
                 type: 'GET',
                 dataType: 'json',
                 data: null,

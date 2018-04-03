@@ -15,6 +15,7 @@ import com.shumahe.pethome.Form.UserPetPhotoForm;
 import com.shumahe.pethome.Repository.PetVarietyRepository;
 import com.shumahe.pethome.Repository.UserPetAlbumRepository;
 import com.shumahe.pethome.Repository.UserPetPhotoRepository;
+import com.shumahe.pethome.Repository.UserPetRepository;
 import com.shumahe.pethome.Service.PetService;
 import com.shumahe.pethome.Util.ResultVOUtil;
 import com.shumahe.pethome.VO.ResultVO;
@@ -48,6 +49,9 @@ public class PetController {
 
 
     @Autowired
+    private UserPetRepository userPetRepository;
+
+    @Autowired
     private UserPetAlbumRepository userPetAlbumRepository;
 
 
@@ -67,7 +71,7 @@ public class PetController {
      * @return
      */
     @PutMapping("/{openId}")
-    public ResultVO save(@PathVariable("openId") String openId, @Valid UserPetForm petForm, BindingResult bindingResult) {
+    public ResultVO petAdd(@PathVariable("openId") String openId, @Valid UserPetForm petForm, BindingResult bindingResult) {
 
         //验证表单数据是否正确
         if (bindingResult.hasErrors()) {
@@ -80,6 +84,24 @@ public class PetController {
         return ResultVOUtil.success(pet);
     }
 
+    /**
+     * 宠物修改
+     *
+     * @param openId
+     * @param petForm
+     * @param bindingResult
+     * @return
+     */
+    @PostMapping("/{openId}")
+    public ResultVO petModify(@PathVariable("openId") String openId, @RequestBody UserPet userPet) {
+
+        UserPet pet = userPetRepository.findOne(userPet.getId());
+        if (pet == null) {
+            throw new PetHomeException(ResultEnum.RESULT_EMPTY);
+        }
+        UserPet save = userPetRepository.save(userPet);
+        return ResultVOUtil.success(save);
+    }
 
     /**
      * 新增相册
@@ -110,7 +132,7 @@ public class PetController {
                                 @RequestParam(value = "name", defaultValue = "EMPTY") String name) {
 
 
-        if (name.equals("EMPTY") ) {
+        if (name.equals("EMPTY")) {
             throw new PetHomeException(ResultEnum.PARAM_ERROR.getCode(), "相册名称不能为空");
         }
 
@@ -133,10 +155,10 @@ public class PetController {
     @PostMapping(value = "/album/{albumId}/{photoId}")
     public ResultVO albumCover(@PathVariable("albumId") Integer albumId, @PathVariable("photoId") Integer photoId) {
 
-        if (photoId == null || albumId ==null) {
+        if (photoId == null || albumId == null) {
             throw new PetHomeException(ResultEnum.PARAM_ERROR);
         }
-        boolean res = petService.albumCover(albumId,photoId);
+        boolean res = petService.albumCover(albumId, photoId);
         return ResultVOUtil.success(res);
     }
 
@@ -216,16 +238,32 @@ public class PetController {
      * @param openId
      * @return
      */
-    @GetMapping("/{openId}")
-    public ResultVO petList(@PathVariable("openId") String openId) {
+    @GetMapping("/list/{openId}")
+    public ResultVO petFindList(@PathVariable("openId") String openId) {
 
         if (StringUtils.isEmpty(openId) || openId.equals("null")) {
             throw new PetHomeException(ResultEnum.PARAM_ERROR);
         }
-        List<UserPet> userPets = petService.petList(openId);
+        List<UserPetDTO> userPets = petService.petList(openId);
         return ResultVOUtil.success(userPets);
     }
 
+    /**
+     * 一个宠物
+     *
+     * @param openId
+     * @return
+     */
+    @GetMapping("/one/{openId}")
+    public ResultVO petFindOne(@PathVariable("openId") String openId, @RequestParam("petId") Integer petId) {
+
+        if (StringUtils.isEmpty(openId) || openId.equals("null") || petId == null) {
+            throw new PetHomeException(ResultEnum.PARAM_ERROR);
+        }
+
+        UserPet pet = userPetRepository.findOne(petId);
+        return ResultVOUtil.success(pet);
+    }
 
     /**
      * 宠卡相册 列表

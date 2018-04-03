@@ -182,10 +182,19 @@ public class WechatController {
     public String userInfo(@RequestParam("code") String code,
                            @RequestParam("state") String returnUrl) throws WxErrorException {
 
-        WxMpOAuth2AccessToken wxMpOAuth2AccessToken = wxMpService.oauth2getAccessToken(code);//如果code使用过，5分钟内再次使用会报错。
-        //{"errcode":40001,"errmsg":"invalid credential, access_token is invalid or not latest, hints: [ req_id: 4y0XGa0264s152 ]"}
-        WxMpUser user = wxMpService.oauth2getUserInfo(wxMpOAuth2AccessToken, null);
 
+        WxMpOAuth2AccessToken wxMpOAuth2AccessToken = null;//如果code使用过，5分钟内再次使用会报错。
+        WxMpUser user = null;
+        try {
+            wxMpOAuth2AccessToken = wxMpService.oauth2getAccessToken(code);
+            user = wxMpService.oauth2getUserInfo(wxMpOAuth2AccessToken, null);
+        } catch (WxErrorException e) {
+            //{"errcode":40001,"errmsg":"invalid credential, access_token is invalid or not latest, hints: [ req_id: 4y0XGa0264s152 ]"}
+            if (e.getError().getErrorCode() == 40001){
+                wxMpOAuth2AccessToken = wxMpService.oauth2refreshAccessToken(wxMpOAuth2AccessToken.getRefreshToken());
+
+            }
+        }
 
         UserBasic userBasic = saveUser(user);
         if (returnUrl.contains("detail.html")) {//详情页面

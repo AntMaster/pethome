@@ -22,6 +22,11 @@ public class UserPetDTO {
 
     private Integer classifyId;
 
+    private String classifyName;
+
+    private Integer varietyId;
+
+    private String varietyName;
 
     private Integer sex;
 

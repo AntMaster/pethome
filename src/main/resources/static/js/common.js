@@ -266,3 +266,10 @@ function hasNullItem(obj){
 function WechatJsApi() {
 
 }
+
+$(document).on('open', '.popup-petVariety', function () {
+    $(".mask").fadeIn(500);
+});
+$(document).on('close', '.popup-petVariety', function () {
+    $(".mask").fadeOut(500);
+});

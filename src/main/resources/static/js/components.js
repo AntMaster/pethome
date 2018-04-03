@@ -74,7 +74,7 @@ Vue.component('mc-tabbar', {
 
             var temp_lv = this.lv;
             $.ajax({
-                url: '/pethome/pet/' + GetQueryString("openid"),
+                url: '/pethome/pet/list/' + GetQueryString("openid"),
                 type: 'GET',
                 dataType: 'json',
                 data: null,

@@ -42,7 +42,7 @@ public interface PetService {
      * @param openId
      * @return
      */
-    List<UserPet> petList(String openId);
+    List<UserPetDTO> petList(String openId);
 
 
     /**

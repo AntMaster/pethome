@@ -1,6 +1,7 @@
 package com.shumahe.pethome.Service.Impl;
 
 
+import com.shumahe.pethome.Controller.AdminController;
 import com.shumahe.pethome.DTO.UserPetAlbumDTO;
 import com.shumahe.pethome.DTO.UserPetDTO;
 import com.shumahe.pethome.DTO.UserPetPhotoDTO;
@@ -16,6 +17,7 @@ import com.shumahe.pethome.Repository.UserPetAlbumRepository;
 import com.shumahe.pethome.Repository.UserPetPhotoRepository;
 import com.shumahe.pethome.Repository.UserPetRepository;
 import com.shumahe.pethome.Service.PetService;
+import com.shumahe.pethome.VO.ResultVO;
 import javafx.util.converter.DateStringConverter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
@@ -25,6 +27,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Map;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 
@@ -115,15 +118,29 @@ public class PetServiceImpl implements PetService {
      * @param openId
      * @return
      */
+    @Autowired
+    private AdminController adminController;
+
     @Override
-    public List<UserPet> petList(String openId) {
+    public List<UserPetDTO> petList(String openId) {
 
         List<UserPet> pets = userPetRepository.findByUserIdOrderByCreateTime(openId);
         if (pets.isEmpty()) {
             throw new PetHomeException(ResultEnum.RESULT_EMPTY);
         }
 
-        return pets;
+
+        Map<Integer, PetVariety> varietyMap = adminController.petVariety();
+
+        List<UserPetDTO> collect = pets.stream().map(e -> {
+            UserPetDTO userPetDTO = new UserPetDTO();
+            BeanUtils.copyProperties(e, userPetDTO);
+            if (e.getVarietyId() != null)
+                userPetDTO.setVarietyName(varietyMap.get(e.getVarietyId()).getName());
+            return userPetDTO;
+        }).collect(Collectors.toList());
+
+        return collect;
     }
 
     /**
@@ -223,7 +240,7 @@ public class PetServiceImpl implements PetService {
         if (albums == null) {
             throw new PetHomeException(ResultEnum.RESULT_EMPTY);
         }
-        albums.forEach(e-> e.setShow(ShowStateEnum.HIDE.getCode()));
+        albums.forEach(e -> e.setShow(ShowStateEnum.HIDE.getCode()));
 
         userPetAlbumRepository.save(albums);
 
@@ -263,13 +280,13 @@ public class PetServiceImpl implements PetService {
     public boolean albumCover(Integer albumId, Integer photoId) {
 
         UserPetPhoto photo = userPetPhotoRepository.findOne(photoId);
-        if (photo == null){
-            throw  new PetHomeException(ResultEnum.RESULT_EMPTY);
+        if (photo == null) {
+            throw new PetHomeException(ResultEnum.RESULT_EMPTY);
         }
 
         UserPetAlbum album = userPetAlbumRepository.findOne(albumId);
-        if (album == null){
-            throw  new PetHomeException(ResultEnum.RESULT_EMPTY);
+        if (album == null) {
+            throw new PetHomeException(ResultEnum.RESULT_EMPTY);
         }
 
         album.setCoverPath(photo.getPath());
