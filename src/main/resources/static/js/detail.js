@@ -48,7 +48,7 @@ var app = new Vue({
                         app.detailData = res.data;
                         app.showMsgList = res.data.publicTalk;
                         //配置展开的数组
-                        app.configExpandconfArr();
+                        //app.configExpandconfArr();
                         app.petImageArr = app.detailData.petImage.split(";");
 
                         if (app.detailData.publisherId == GetQueryString("openid")) {

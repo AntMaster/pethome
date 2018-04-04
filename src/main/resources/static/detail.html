@@ -121,9 +121,9 @@
                         </div>
                         <div class="card-content" v-if="items.length > 1">
                             <ul class="reply-box">
-                                <li v-for="(item, index) in items" v-show="index > 0 && index < 3 && expandConfArr[index].expandState"><a>{{item.replierFromName}}：</a>{{item.content}}
+                                <li v-for="(item, index) in items" ><a>{{item.replierFromName}}：</a>{{item.content}}<!--v-show="index > 0 && index < 3 "-->
                                 </li>
-                                <a v-if="items.length > 3" @click="expand" :click="expand()">{{expandConfArr[index].btnText}}全部{{items.length-3}}条回复</a>
+                                <!--<a v-if="items.length > 3" @click="expand" :click="expand()">展开全部{{items.length-3}}条回复</a>-->
                             </ul>
                         </div>
                     </div>
