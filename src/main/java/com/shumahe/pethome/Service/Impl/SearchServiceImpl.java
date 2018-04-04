@@ -350,9 +350,9 @@ public class SearchServiceImpl implements SearchService {
             }
 
             if (checkChoose.get("chooseVariety")) {
-                varietyPredicate = cb.and(classifyPredicate);
+                varietyPredicate = cb.and(classifyPredicate,varietyIdIn);
             } else {
-                varietyPredicate = cb.and(classifyPredicate);
+                varietyPredicate = cb.or(classifyPredicate,varietyIdIn);
             }
 
             findStatePredicate = cb.and(varietyPredicate, findPredicate);

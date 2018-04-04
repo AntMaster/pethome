@@ -224,6 +224,7 @@ public class UserServiceImpl implements UserService {
                     onePrivate.put("petName", curTheme.getPetName());
                     onePrivate.put("petImage", curTheme.getPetImage());
                     onePrivate.put("lostTime", curTheme.getLostTime().toString().split(" ")[0]);
+                    onePrivate.put("findState", curTheme.getFindState());
 
                     UserBasic curUser = usersMap.get(curTalk.getReplierFrom().trim());
 
@@ -450,6 +451,8 @@ public class UserServiceImpl implements UserService {
                     onePrivate.put("petName", curTheme.getPetName());
                     onePrivate.put("petImage", curTheme.getPetImage());
                     onePrivate.put("lostTime", curTheme.getLostTime().toString().split(" ")[0]);
+                    onePrivate.put("findState", curTheme.getFindState());
+
 
                     UserBasic curUser = usersMap.get(curTalk.getUserIdFrom().trim());
                     onePrivate.put("publisherName", curUser.getNickName());

@@ -58,6 +58,7 @@ var app = new Vue({
     },
     methods: {
         loadAlbumList: function () {
+
             $.ajax({
                 url: '/pethome/pet/album/' + GetQueryString("openid"),
                 type: 'GET',

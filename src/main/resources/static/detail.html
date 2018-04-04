@@ -84,7 +84,7 @@
         </div>
         <!-- 按钮 找到了 -->
         <div class="action-box" >
-            <a  href="javascript:;" v-show = "isAuthority" :class="{petFound: detailData.findState}" @click="found(detailData.publisherId)">{{detailData.findState ? "已找到" : "找到了" }}</a>
+            <a  href="javascript:;" v-show = "isAuthority" :class="{petFound: detailData.findState}" @click="found(detailData.publisherId)">{{detailData.findState ? "已找到" : "结束寻找" }}</a>
         </div>
         <div class="msg-box">
             <!-- 分页 -->
@@ -121,9 +121,9 @@
                         </div>
                         <div class="card-content" v-if="items.length > 1">
                             <ul class="reply-box">
-                                <li v-for="(item, index) in items" v-if="index > 0 && index < 3"><a>{{item.replierFromName}}：</a>{{item.content}}
+                                <li v-for="(item, index) in items" v-show="index > 0 && index < 3 && expandConfArr[index].expandState"><a>{{item.replierFromName}}：</a>{{item.content}}
                                 </li>
-                                <a v-if="items.length > 3" @click="expand" :click="expand()">展开全部{{items.length-3}}条回复</a>
+                                <a v-if="items.length > 3" @click="expand" :click="expand()">{{expandConfArr[index].btnText}}全部{{items.length-3}}条回复</a>
                             </ul>
                         </div>
                     </div>

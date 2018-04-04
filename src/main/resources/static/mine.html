@@ -26,7 +26,7 @@
                     <li>
                         <div class="item-content head">
                             <div class="item-media">
-                                <div class="user-validate" v-if="myself.approveState">
+                                <div class="user-validate" v-if="myself.approveState == 1">
                                     <img :src=" myself.approveType == 1 ? 'img/icon/user-pv.jpg' : 'img/icon/user-ov.jpg' " alt="">
                                 </div>
                                 <img :src="myself.headImgUrl" />
@@ -35,7 +35,7 @@
                                 <div class="item-title-row">
                                     <div class="item-title">{{myself.nickName}}</div>
                                 </div>
-                                <div class="item-subtitle item-tag flex-center">{{myself.approveState ? '已认证' : '未认证' }}</div>
+                                <div class="item-subtitle item-tag flex-center">{{myself.approveState == 1 ? '已认证' : '未认证' }}</div>
                             </div>
                             <!-- 身份 -->
                             <div class="item-identity"></div>

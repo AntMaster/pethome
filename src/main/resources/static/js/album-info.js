@@ -131,6 +131,7 @@ var app = new Vue({
                                 app.photoList.splice(i,1);
                             }
                         }
+                        app.manager.open = false;
                     }
                 }
             });
@@ -151,7 +152,9 @@ var app = new Vue({
                 success: function (res) {
                   if(res.code){
                       $.toast("设置成功~");
+                      app.manager.open = false;
                   }
+
                 }
             });
 

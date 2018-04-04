@@ -9,6 +9,13 @@ var app = new Vue({
         imgList: [],
         //当前展示列表
         showMsgList: [],
+        //控制展开的配置数组
+        expandConfArr:[],
+        //展开按钮
+        expandItem:{
+            btnText:'展开',
+            expandSate:false
+        },
         //私信列表数据是否为空
         privateMsgListNull: true,
         detailData: {},
@@ -40,6 +47,8 @@ var app = new Vue({
                         }*/
                         app.detailData = res.data;
                         app.showMsgList = res.data.publicTalk;
+                        //配置展开的数组
+                        app.configExpandconfArr();
                         app.petImageArr = app.detailData.petImage.split(";");
 
                         if (app.detailData.publisherId == GetQueryString("openid")) {
@@ -53,6 +62,11 @@ var app = new Vue({
                     }
                 }
             });
+        },
+        configExpandconfArr:function () {
+            for(var i = 0 ; i < app.showMsgList.length; i++){
+                app.expandConfArr.push(app.expandItem);
+            }
         },
         wechatInit: function () {
 
@@ -105,6 +119,7 @@ var app = new Vue({
                 success: function (res) {
                     if (res.code) {
                         app.isAuthority = true;
+                        app.detailData.findState = 1;
                     }
                 }
             });

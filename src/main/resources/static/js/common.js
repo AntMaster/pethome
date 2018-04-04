@@ -255,7 +255,7 @@ varietyArrDataSource = {
 
 function hasNullItem(obj){
     for (var key in obj) {
-        if(!obj[key]){
+        if(!obj[key] && (typeof obj[key] != 'number') ){
             return false;
         }
     }

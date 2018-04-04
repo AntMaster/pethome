@@ -9,11 +9,6 @@ import java.util.List;
 
 public interface MemberTagsRepository extends JpaRepository<MemberTags, Integer> {
 
-
-
     List<MemberTags> findByIdIn(List<Integer> ids);
-
-
-
 
 }

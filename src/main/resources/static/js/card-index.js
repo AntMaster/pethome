@@ -10,7 +10,7 @@ var app = new Vue({
             headImgUrl: null,
             birthday: null,
             sex: 1,
-            contraception: false,
+            contraception: 0,
             description: null,
             chipNo: null
         },
@@ -54,7 +54,7 @@ var app = new Vue({
             sex == 0 ? this.cardFormModel.sex = 0 : this.cardFormModel.sex = 1;
         },
         selectContraceptionState: function (state) {
-            state == 0 ? this.cardFormModel.contraception = false : this.cardFormModel.contraception = true;
+            this.cardFormModel.contraception = state;
         },
         //选择品种
         selectVarietyArr: function (id, name) {

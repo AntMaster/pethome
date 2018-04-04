@@ -29,10 +29,10 @@
                     <img @click="toEdit" src="img/icon/album-nameEdit.jpg"/>
                 </div>
                 <!-- 类别 -->
-                <div class="classify" :class="{sexMale:pet.sex == 1, sexFemale:pet.sex == 0}">
+                <div class="classify" style="width: 3.5rem;"  :class="{sexMale:pet.sex == 1, sexFemale:pet.sex == 0}">
                     <span class="icon">
                         <img :src="pet.sex == 1 ? 'img/icon/card-male.png' : 'img/icon/card-female.png'" alt="">
-                    </span> {{pet.classifyId == 2 ? "喵" : "汪"}}
+                    </span> {{pet.varietyName}}
                 </div>
                 <div class="info-box">
                     <div class="info-item">

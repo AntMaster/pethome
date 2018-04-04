@@ -67,6 +67,7 @@ var app = new Vue({
         },
         submitRelease: function () {
 
+
             if(this.formData.publisherId != GetQueryString("openid")){}
 
             if (this.petImageArr.length == 0) {
@@ -78,6 +79,8 @@ var app = new Vue({
                 $.toast("手机号位数不正确");
                 return;
             }
+
+            $.showPreloader();
 
             this.formData.petImage = this.petImageArr.join(";");
                 $.ajax({
@@ -93,6 +96,7 @@ var app = new Vue({
                         } else {
                             $.toast(res.msg);
                         }
+                        $.hidePreloader();
                     }
                 });
         },

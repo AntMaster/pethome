@@ -117,7 +117,7 @@
                                     <img :src="item.likeState ? 'img/icon/card-zaned.png' : 'img/icon/card-zan.png'"/>
                                     <span>关注</span>
                                 </div>
-                                <div href="#" class="link" @click="comment(item.id)">
+                                <div href="#" class="link" @click="comment(item.id,item.publisherId)">
                                     <img src="img/icon/card-comment.png"/>
                                     <span>{{item.publicMsgCount}}</span>
                                 </div>
@@ -304,8 +304,8 @@
                     success: function (res) {
                         if (res.code === 1) {
                             app.dynamicArr = res.data;
-                            $.hideIndicator();
                         }
+                        $.hideIndicator();
                     }
                 });
             },
@@ -323,8 +323,8 @@
                     success: function (res) {
                         if (res.code === 1) {
                             app.dynamicArr = res.data;
-                            $.hideIndicator();
                         }
+                        $.hideIndicator();
                     }
                 });
             },
@@ -339,13 +339,19 @@
                     success: function (res) {
                         if (res.code === 1) {
                             app.dynamicArr = res.data;
-                            $.hideIndicator();
                         }
+                        $.hideIndicator();
                     }
                 });
             },
             //关注
-            comment: function (id) {
+            comment: function (id, publisherId) {
+
+                if (publisherId == GetQueryString("openid")) {
+                    window.location.href = "./detail.html?openid=" + GetQueryString("openid") + "&id=" + id;
+                    return;
+                }
+
                 $.ajax({
                     url: '/pethome/user/auth/' + GetQueryString("openid"),
                     type: 'GET',

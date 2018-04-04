@@ -143,6 +143,7 @@ public class PetServiceImpl implements PetService {
         return collect;
     }
 
+
     /**
      * 宠物相册 列表
      *
@@ -156,6 +157,7 @@ public class PetServiceImpl implements PetService {
         if (pet == null) {
             throw new PetHomeException(ResultEnum.FAILURE.getCode(), "宠物不存在");
         }
+
 
         List<UserPetAlbum> albums = userPetAlbumRepository.findByPetIdAndShowOrderByCreateTime(petId, ShowStateEnum.SHOW.getCode());
         if (albums == null) {
@@ -171,6 +173,11 @@ public class PetServiceImpl implements PetService {
         UserPetDTO petDTO = new UserPetDTO();
         BeanUtils.copyProperties(pet, petDTO);
         petDTO.setAlbumCount(albums.size());
+
+        Map<Integer, PetVariety> varietyMap = adminController.petVariety();
+        if (pet.getVarietyId() != null)
+            petDTO.setVarietyName(varietyMap.get(pet.getVarietyId()).getName());
+
 
         List<UserPetAlbumDTO> albumDTOS = albums.stream().map(e -> {
 

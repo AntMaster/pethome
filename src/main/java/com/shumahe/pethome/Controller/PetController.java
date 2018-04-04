@@ -51,6 +51,7 @@ public class PetController {
     @Autowired
     private UserPetRepository userPetRepository;
 
+
     @Autowired
     private UserPetAlbumRepository userPetAlbumRepository;
 
@@ -253,6 +254,14 @@ public class PetController {
      *
      * @param openId
      * @return
+     */
+    /**
+     *
+     * @param openId
+     * @param petId
+     * @exception
+     * @return
+     *
      */
     @GetMapping("/one/{openId}")
     public ResultVO petFindOne(@PathVariable("openId") String openId, @RequestParam("petId") Integer petId) {

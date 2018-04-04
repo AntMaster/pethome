@@ -13,6 +13,8 @@ import java.util.List;
 @Data
 public class UserPetDTO {
 
+    private Integer id;
+
 
     private String headImgUrl;
 

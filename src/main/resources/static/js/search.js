@@ -154,9 +154,9 @@ var app = new Vue({
                             }
                         }
                         $.hideIndicator();
-
                     }else if(res.code == 2){
-                        $.toast("未查询到相关的宠物")
+                        $.toast("未查询到相关的宠物");
+                        $.hideIndicator();
                     }
                 }
             });
@@ -198,6 +198,7 @@ var app = new Vue({
             }
         },
         selectVariety: function (index, vid) {
+
             this.svIndex = index;
             this.varietyID = vid;
         },

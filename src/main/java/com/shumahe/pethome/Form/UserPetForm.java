@@ -28,8 +28,8 @@ public class UserPetForm {
     private String nickName;
 
 
-    @NotBlank(message = "爱宠节育状态必填")
-    private String contraception;
+    @NotNull(message = "爱宠节育状态必填")
+    private Integer contraception;
 
 
     @NotNull(message = "爱宠性别必填")

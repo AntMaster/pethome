@@ -95,7 +95,7 @@ public class WechatController {
         WxMpTemplateMessage templateMessage = WxMpTemplateMessage.builder()
                 .toUser(openId)
                 .templateId(configStorage.getTemplateId())
-                .url(projectUrlConfig.getWechatMpAuthorize() + "/pethome/mine.html?openid="+openId)
+                .url(projectUrlConfig.getWechatMpAuthorize() + "/pethome/index.html?openid="+openId)
                 .build();
 
         templateMessage
@@ -247,7 +247,6 @@ public class WechatController {
     @PostMapping("/menu")
     public ResultVO saveWxMenu() {
         try {
-
 
             WxMenuButton button = new WxMenuButton();
             button.setName("宠爱有家");
