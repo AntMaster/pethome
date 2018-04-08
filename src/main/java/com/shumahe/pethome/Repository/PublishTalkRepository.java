@@ -49,9 +49,7 @@ public interface PublishTalkRepository extends JpaRepository<PublishTalk, Intege
 
     /**
      * 查询一个主题的所有互动信息
-     *
      * @param publishId
-     * @return
      */
     @Query(value = "SELECT * FROM PublishTalk WHERE PublishID = ?1 AND ShowState = 1 ORDER BY LASTModify DESC,talkId ASC,ReplyDate ASC", nativeQuery = true)
     List<PublishTalk> findOnePublicTalk(Integer publishId);
@@ -59,9 +57,7 @@ public interface PublishTalkRepository extends JpaRepository<PublishTalk, Intege
 
     /**
      * 查询多个主题的互动数量
-     *
      * @param publishId
-     * @return
      */
     @Query(value = "SELECT PublishID,COUNT(PublishID) AS CommentCount FROM PublishTalk WHERE PublishID IN (?1) AND ShowState = 1 GROUP BY PublishID ", nativeQuery = true)
     List<Object[]> findPublishCommentCount(List<Integer> publishId);
@@ -69,12 +65,15 @@ public interface PublishTalkRepository extends JpaRepository<PublishTalk, Intege
 
     /**
      * 查询一个主题的互动详情
-     *
      * @param publishId
-     * @return
      */
     List<PublishTalk> findByPublishId(int publishId);
 
+    /**
+     * 查询多个主题的互动详情
+     * @param publishIds
+     */
+    List<PublishTalk> findByPublishIdInAndShowState(List<Integer> publishIds,Integer showState);
 
     /**
      * 我的   互动未读条数

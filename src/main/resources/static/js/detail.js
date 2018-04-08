@@ -10,11 +10,11 @@ var app = new Vue({
         //当前展示列表
         showMsgList: [],
         //控制展开的配置数组
-        expandConfArr:[],
-        //展开按钮
-        expandItem:{
-            btnText:'展开',
-            expandSate:false
+        msgListConfArr:[],
+        msgListConfType:{
+            df:{state:0, btnText:''},
+            expand:{state:1,btnText:'展开'},
+            hide:{state:2,btnText:'收起'}
         },
         //私信列表数据是否为空
         privateMsgListNull: true,
@@ -48,7 +48,7 @@ var app = new Vue({
                         app.detailData = res.data;
                         app.showMsgList = res.data.publicTalk;
                         //配置展开的数组
-                        //app.configExpandconfArr();
+                        app.configExpandType(app.showMsgList);
                         app.petImageArr = app.detailData.petImage.split(";");
 
                         if (app.detailData.publisherId == GetQueryString("openid")) {
@@ -63,9 +63,28 @@ var app = new Vue({
                 }
             });
         },
-        configExpandconfArr:function () {
-            for(var i = 0 ; i < app.showMsgList.length; i++){
-                app.expandConfArr.push(app.expandItem);
+        configExpandType:function (arr) {
+
+            if(!arr)
+                return false;
+            //reply条数过多自动隐藏
+            for(var i = 0 ; i < arr.length; i++){
+               if(arr[i].length > 3){
+                   this.msgListConfArr.push(this.msgListConfType.expand);
+               }
+               else{
+                   this.msgListConfArr.push(this.msgListConfType.df);
+               }
+            }
+        },
+        //展开所有评论
+        expand:function (index) {
+            if(this.msgListConfArr[index].state == 1){
+                    //展开
+                this.msgListConfArr.splice(index,1,this.msgListConfType.hide);
+            }else{
+                    //收起
+                this.msgListConfArr.splice(index,1,this.msgListConfType.expand);
             }
         },
         wechatInit: function () {
@@ -123,10 +142,6 @@ var app = new Vue({
                     }
                 }
             });
-        },
-        //展开所有评论
-        expand: function () {
-
         },
         //分享
         // share: function () {
@@ -255,11 +270,10 @@ var app = new Vue({
                 success: function (res) {
 
                     if (res.code == 1) {
-
-                        console.log()
                         if (!app.showMsgList) {
                             app.showMsgList = new Array();
                         }
+                        console.log(res.data);
                         app.showMsgList.push([res.data]);
                         app.commentContent = '';
                         if (app.msgListType == "interactMsg")

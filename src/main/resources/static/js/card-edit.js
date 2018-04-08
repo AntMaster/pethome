@@ -83,6 +83,11 @@ var app = new Vue({
         },
         submit: function () {
 
+            if(!app.cardFormModel.nickName){
+                $.toast("爱宠昵称不能为空");
+                return ;
+            }
+
             app.cardFormModel.birthday = app.cardFormModel.birthday + " 00:00:00";
             $.ajax({
                 url: '/pethome/pet/' + GetQueryString("openid"),

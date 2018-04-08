@@ -154,11 +154,7 @@ public class AdminController {
         return ResultVOUtil.success(varietyMap);
     }
 
-    /**
-     * 获取宠物品种
-     *
-     * @return
-     */
+    /**获取宠物品种 */
     public Map<Integer, PetVariety> petVariety() {
 
         List<PetVariety> petVarieties = petVarietyRepository.findAll();

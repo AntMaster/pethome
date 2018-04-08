@@ -230,6 +230,9 @@ $(document).on("pageInit", function (e, pageId, $page) {
                         }
                     });
 
+                },
+                enterDetail :function (id) {
+                    window.location.href = "./../detail.html?openid=" + GetQueryString("openid") + "&id=" + id;
                 }
             }
         });

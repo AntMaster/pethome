@@ -243,7 +243,7 @@ public class PublishServiceImpl implements PublishService {
          */
         List<List<PublicMsgDTO>> msgDTOS = messageService.petPublicTalks(pet);
         if (msgDTOS != null) {
-            publishDTO.setPublicMsgCount((int) msgDTOS.stream().mapToInt(List::size).summaryStatistics().getSum());
+            publishDTO.setPublicMsgCount(Long.valueOf(msgDTOS.stream().mapToInt(List::size).summaryStatistics().getSum()));
         }
 
 
@@ -261,7 +261,7 @@ public class PublishServiceImpl implements PublishService {
          * 互动条数
          */
         if (openId.equals(pet.getPublisherId())) {
-            publishDTO.setPrivateMsgCount(userTalkRepository.findPrivateMsgCount(publishId));
+            publishDTO.setPrivateMsgCount(Long.valueOf(userTalkRepository.findPrivateMsgCount(publishId)));
         }
 
         BeanUtils.copyProperties(pet, publishDTO);
@@ -274,7 +274,7 @@ public class PublishServiceImpl implements PublishService {
          * 浏览条数
          */
         Integer publishView = publishBaseService.findPublishView(openId, pet);
-        publishDTO.setViewCount(publishView);
+        publishDTO.setViewCount(Long.valueOf(publishView));
 
 
         /**
@@ -288,7 +288,7 @@ public class PublishServiceImpl implements PublishService {
          * 浏览数量
          */
         List<UserDynamic> share = userDynamicRepository.findByPublishIdAndDynamicType(publishId, DynamicTypeEnum.SHARE.getCode());
-        publishDTO.setShareCount(share.size());
+        publishDTO.setShareCount(Long.valueOf(share.size()));
 
 
         return publishDTO;

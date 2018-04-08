@@ -1,20 +1,26 @@
 package com.shumahe.pethome.Service.BaseImpl;
 
+import com.shumahe.pethome.Controller.AdminController;
 import com.shumahe.pethome.Convert.Publish2PublishDTOConvert;
 import com.shumahe.pethome.DTO.PublishDTO;
 import com.shumahe.pethome.Domain.*;
 import com.shumahe.pethome.Enums.DynamicTypeEnum;
+import com.shumahe.pethome.Enums.ShowStateEnum;
 import com.shumahe.pethome.Repository.*;
 import com.shumahe.pethome.Service.BaseService.PublishBaseService;
 import com.shumahe.pethome.Util.DateUtil;
 
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
+
+import static java.util.stream.Collectors.*;
+
 
 @Slf4j
 @Service
@@ -35,6 +41,9 @@ public class PublishBaseServiceImpl implements PublishBaseService {
     @Autowired
     UserDynamicRepository userDynamicRepository;
 
+    @Autowired
+    UserTalkRepository userTalkRepository;
+
     /**
      * 查询发布扩展信息(发布人详情 + 评论数详情)
      *
@@ -45,8 +54,8 @@ public class PublishBaseServiceImpl implements PublishBaseService {
     public List<PublishDTO> findPetExtends(List<PetPublish> publishes) {
 
 
-        List<Integer> publishIds = publishes.stream().map(e -> e.getId()).collect(Collectors.toList());
-        List<String> userIds = publishes.stream().map(e -> e.getPublisherId()).distinct().collect(Collectors.toList());
+        List<Integer> publishIds = publishes.stream().map(e -> e.getId()).collect(toList());
+        List<String> userIds = publishes.stream().map(e -> e.getPublisherId()).distinct().collect(toList());
 
         /**
          * step 1  评论count
@@ -131,7 +140,7 @@ public class PublishBaseServiceImpl implements PublishBaseService {
             if (!msgCount.isEmpty()) {
                 msgCount.stream().forEach(msg -> msg.forEach((k, v) -> {
                     if (publishDTO.getId() == k) {
-                        publishDTO.setPublicMsgCount(v);
+                        publishDTO.setPublicMsgCount(Long.valueOf(v));
                         return;
                     }
                 }));
@@ -141,7 +150,7 @@ public class PublishBaseServiceImpl implements PublishBaseService {
             if (!viewCount.isEmpty()) {
                 viewCount.stream().forEach(msg -> msg.forEach((k, v) -> {
                     if (publishDTO.getId() == k) {
-                        publishDTO.setViewCount(v);
+                        publishDTO.setViewCount(Long.valueOf(v));
                         return;
                     }
                 }));
@@ -172,13 +181,13 @@ public class PublishBaseServiceImpl implements PublishBaseService {
             //转发
             if (publishShareCount.get(publishDTO.getId()) != null) {
                 int shareCount = publishShareCount.get(publishDTO.getId()).intValue();
-                publishDTO.setShareCount(shareCount);
+                publishDTO.setShareCount(Long.valueOf(shareCount));
             }
 
             //关注
             if (publishLikeCount.get(publishDTO.getId()) != null) {
                 int likeCount = publishLikeCount.get(publishDTO.getId()).intValue();
-                publishDTO.setLikeCount(likeCount);
+                publishDTO.setLikeCount(Long.valueOf(likeCount));
             }
         }
 
@@ -233,5 +242,69 @@ public class PublishBaseServiceImpl implements PublishBaseService {
 
         return varieties;
     }
+
+
+    @Autowired
+    AdminController adminController;
+
+    /**
+     * 获取发布详情信息
+     *
+     * @param publishes
+     * @return
+     */
+    @Override
+    public List<PublishDTO> findPetsDetail(List<PetPublish> publishes) {
+
+
+        List<Integer> fIds = publishes.stream().map(PetPublish::getId).collect(toList());
+        List<String> userIds = publishes.stream().map(PetPublish::getPublisherId).distinct().collect(toList());
+
+        /**用户 */
+        List<UserBasic> users = userBasicRepository.findByOpenIdIn(userIds);
+        /**浏览 */
+        List<PublishView> views = publishViewRepository.findByPublishIdIn(fIds);
+        /**转发/关注 */
+        List<UserDynamic> dynamics = userDynamicRepository.findByPublishIdIn(fIds);
+        /**互动 */
+        List<PublishTalk> publishTalk = publishTalkRepository.findByPublishIdInAndShowState(fIds, ShowStateEnum.SHOW.getCode());
+        /**私信 */
+        List<UserTalk> privateTalk = userTalkRepository.findByPublishIdInAndShowState(fIds, ShowStateEnum.SHOW.getCode());
+
+        Map<Integer, Long> userViewCount = views.stream().collect(groupingBy(PublishView::getPublishId, counting()));
+        Map<Integer, Long> pubTalkCount = publishTalk.stream().collect(groupingBy(PublishTalk::getPublishId, counting()));
+        Map<Integer, Long> priTalkCount = privateTalk.stream().collect(groupingBy(UserTalk::getPublishId, counting()));
+        Map<Integer, List<UserDynamic>> dynamicMap = dynamics.stream().collect(groupingBy(UserDynamic::getPublishId));
+        Map<Integer, PetVariety> varietyMap = adminController.petVariety();/**品种 */
+        Map<String, UserBasic> userMap = users.stream().collect(toMap(e -> e.getOpenId().trim(), Function.identity()));
+
+        List<PublishDTO> dto = publishes.stream().map(publish -> {
+
+            PublishDTO theme = new PublishDTO();
+            BeanUtils.copyProperties(publish, theme);
+            theme.setVarietyName(varietyMap.get(publish.getVarietyId()).getName());
+            theme.setViewCount(userViewCount.get(publish.getId()) == null ? Long.valueOf(0) : userViewCount.get(publish.getId()));
+            theme.setPublicMsgCount(pubTalkCount.get(publish.getId()) == null ? Long.valueOf(0) : pubTalkCount.get(publish.getId()));
+            theme.setPrivateMsgCount(priTalkCount.get(publish.getId()) == null ? Long.valueOf(0) : priTalkCount.get(publish.getId()));
+
+            if (dynamicMap.get(publish.getId()) != null) {
+
+                Map<Integer, Long> dynaDetail = dynamicMap.get(publish.getId()).stream().collect(groupingBy(UserDynamic::getDynamicType, counting()));
+                theme.setShareCount(dynaDetail.get(DynamicTypeEnum.SHARE.getCode()) == null ? Long.valueOf(0) : dynaDetail.get(DynamicTypeEnum.SHARE.getCode()));
+                theme.setLikeCount(dynaDetail.get(DynamicTypeEnum.LIKE.getCode()) == null ? Long.valueOf(0) : dynaDetail.get(DynamicTypeEnum.LIKE.getCode()));
+            }
+
+            theme.setPublisherName(userMap.get(publish.getPublisherId()).getNickName());
+            theme.setPublisherPhoto(userMap.get(publish.getPublisherId()).getHeadImgUrl());
+
+
+            return theme;
+
+        }).collect(toList());
+
+        return dto;
+    }
+
+
 }
 

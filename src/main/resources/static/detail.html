@@ -107,8 +107,8 @@
             <!--<div v-show="msgListType == 'privateMsg' && privateMsgListNull" style="margin-top:1rem;text-align: center;font-size: .7rem;color: rgb(168, 168, 168);width: 100%;">空的,还没有私信</div>-->
             <!-- 消息列表 -->
             <ul class="messageList" >
-                <li v-for="(items,index) in showMsgList">
-                    <div class="card facebook-card"><a class="reply-btn open-reply-modal" @click="reply(index,items[0].talkId,items[0].replierFrom)">回复</a>
+                <li v-for="(items,index1) in showMsgList">
+                    <div class="card facebook-card"><a class="reply-btn open-reply-modal" @click="reply(index1,items[0].talkId,items[0].replierFrom)">回复</a>
                         <div class="card-header no-border">
                             <div class="facebook-avatar">
                                 <div class="user-validate" v-if="items[0].approveState">
@@ -121,9 +121,9 @@
                         </div>
                         <div class="card-content" v-if="items.length > 1">
                             <ul class="reply-box">
-                                <li v-for="(item, index) in items" ><a>{{item.replierFromName}}：</a>{{item.content}}<!--v-show="index > 0 && index < 3 "-->
+                                <li v-for="(item, index2) in items" v-if="msgListConfArr[index1].state == 0 || msgListConfArr[index1].state == 2 || index2 < 3" ><a>{{item.replierFromName}}：</a>{{item.content}}<!--v-show="index > 0 && index < 3 "-->
                                 </li>
-                                <!--<a v-if="items.length > 3" @click="expand" :click="expand()">展开全部{{items.length-3}}条回复</a>-->
+                                <a v-if="items.length > 3" @click="expand(index1)" >{{msgListConfArr[index1].btnText}}<span v-if=" msgListConfArr[index1].state == 1">全部{{items.length-3}}条回复</span></a>
                             </ul>
                         </div>
                     </div>

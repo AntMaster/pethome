@@ -20,8 +20,8 @@ public interface UserTalkRepository extends JpaRepository<UserTalk, Integer> {
     @Query(value = "SELECT * FROM UserTalk WHERE PublishID IN (SELECT  DISTINCT PublishID FROM UserTalk WHERE publisherId <> ?1 AND useridfrom = ?2) AND  (useridfrom = ?3 OR UserIDAccept = ?4 ) AND ShowState = 1 ORDER BY LASTModify DESC,Talkid DESC ", nativeQuery = true)
     List<UserTalk> findMyJoin(String publisherId,String userIdFrom,String userIdFrom2,String userIdAccept);
 
-
-    List<UserTalk> findByPublisherIdAndReadState(String publisherId,Integer readState);
+    /**查询多条发布的私信数量*/
+    List<UserTalk> findByPublishIdInAndShowState(List<Integer> publishIds,Integer showState);
 
 
     List<UserTalk> findByUserIdAcceptAndReadState(String publisherId,Integer readState);

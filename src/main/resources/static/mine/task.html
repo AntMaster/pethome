@@ -32,13 +32,13 @@
             <ul>
                 <li v-for="(item,index) in taskArr">
                     <div class="item-content task-card">
-                        <div class="item-media">
+                        <div class="item-media" @click = "enterDetail(item.id)">
                             <img :src="item.petImage" style='width: 4rem;height: 4rem;'>
-                            <div class="cardImg-mask" v-show="item.findState == 1">
+                            <div class="cardImg-mask"   v-show="item.findState == 1">
                                 <img class="icon-small" src="../img/icon/icon-found.jpg">
                             </div>
                         </div>
-                        <div class="item-inner">
+                        <div class="item-inner" @click = "enterDetail(item.id)">
                             <div class="item-title-row">
                                 <div class="item-title">发布频道：{{item.publishType == 2 ? "寻宠" : "寻主"}}</div>
                             </div>

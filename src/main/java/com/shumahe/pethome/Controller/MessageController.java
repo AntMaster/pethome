@@ -113,7 +113,7 @@ public class MessageController {
         long talkCount = petPublicTalks.stream().mapToInt(num -> num.size()).summaryStatistics().getSum();
 
         PublishDTO publishDTO = new PublishDTO();
-        publishDTO.setPublicMsgCount((int) talkCount);
+        publishDTO.setPublicMsgCount(Long.valueOf(talkCount));
         publishDTO.setPublicTalk(petPublicTalks);
         return ResultVOUtil.success(publishDTO);
     }
@@ -139,7 +139,7 @@ public class MessageController {
 
 
         PublishDTO publishDTO = new PublishDTO();
-        publishDTO.setPrivateMsgCount((int) talkCount);
+        publishDTO.setPrivateMsgCount(talkCount);
         publishDTO.setPrivateTalk(petPrivateTalks);
         return ResultVOUtil.success(publishDTO);
     }

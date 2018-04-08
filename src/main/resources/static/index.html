@@ -328,6 +328,7 @@
                     }
                 });
             },
+
             loadFindAttentionList: function () {
                 $.showIndicator();
                 $.ajax({
@@ -346,12 +347,10 @@
             },
             //关注
             comment: function (id, publisherId) {
-
                 if (publisherId == GetQueryString("openid")) {
                     window.location.href = "./detail.html?openid=" + GetQueryString("openid") + "&id=" + id;
                     return;
                 }
-
                 $.ajax({
                     url: '/pethome/user/auth/' + GetQueryString("openid"),
                     type: 'GET',

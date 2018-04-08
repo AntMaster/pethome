@@ -79,6 +79,9 @@ public class AdminServiceImpl implements AdminService {
 
         List<PublishDTO> publishDTOS = publishBaseService.findPetExtends(publishList);
 
+        /*List<PublishDTO> petsDetailTest = publishBaseService.findPetsDetail(publishList);
+        System.out.println(petsDetailTest);*/
+
         Map<String, Object> res = new HashMap<>();
         res.put("total", pets.getTotalElements());
         res.put("pages", pets.getTotalPages());

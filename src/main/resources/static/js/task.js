@@ -108,6 +108,9 @@ var task = new Vue({
                 }
             });
 
+        },
+        enterDetail :function (id) {
+            window.location.href = "./../detail.html?openid=" + GetQueryString("openid") + "&id=" + id;
         }
     }
 });
