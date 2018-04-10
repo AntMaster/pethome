@@ -7,11 +7,12 @@ import org.springframework.data.jpa.repository.Query;
 
 import java.util.List;
 
-public interface UserBasicRepository extends JpaRepository<UserBasic,Integer> {
+public interface UserBasicRepository extends JpaRepository<UserBasic, Integer> {
 
 
     /**
      * 多个用户信息
+     *
      * @param openId
      * @return
      */
@@ -19,14 +20,18 @@ public interface UserBasicRepository extends JpaRepository<UserBasic,Integer> {
 
     /**
      * 一个用户信息
+     *
      * @param openId
      * @return
      */
     UserBasic findByOpenId(String openId);
 
 
+    List<UserBasic> findByMobile(String mobile);
+
     /**
      * 根据昵称查询用户
+     *
      * @param nickname
      * @return
      */
@@ -34,13 +39,13 @@ public interface UserBasicRepository extends JpaRepository<UserBasic,Integer> {
 
 
     /**
-     *  微信授权
+     * 微信授权
+     *
      * @param appId
      * @param openId
      * @return
      */
-    UserBasic findByAppIdAndOpenId(String appId,String openId);
-
+    UserBasic findByAppIdAndOpenId(String appId, String openId);
 
 
 }

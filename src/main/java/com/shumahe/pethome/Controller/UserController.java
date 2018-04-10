@@ -127,16 +127,21 @@ public class UserController {
 
 
     /**
-     * 获取短信验证码
+     * 获取短信验证码1
      */
     @GetMapping("/sms/{openId}")
     public ResultVO getShortMessage(@PathVariable("openId") String openId,
-                                     HttpServletRequest request,
-                                     @RequestParam("mobile") String mobile) {
+                                    HttpServletRequest request,
+                                    @RequestParam("mobile") String mobile) {
 
         boolean chinaPhoneLegal = PhoneFormatCheckUtil.isChinaPhoneLegal(mobile);
         if (!chinaPhoneLegal) {
             throw new PetHomeException(ResultEnum.PARAM_ERROR.getCode(), "手机号码不正确");
+        }
+
+        List<UserBasic> users = userBasicRepository.findByMobile(mobile);
+        if (!users.isEmpty()){
+            throw new PetHomeException(ResultEnum.RESULT_EMPTY.getCode(),"该手机号已经存在");
         }
 
         Integer code = MathUtil.getRandomNumber();
@@ -173,9 +178,9 @@ public class UserController {
      */
     @PostMapping("/sms/{openId}")
     public ResultVO checkShortMessage(HttpServletRequest request,
-                                       @PathVariable("openId") String openId,
-                                       @RequestParam("code") String code,
-                                       @RequestParam("mobile") String mobile) {
+                                      @PathVariable("openId") String openId,
+                                      @RequestParam("code") String code,
+                                      @RequestParam("mobile") String mobile) {
 
         HttpSession session = request.getSession();
         Map<String, String> userSms = (Map<String, String>) session.getAttribute(openId);
@@ -311,6 +316,7 @@ public class UserController {
 
     /**
      * 获取认证信息
+     *
      * @param openId
      * @return
      */

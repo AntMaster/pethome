@@ -90,8 +90,8 @@ public class PetController {
      * 宠物修改
      *
      * @param openId
-     * @param petForm
-     * @param bindingResult
+     * @param
+     * @param
      * @return
      */
     @PostMapping("/{openId}")

@@ -25,7 +25,7 @@ var app = new Vue({
                 },
                 success: function (res) {
                     if (res.code != 1) {
-                        $.toast('请求服务器后'+res.msg);
+                        $.toast(res.msg);
                     }else {
                         verify();
                     }

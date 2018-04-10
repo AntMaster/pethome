@@ -129,10 +129,22 @@ $(function () {
 
 $(".avatar-upload").change(function (e) {
 
-    var data = new FormData();
-    $.each(e.target.files, function (i, file) {
-        data.append("file", file);
-    });
+    // var data = new FormData();
+    // $.each(e.target.files, function (i, file) {
+    //     data.append("file", file)
+    //
+    // });
+
+    /*canvasResize(e.target.files[0], {
+        crop: false,
+        quality: 0.9,
+        rotate: 0,
+        callback:function(baseStr) {
+            //alert(baseStr.length);
+            alert(baseStr);
+        }
+    });*/
+
 
     $.ajax({
         url: "/pethome/upload/pet",
