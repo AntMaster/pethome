@@ -129,6 +129,7 @@ $(function () {
 
 $(".avatar-upload").change(function (e) {
 
+
     // var data = new FormData();
     // $.each(e.target.files, function (i, file) {
     //     data.append("file", file)
