@@ -66,7 +66,7 @@ public class PetController {
 
 
     /**
-     * 新增宠卡1
+     * 新增宠卡1 2
      *
      * @param petForm
      * @param bindingResult
