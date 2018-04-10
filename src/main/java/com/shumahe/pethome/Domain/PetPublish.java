@@ -22,7 +22,6 @@ public class PetPublish {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-
     /**
      * 发布人ID
      */

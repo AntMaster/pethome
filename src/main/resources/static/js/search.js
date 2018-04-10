@@ -87,8 +87,8 @@ var app = new Vue({
                         app.annotationList = res.data;
                         //配置一个数组用于控制大头针状态
                         app.confPinIcon();
-                        $.hideIndicator();
                     }
+                    $.hideIndicator();
                 }
             });
             this.laodPetVariety();

@@ -27,6 +27,8 @@ import javax.persistence.criteria.Root;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import static java.util.stream.Collectors.toList;
+
 @Service
 @Slf4j
 public class SearchServiceImpl implements SearchService {
@@ -101,7 +103,6 @@ public class SearchServiceImpl implements SearchService {
         checkChoose.put("chooseClassify", false);
         checkChoose.put("chooseVariety", false);
         checkChoose.put("chooseSex", false);
-
 
         /********************************************* define keyword ***************************************************************************************
 
@@ -350,9 +351,9 @@ public class SearchServiceImpl implements SearchService {
             }
 
             if (checkChoose.get("chooseVariety")) {
-                varietyPredicate = cb.and(classifyPredicate,varietyIdIn);
+                varietyPredicate = cb.and(classifyPredicate, varietyIdIn);
             } else {
-                varietyPredicate = cb.or(classifyPredicate,varietyIdIn);
+                varietyPredicate = cb.or(classifyPredicate, varietyIdIn);
             }
 
             findStatePredicate = cb.and(varietyPredicate, findPredicate);
@@ -375,12 +376,45 @@ public class SearchServiceImpl implements SearchService {
     }
 
 
+    /**
+     * 后台查询
+     *
+     * @param keywords
+     * @return
+     */
+    @Override
+    public Map<String, Object> adminPetSearch(String keywords, Integer publishType) {
+
+        Pageable pageable = new PageRequest(0, 20);
+        Page<PetPublish> pets = petPublishRepository.findByPetNameContainsOrOwnerNameContainsOrOwnerContactContains(keywords, keywords, keywords, pageable);
+        if (pets.getContent().isEmpty()) {
+            throw new PetHomeException(ResultEnum.RESULT_EMPTY);
+        }
+
+        List<PetPublish> sortedPub = pets.getContent().stream().filter(e -> e.getPublishType() == publishType).collect(toList());
+        List<PublishDTO> petsDetail = publishBaseService.findPetsDetail(sortedPub);
+
+
+        Map<String, Object> res = new HashMap<>();
+        res.put("total", pets.getTotalElements());
+        res.put("pages", pets.getTotalPages());
+        res.put("size", pets.getSize());
+        res.put("page", pets.getNumber());
+        res.put("data", petsDetail);
+
+        return res;
+    }
+
+    /**
+     * 查询初始化
+     *
+     * @return
+     */
     @Override
     public List<PublishDTO> init() {
 
         Pageable pageable = new PageRequest(0, 100);
-
-        Page<PetPublish> pets = petPublishRepository.findByPublishStateAndFindStateOrderByCreateTimeDesc(ShowStateEnum.SHOW.getCode(), PetFindStateEnum.NOT_FOUND.getCode() ,pageable);
+        Page<PetPublish> pets = petPublishRepository.findByPublishStateAndFindStateOrderByCreateTimeDesc(ShowStateEnum.SHOW.getCode(), PetFindStateEnum.NOT_FOUND.getCode(), pageable);
         List<PublishDTO> petExtends = publishBaseService.findPetExtends(pets.getContent());
         return petExtends;
     }

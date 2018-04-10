@@ -5,6 +5,7 @@ import com.shumahe.pethome.Form.PetSearchForm;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Map;
 
 @Service
 public interface SearchService {
@@ -15,7 +16,12 @@ public interface SearchService {
      */
     List<PublishDTO> petSearch(PetSearchForm petSearchForm);
 
-
+    /**
+     * 后台搜索
+     * @param petSearchForm
+     * @return
+     */
+    Map<String, Object> adminPetSearch(String keywords,Integer adminPetSearch);
 
     List<PublishDTO> init();
 }

@@ -130,6 +130,7 @@ public class WechatController {
 
         if (StringUtils.isAnyBlank(signature, timestamp, nonce, echostr)) {
             throw new IllegalArgumentException("请求参数非法，请核实!");
+
         }
 
         if (wxMpService.checkSignature(timestamp, nonce, signature)) {
@@ -149,7 +150,6 @@ public class WechatController {
     @GetMapping("/webAuth")
     public String authorize(@RequestParam("returnUrl") String returnUrl) {
 
-
         //1. 配置
         //2. 调用方法
         String url = projectUrlConfig.getWechatMpAuthorize() + "/pethome/wechat/userinfo";
@@ -157,7 +157,7 @@ public class WechatController {
         try {
             redirectUrl = wxMpService.oauth2buildAuthorizationUrl(url, WxConsts.OAuth2Scope.SNSAPI_USERINFO, URLEncoder.encode(returnUrl, "UTF-8"));
         } catch (UnsupportedEncodingException e) {
-            log.error("【有异常】{}", e);
+            log.error("【有异常AAAAA】{}", e);
             throw new PetHomeException(999, e.getMessage());
         }
 
@@ -190,9 +190,12 @@ public class WechatController {
             wxMpOAuth2AccessToken = wxMpService.oauth2getAccessToken(code);
             user = wxMpService.oauth2getUserInfo(wxMpOAuth2AccessToken, null);
         } catch (WxErrorException e) {
+
+            log.error("【有异常BBBB】{}", e);
             //{"errcode":40001,"errmsg":"invalid credential, access_token is invalid or not latest, hints: [ req_id: 4y0XGa0264s152 ]"}
             if (e.getError().getErrorCode() == 40001){
                 wxMpOAuth2AccessToken = wxMpService.oauth2refreshAccessToken(wxMpOAuth2AccessToken.getRefreshToken());
+                log.error("【有异常CCCCC】{}", e);
             }
         }
 

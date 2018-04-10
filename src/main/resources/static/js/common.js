@@ -9,7 +9,7 @@ function remindHide(){
 }
 
 function getAuthURL(){
-    return "http://girl.nat300.top/pethome/wechat/webAuth?returnUrl=http://girl.nat300.top/pethome/";
+    return "http://act.petin.com.cn/pethome/wechat/webAuth?returnUrl=http://act.petin.com.cn/pethome/";
 }
 
 function getAuthUrl() {
@@ -18,7 +18,7 @@ function getAuthUrl() {
 }
 
 function  getResourceUlr() {
-    return "http://girl.nat300.top/pethome/";
+    return "http://act.petin.com.cn/pethome/";
 }
 
 Date.prototype.Format = function (fmt) { //author: meizz

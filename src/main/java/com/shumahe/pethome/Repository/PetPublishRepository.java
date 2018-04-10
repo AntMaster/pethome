@@ -20,7 +20,7 @@ public interface PetPublishRepository extends JpaRepository<PetPublish, Integer>
      * @param pageable
      * @return
      */
-    Page<PetPublish> findByPublishStateAndFindStateOrderByCreateTimeDesc(Integer showState, Integer findState ,Pageable pageable);
+    Page<PetPublish> findByPublishStateAndFindStateOrderByCreateTimeDesc(Integer showState, Integer findState, Pageable pageable);
 
 
     /**
@@ -35,7 +35,6 @@ public interface PetPublishRepository extends JpaRepository<PetPublish, Integer>
 
     Page<PetPublish> findByPublishTypeOrderByCreateTimeDesc(Integer publishType, Pageable pageable);
 
-    
 
     /**
      * 根据发布ID查询发布
@@ -64,8 +63,6 @@ public interface PetPublishRepository extends JpaRepository<PetPublish, Integer>
      * @return
      */
     List<PetPublish> findByPublisherIdAndFindStateOrderByCreateTimeDesc(String openId, Integer petFindState, Pageable pageRequest);
-
-    //List<PetPublish> findByPublisherIdAndFindStateOrderByCreateTimeDesc(String openId, Integer findState);
 
     /**
      * 查询一个发布
@@ -97,6 +94,10 @@ public interface PetPublishRepository extends JpaRepository<PetPublish, Integer>
 
 
     Page<PetPublish> findByPublishStateOrderByCreateTimeDesc(int code, Pageable pageable);
+
+
+    Page<PetPublish> findByPetNameContainsOrOwnerNameContainsOrOwnerContactContains(String petName,String ownerName,String ownerContains ,Pageable pageable);
+
 }
 
 

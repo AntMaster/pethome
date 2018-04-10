@@ -21,6 +21,8 @@
             <ul class="petCard-list">
                 <li v-for="(item, index) in petArr">
                     <a class="petCard-item"  :class="{dogCardItem:item.classifyId == 3}"  style="background-color: #fab11b;" @click="goPetAlbum(item.id)">
+                        <!-- 授权 -->
+                        <div class="author">武汉市小动物保护协会监制</div>
                         <!-- 昵称 -->
                         <div class="name">
                             {{item.nickName}}

@@ -77,10 +77,8 @@ public class AdminServiceImpl implements AdminService {
             throw new PetHomeException(ResultEnum.RESULT_EMPTY);
         }
 
-        List<PublishDTO> publishDTOS = publishBaseService.findPetExtends(publishList);
-
-        /*List<PublishDTO> petsDetailTest = publishBaseService.findPetsDetail(publishList);
-        System.out.println(petsDetailTest);*/
+        //List<PublishDTO> publishDTOS = publishBaseService.findPetExtends(publishList);
+        List<PublishDTO> publishDTOS = publishBaseService.findPetsDetail(publishList);
 
         Map<String, Object> res = new HashMap<>();
         res.put("total", pets.getTotalElements());

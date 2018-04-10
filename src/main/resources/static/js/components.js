@@ -13,10 +13,10 @@ Vue.component('mc-tabbar', {
     template: '<div class="mc-tabbar">' +
     '<div class="left">' +
     '<a :href="toIndex()" class="item external" :class="{active:index}">' +
-    '<div class="icon"><img :src="tabbarIcon(1)" /></div><span>首页</span>' +
+    '<div class="icon"><img :src="tabbarIcon(1)" /></div><span class="name">首页</span>' +
     '</a>' +
     '<a :href="toSearch()" class="item external" :class="{active:search}">' +
-    '<div class="icon"><img :src="tabbarIcon(2)" /></div><span>搜索</span>' +
+    '<div class="icon"><img :src="tabbarIcon(2)" /></div><span  class="name">搜索</span>' +
     '</a>' +
     '</div>' +
     '<div class="center">' +
@@ -24,10 +24,10 @@ Vue.component('mc-tabbar', {
     '</div>' +
     '<div class="right">' +
     '<a href="javacript:;" @click="toCard" class="item external" :class="{active:card}">' +
-    '<div class="icon"><img :src="tabbarIcon(4)" /></div><span>宠卡</span>' +
+    '<div class="icon"><img :src="tabbarIcon(4)" /></div><span  class="name">宠卡</span>' +
     '</a>' +
     '<a :href="toMine()" class="item external" :class="{active:mine}">' +
-    '<div class="icon"><img :src="tabbarIcon(5)" /></div><span>我的</span>' +
+    '<div class="icon"><img :src="tabbarIcon(5)" /></div><span  class="name">我的</span>' +
     '</a>' +
     '</div>' +
     '</div>',

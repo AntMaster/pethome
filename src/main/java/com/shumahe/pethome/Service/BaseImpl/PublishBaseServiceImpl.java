@@ -256,7 +256,6 @@ public class PublishBaseServiceImpl implements PublishBaseService {
     @Override
     public List<PublishDTO> findPetsDetail(List<PetPublish> publishes) {
 
-
         List<Integer> fIds = publishes.stream().map(PetPublish::getId).collect(toList());
         List<String> userIds = publishes.stream().map(PetPublish::getPublisherId).distinct().collect(toList());
 
@@ -282,7 +281,7 @@ public class PublishBaseServiceImpl implements PublishBaseService {
 
             PublishDTO theme = new PublishDTO();
             BeanUtils.copyProperties(publish, theme);
-            theme.setVarietyName(varietyMap.get(publish.getVarietyId()).getName());
+            theme.setVarietyName(varietyMap.get(publish.getVarietyId()) == null ? "" : varietyMap.get(publish.getVarietyId()).getName());
             theme.setViewCount(userViewCount.get(publish.getId()) == null ? Long.valueOf(0) : userViewCount.get(publish.getId()));
             theme.setPublicMsgCount(pubTalkCount.get(publish.getId()) == null ? Long.valueOf(0) : pubTalkCount.get(publish.getId()));
             theme.setPrivateMsgCount(priTalkCount.get(publish.getId()) == null ? Long.valueOf(0) : priTalkCount.get(publish.getId()));
@@ -296,14 +295,16 @@ public class PublishBaseServiceImpl implements PublishBaseService {
 
             theme.setPublisherName(userMap.get(publish.getPublisherId()).getNickName());
             theme.setPublisherPhoto(userMap.get(publish.getPublisherId()).getHeadImgUrl());
-
-
+            theme.setApproveType(userMap.get(publish.getPublisherId()).getApproveType());
+            theme.setApproveState(userMap.get(publish.getPublisherId()).getApproveState());
             return theme;
 
         }).collect(toList());
 
         return dto;
     }
+
+
 
 
 }

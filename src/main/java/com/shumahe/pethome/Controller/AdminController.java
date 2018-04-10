@@ -6,6 +6,7 @@ import com.shumahe.pethome.Enums.ResultEnum;
 import com.shumahe.pethome.Exception.PetHomeException;
 import com.shumahe.pethome.Repository.PetVarietyRepository;
 import com.shumahe.pethome.Service.AdminService;
+import com.shumahe.pethome.Service.Impl.SearchServiceImpl;
 import com.shumahe.pethome.Util.ResultVOUtil;
 import com.shumahe.pethome.VO.ResultVO;
 import lombok.extern.slf4j.Slf4j;
@@ -154,7 +155,9 @@ public class AdminController {
         return ResultVOUtil.success(varietyMap);
     }
 
-    /**获取宠物品种 */
+    /**
+     * 获取宠物品种
+     */
     public Map<Integer, PetVariety> petVariety() {
 
         List<PetVariety> petVarieties = petVarietyRepository.findAll();
@@ -214,5 +217,21 @@ public class AdminController {
         List<Map<String, String>> view = adminService.findView(id, day);
         return ResultVOUtil.success(view);
     }
+
+    @Autowired
+    private SearchServiceImpl searchService;
+
+    @GetMapping("/search")
+    public ResultVO search(@RequestParam("keywords") String keywords,
+                           @RequestParam(value = "publishType",defaultValue = "0") Integer publishType) {
+
+        if (publishType == 0) {
+            throw new PetHomeException(ResultEnum.PARAM_ERROR);
+        }
+
+        Map<String, Object> map = searchService.adminPetSearch(keywords,publishType);
+        return ResultVOUtil.success(map);
+    }
+
 
 }
