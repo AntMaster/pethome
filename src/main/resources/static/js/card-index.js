@@ -136,6 +136,7 @@ $(".avatar-upload").change(function (e) {
     //
     // });
 
+
     canvasResize(e.target.files[0], {
         crop: false,
         quality: 0.4,
